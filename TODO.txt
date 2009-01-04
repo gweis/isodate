@@ -1,0 +1,37 @@
+
+TODOs
+=====
+
+This to do list contains some thoughts and ideas about missing features, and
+parts to think about, whether to implement them or not. This list is probably
+not complete.
+
+Missing features:
+-----------------
+
+    * methods to format *date*, *time*, *datetime*, *timedelta* and *Duration*
+      objects to various ISO strings.
+    * parser for ISO intervals.
+
+Documentation:
+--------------
+
+    * parse_datetime:
+       - complete documentation to show what this function allows, but ISO forbids.
+         and vice verse.
+       - support other separators between date and time than 'T'
+       
+    * parse_date:
+       - yeardigits should be always greater than 4
+       - dates before 0001-01-01 are not supported
+       
+    * parse_duration:
+       - alternative formats are not fully supported due to parse_date restrictions
+       - standard duration format is fully supported but not very restrictive.
+       
+    * Duration:
+       - support fractional years and month in calculations
+       - implement w3c order relation? (`<http://www.w3.org/TR/xmlschema-2/#duration-order>`_)
+       - refactor to have duration mathematics only at one place.
+       - localize __str__ method (does timedelta do this?)
+        
