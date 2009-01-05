@@ -34,4 +34,5 @@ Documentation:
        - implement w3c order relation? (`<http://www.w3.org/TR/xmlschema-2/#duration-order>`_)
        - refactor to have duration mathematics only at one place.
        - localize __str__ method (does timedelta do this?)
+
         

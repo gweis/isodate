@@ -24,7 +24,7 @@ Documentation
 
 Currently there are four parsing methods available.
    * parse_time:
-   		parses an ISO 8601 time string into a *time* object
+        parses an ISO 8601 time string into a *time* object
    * parse_date:
         parses an ISO 8601 date string into a *date* object
    * parse_datetime:
