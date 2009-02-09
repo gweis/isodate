@@ -33,8 +33,8 @@ Currently there are four parsing methods available.
         parses an ISO 8601 duration string into a *timedelta* or *Duration*
         object.
    * parse_tzinfo:
-   		parses the time zone info part of an ISO 8601 string into a
-   		*tzinfo* object.
+        parses the time zone info part of an ISO 8601 string into a
+        *tzinfo* object.
 
 As ISO 8601 allows to define durations in years and months, and *timedelta*
 does not handle years and months, this module provides a *Duration* class,
@@ -45,26 +45,27 @@ There are also ISO formating methods for all supported data types. Each
 *xxx_isoformat* method accepts a format parameter. The default format is
 always the ISO 8601 expanded format. This is the same format used by 
 *datetime.isoformat*:
-	* time_isoformat:
-		Intended to create ISO time strings with default format
-		*hh:mm:ssZ*.
-	* date_isoformat:
-		Intended to create ISO date strings with default format
-		*yyyy-mm-dd*.
-	* datetime_isoformat:
-		Intended to create ISO date-time strings with default format
-		*yyyy-mm-ddThh:mm:ssZ*.
-	* duration_isoformat:
-		Intended to create ISO duration strings with default format
-		*PnnYnnMnnDTnnHnnMnnS*.
-	* tz_isoformat:
-		Intended to create ISO time zone strings with default format
-		*hh:mm*.
-	* strftime:
-		A re-implementation mostly compatible with Python's *strftime*, but
-		supports only those format strings, which can also be used for dates
-		prior 1900. This method also understands how to format *datetime* and
-		*Duration* instances.
+
+    * time_isoformat:
+        Intended to create ISO time strings with default format
+        *hh:mm:ssZ*.
+    * date_isoformat:
+        Intended to create ISO date strings with default format
+        *yyyy-mm-dd*.
+    * datetime_isoformat:
+        Intended to create ISO date-time strings with default format
+        *yyyy-mm-ddThh:mm:ssZ*.
+    * duration_isoformat:
+        Intended to create ISO duration strings with default format
+        *PnnYnnMnnDTnnHnnMnnS*.
+    * tz_isoformat:
+        Intended to create ISO time zone strings with default format
+        *hh:mm*.
+    * strftime:
+        A re-implementation mostly compatible with Python's *strftime*, but
+        supports only those format strings, which can also be used for dates
+        prior 1900. This method also understands how to format *datetime* and
+        *Duration* instances.
 
 Installation:
 -------------

@@ -1,5 +1,4 @@
 
-
 TODOs
 =====
 
@@ -10,7 +9,7 @@ not complete.
 Missing features:
 -----------------
 
-	* time formating does not allow to create fractional representations.
+    * time formating does not allow to create fractional representations.
     * parser for ISO intervals.
 
 Documentation:
@@ -36,5 +35,4 @@ Documentation:
        - localize __str__ method (does timedelta do this?)
        - when is a Duration negative? 
        - normalize Durations. months [00-12] and years ]-inf,+inf[
-
 
