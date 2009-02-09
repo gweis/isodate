@@ -1,4 +1,5 @@
 
+
 TODOs
 =====
 
@@ -9,8 +10,7 @@ not complete.
 Missing features:
 -----------------
 
-    * methods to format *date*, *time*, *datetime*, *timedelta* and *Duration*
-      objects to various ISO strings.
+	* time formating does not allow to create fractional representations.
     * parser for ISO intervals.
 
 Documentation:
@@ -34,5 +34,7 @@ Documentation:
        - implement w3c order relation? (`<http://www.w3.org/TR/xmlschema-2/#duration-order>`_)
        - refactor to have duration mathematics only at one place.
        - localize __str__ method (does timedelta do this?)
+       - when is a Duration negative? 
+       - normalize Durations. months [00-12] and years ]-inf,+inf[
 
-        
+

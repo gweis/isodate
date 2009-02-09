@@ -35,8 +35,9 @@ import re
 import math
 from datetime import time
 
+from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
 from isodate.isoerror import ISO8601Error
-from isodate.tzinfo import UTC, FixedOffset
+from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
 TIME_REGEX_CACHE = []
 # used to cache regular expressions to parse ISO time strings.
@@ -64,30 +65,30 @@ def build_time_regexps():
         #    +-hh:mm
         #    +-hhmm
         #    +-hh =>
-        tz_regex = r"(?P<tz>Z|(?P<tzh>[+-][0-9]{2})(:?(?P<tzm>[0-9]{2})?))?"
+        #    isotzinfo.TZ_REGEX
         # 1. complete time:
         #    hh:mm:ss.ss ... extended format
         TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2}):"
                                            r"(?P<minute>[0-9]{2}):"
                                            r"(?P<second>[0-9]{2}([,.][0-9]+)?)"
-                                           + tz_regex))
+                                           + TZ_REGEX))
         #    hhmmss.ss ... basic format
         TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2})"
                                            r"(?P<minute>[0-9]{2})"
                                            r"(?P<second>[0-9]{2}([,.][0-9]+)?)"
-                                           + tz_regex))
+                                           + TZ_REGEX))
         # 2. reduced accuracy:
         #    hh:mm.mm ... extended format
         TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2}):"
                                            r"(?P<minute>[0-9]{2}([,.][0-9]+)?)"
-                                           + tz_regex))
+                                           + TZ_REGEX))
         #    hhmm.mm ... basic format
         TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2})"
                                            r"(?P<minute>[0-9]{2}([,.][0-9]+)?)"
-                                           + tz_regex))
+                                           + TZ_REGEX))
         #    hh.hh ... basic format
         TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2}([,.][0-9]+)?)"
-                                           + tz_regex))
+                                           + TZ_REGEX))
     return TIME_REGEX_CACHE
 
 def parse_time(timestring):
@@ -116,20 +117,9 @@ def parse_time(timestring):
             for key, value in groups.items():
                 if value is not None:
                     groups[key] = value.replace(',', '.')
-            if groups['tz'] is not None:
-                if groups['tz'] == 'Z':
-                    tzinfo = UTC
-                else:
-                    if groups['tzh'].startswith('-'):
-                        tzinfo = FixedOffset(int(groups['tzh']),
-                                             -int(groups['tzm'] or 0), 
-                                             groups['tz'])
-                    else:
-                        tzinfo = FixedOffset(int(groups['tzh']), 
-                                             int(groups['tzm'] or 0), 
-                                             groups['tz'])
-            else:
-                tzinfo = None
+            tzinfo = build_tzinfo(groups['tzname'], groups['tzsign'], 
+                                  int(groups['tzhour'] or 0), 
+                                  int(groups['tzmin'] or 0))
             if 'second' in groups:
                 frac, second = math.modf(float(groups['second']))
                 microsecond = frac * 1e6
@@ -150,3 +140,12 @@ def parse_time(timestring):
             return time(int(hour), int(minute), int(second), int(microsecond),
                         tzinfo)
     raise ISO8601Error('Unrecognised ISO 8601 time format: %r' % timestring)
+
+def time_isoformat(ttime, format=TIME_EXT_COMPLETE + TZ_EXT):
+    '''
+    Format time strings. 
+    
+    This method is just a wrapper around isodate.isostrf.strftime and uses
+    Time-Extended-Complete with extended time zone as default format.
+    '''
+    return strftime(ttime, format)

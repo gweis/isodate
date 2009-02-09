@@ -30,23 +30,33 @@ Test cases for the isodatetime module.
 import unittest
 from datetime import datetime
 
-from isodate import parse_datetime, UTC, FixedOffset
+from isodate import parse_datetime, UTC, FixedOffset, datetime_isoformat
+from isodate import DATE_BAS_COMPLETE, TIME_BAS_MINUTE, TZ_BAS
+from isodate import DATE_EXT_COMPLETE, TIME_EXT_MINUTE, TZ_EXT, TZ_HOUR
+from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
+from isodate import DATE_BAS_WEEK_COMPLETE, DATE_EXT_WEEK_COMPLETE
 
 # the following list contains tuples of ISO datetime strings and the expected
 # result from the parse_datetime method. A result of None means an ISO8601Error
 # is expected.
-TEST_CASES = [('19850412T1015', datetime(1985, 4, 12, 10, 15)),
-              ('1985-04-12T10:15', datetime(1985, 4, 12, 10, 15)),
-              ('1985102T1015Z', datetime(1985, 4, 12, 10, 15, tzinfo=UTC)),
-              ('1985-102T10:15Z', datetime(1985, 4, 12, 10, 15, tzinfo=UTC)),
+TEST_CASES = [('19850412T1015', datetime(1985, 4, 12, 10, 15),
+               DATE_BAS_COMPLETE + 'T' + TIME_BAS_MINUTE),
+              ('1985-04-12T10:15', datetime(1985, 4, 12, 10, 15),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_MINUTE),
+              ('1985102T1015Z', datetime(1985, 4, 12, 10, 15, tzinfo=UTC),
+               DATE_BAS_ORD_COMPLETE + 'T' + TIME_BAS_MINUTE + TZ_BAS),
+              ('1985-102T10:15Z', datetime(1985, 4, 12, 10, 15, tzinfo=UTC),
+               DATE_EXT_ORD_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_EXT),
               ('1985W155T1015+0400', datetime(1985, 4, 12, 10, 15, 
                                               tzinfo=FixedOffset(4, 0, 
-                                                                 '+0400'))),
+                                                                 '+0400')),
+               DATE_BAS_WEEK_COMPLETE + 'T' + TIME_BAS_MINUTE + TZ_BAS),
               ('1985-W15-5T10:15+04', datetime(1985, 4, 12, 10, 15, 
                                                tzinfo=FixedOffset(4, 0, 
-                                                                  '+0400')))]
+                                                                  '+0400')),
+               DATE_EXT_WEEK_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_HOUR)]
 
-def create_testcase(datetimestring, expectation):
+def create_testcase(datetimestring, expectation, format):
     '''
     Create a TestCase class for a specific test.
     
@@ -67,6 +77,18 @@ def create_testcase(datetimestring, expectation):
             result = parse_datetime(datetimestring)
             self.assertEqual(result, expectation)
             
+        def test_format(self):
+            '''
+            Take datetime object and create ISO string from it.
+            This is the reverse test to test_parse.
+            '''
+            if expectation is None:
+                self.assertRaises(AttributeError,
+                                  datetime_isoformat, expectation, format)
+            else:
+                self.assertEqual(datetime_isoformat(expectation, format),
+                                 datetimestring)
+            
     return unittest.TestLoader().loadTestsFromTestCase(TestDateTime)
 
 def test_suite():
@@ -74,8 +96,8 @@ def test_suite():
     Construct a TestSuite instance for all test cases.
     '''
     suite = unittest.TestSuite()
-    for datetimestring, expectation in TEST_CASES:
-        suite.addTest(create_testcase(datetimestring, expectation))
+    for datetimestring, expectation, format in TEST_CASES:
+        suite.addTest(create_testcase(datetimestring, expectation, format))
     return suite
 
 if __name__ == '__main__':

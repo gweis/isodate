@@ -35,6 +35,7 @@ implementation, which does not support dates before 0001-01-01.
 import re
 from datetime import date, timedelta
 
+from isodate.isostrf import strftime, DATE_EXT_COMPLETE
 from isodate.isoerror import ISO8601Error
 
 DATE_REGEX_CACHE = {}
@@ -161,26 +162,22 @@ def parse_date(datestring, yeardigits=4, expanded=False):
         if match:
             groups = match.groupdict()
             # sign, century, year, month, week, day,
-            if groups['sign'] == '-': # FIXME: not possible with datetime, date
-                sign = -1
-            else:
-                sign = 1
-            if 'century' in groups and groups['century'] is not None:
+            # FIXME: negative dates not possible with python standard types
+            sign = (groups['sign'] == '-' and -1) or 1 
+            if 'century' in groups:
                 return date(sign * (int(groups['century']) * 100 + 1), 1, 1)
             if not 'month' in groups: # weekdate or ordinal date
                 ret = date(sign * int(groups['year']), 1, 1)
-                if 'week' in groups and groups['week'] is not None:
+                if 'week' in groups:
                     isotuple = ret.isocalendar()
                     if 'day' in groups:
                         days = int(groups['day'] or 1)
                     else:
                         days = 1
-                    if isotuple[1] == 1: # this is the first week in the year
-                        return ret + timedelta(weeks=int(groups['week'])-1, 
-                                               days=-isotuple[2]+days)
-                    else:
-                        return ret + timedelta(weeks=int(groups['week']), 
-                                               days=-isotuple[2]+days)
+                    # if first week in year, do weeks-1
+                    return ret + timedelta(weeks=int(groups['week']) - 
+                                            (((isotuple[1] == 1) and 1) or 0),
+                                           days = -isotuple[2] + days)
                 elif 'day' in groups: # ordinal date
                     return ret + timedelta(days=int(groups['day'])-1)
                 else:  # year date
@@ -190,6 +187,15 @@ def parse_date(datestring, yeardigits=4, expanded=False):
                 day = 1
             else:
                 day = int(groups['day'])
-            return date(sign*int(groups['year']), 
+            return date(sign * int(groups['year']), 
                         int(groups['month']) or 1, day)
     raise ISO8601Error('Unrecognised ISO 8601 date format: %r' % datestring)
+
+def date_isoformat(tdate, format=DATE_EXT_COMPLETE, yeardigits=4):
+    '''
+    Format date strings. 
+    
+    This method is just a wrapper around isodate.isostrf.strftime and uses
+    Date-Extended-Complete as default format.
+    '''
+    return strftime(tdate, format, yeardigits)

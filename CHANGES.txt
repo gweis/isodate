@@ -1,9 +1,17 @@
 
+
 CHANGES
 =======
+
+0.4.0 (unreleased)
+------------------
+
+- added method to parse ISO 8601 time zone strings
+- added methods to create ISO 8601 conforming strings
 
 0.3.0 (2009-1-05)
 ------------------
 
 - Initial release 
+
 

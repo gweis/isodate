@@ -32,41 +32,49 @@ import operator
 from datetime import timedelta, date, datetime
 
 from isodate import Duration, parse_duration, ISO8601Error
+from isodate import D_DEFAULT, D_WEEK, D_ALT_EXT, duration_isoformat
 
 # the following list contains tuples of ISO duration strings and the expected
 # result from the parse_duration method. A result of None means an ISO8601Error
 # is expected.
-PARSE_TEST_CASES = {'P18Y9M4DT11H9M8S': Duration(4, 8, 0, 0, 9, 11, 0, 9, 18),
-                    'P2W': timedelta(weeks = 2),
-                    'P3Y6M4DT12H30M5S':Duration(4, 5, 0, 0, 30, 12, 0, 6, 3),
-                    'P23DT23H': timedelta(hours=23, days=23),
-                    'P4Y': Duration(years=4),
-                    'P1M': Duration(months=1),
-                    'PT1M': timedelta(minutes=1),
-                    'P0.5Y': Duration(years=0.5), # ?????????
-                    'PT36H': timedelta(hours=36), 
-                    'P1DT12H': timedelta(days=1, hours=12),
-                    '+P11D': timedelta(days=11),
-                    '-P2W': timedelta(weeks=-2),
-                    '-P2.2W': timedelta(weeks=-2.2),
-                    'P1DT2H3M4S': timedelta(days=1, hours=2, minutes=3, 
-                                            seconds=4),
-                    'P1DT2H3M': timedelta(days=1, hours=2, minutes=3),
-                    'P1DT2H': timedelta(days=1, hours=2),
-                    'PT2H': timedelta(hours=2),
-                    'PT2.3H': timedelta(hours=2.3),
-                    'PT2H3M4S': timedelta(hours=2, minutes=3, seconds=4),
-                    'PT3M4S': timedelta(minutes=3, seconds=4),
-                    'PT22S': timedelta(seconds=22),
-                    'PT22.22S': timedelta(seconds=22.22),
-                    '-P2Y': Duration(years=-2),
-                    '-P3Y6M4DT12H30M5S': Duration(-4, -5, 0, 0, -30, -12, 0,
-                                                  -6, -3),
-                    '-P1DT2H3M4S': timedelta(days=-1, hours=-2, minutes=-3,
-                                             seconds=-4),
+PARSE_TEST_CASES = {'P18Y9M4DT11H9M8S': (Duration(4, 8, 0, 0, 9, 11, 0, 9, 18),
+                                         D_DEFAULT, None),
+                    'P2W': (timedelta(weeks = 2), D_WEEK, None),
+                    'P3Y6M4DT12H30M5S': (Duration(4, 5, 0, 0, 30, 12, 0, 6, 3),
+                                         D_DEFAULT, None),
+                    'P23DT23H': (timedelta(hours=23, days=23),
+                                 D_DEFAULT, None),
+                    'P4Y': (Duration(years=4), D_DEFAULT, None),
+                    'P1M': (Duration(months=1), D_DEFAULT, None),
+                    'PT1M': (timedelta(minutes=1), D_DEFAULT, None),
+                    'P0.5Y': (Duration(years=0.5), D_DEFAULT, None),
+                    'PT36H': (timedelta(hours=36), D_DEFAULT, 'P1DT12H'),
+                    'P1DT12H': (timedelta(days=1, hours=12), D_DEFAULT, None),
+                    '+P11D': (timedelta(days=11), D_DEFAULT, 'P11D'),
+                    '-P2W': (timedelta(weeks=-2), D_WEEK, None),
+                    '-P2.2W': (timedelta(weeks=-2.2), D_DEFAULT, '-P15DT9H36M'),
+                    'P1DT2H3M4S': (timedelta(days=1, hours=2, minutes=3, 
+                                            seconds=4), D_DEFAULT, None),
+                    'P1DT2H3M': (timedelta(days=1, hours=2, minutes=3),
+                                 D_DEFAULT, None),
+                    'P1DT2H': (timedelta(days=1, hours=2), D_DEFAULT, None),
+                    'PT2H': (timedelta(hours=2), D_DEFAULT, None),
+                    'PT2.3H': (timedelta(hours=2.3), D_DEFAULT, 'PT2H18M'),
+                    'PT2H3M4S': (timedelta(hours=2, minutes=3, seconds=4),
+                                 D_DEFAULT, None),
+                    'PT3M4S': (timedelta(minutes=3, seconds=4), D_DEFAULT, 
+                               None),
+                    'PT22S': (timedelta(seconds=22), D_DEFAULT, None),
+                    'PT22.22S': (timedelta(seconds=22.22), 'PT%S.%fS',
+                                 'PT22.220000S'),
+                    '-P2Y': (Duration(years=-2), D_DEFAULT, None),
+                    '-P3Y6M4DT12H30M5S': (Duration(-4, -5, 0, 0, -30, -12, 0,
+                                                   -6, -3), D_DEFAULT, None),
+                    '-P1DT2H3M4S': ( timedelta(days=-1, hours=-2, minutes=-3,
+                                               seconds=-4), D_DEFAULT, None),
                     # alternative format
-                    'P0018-09-04T11:09:08': Duration(4, 8, 0, 0, 9, 11, 0, 9,
-                                                     18),
+                    'P0018-09-04T11:09:08': (Duration(4, 8, 0, 0, 9, 11, 0, 9,
+                                                      18), D_ALT_EXT, None),
                     #'PT000022.22': timedelta(seconds=22.22),
                     }
 
@@ -242,8 +250,14 @@ class DurationTest(unittest.TestCase):
         '''
         dur = Duration(10, 10, years=10, months=10)
         self.assertEqual('10 years, 10 months, 10 days, 0:00:10', str(dur))
-        self.assertEqual('isodate.isoduration.Duration(10, 10, 0,'
+        self.assertEqual('isodate.duration.Duration(10, 10, 0,'
                          ' years=10, months=10)', repr(dur))
+        
+    def test_format(self):
+        '''
+        Test various other strftime combinations.
+        '''
+        self.assertEqual(duration_isoformat(Duration(0)), 'P0D')
         
     def test_equal(self):
         '''
@@ -264,7 +278,7 @@ class DurationTest(unittest.TestCase):
         self.assertTrue(Duration(years=1, months=1) != Duration(months=14))
         self.assertTrue(Duration(years=1) != timedelta(days=365))
 
-def create_parsetestcase(durationstring, expectation):
+def create_parsetestcase(durationstring, expectation, format, altstr):
     '''
     Create a TestCase class for a specific test.
     
@@ -284,6 +298,18 @@ def create_parsetestcase(durationstring, expectation):
             '''
             result = parse_duration(durationstring)
             self.assertEqual(result, expectation)
+            
+        def test_format(self):
+            '''
+            Take duration/timedelta object and create ISO string from it.
+            This is the reverse test to test_parse.
+            '''
+            if altstr:
+                self.assertEqual(duration_isoformat(expectation, format), 
+                                 altstr)
+            else:
+                self.assertEqual(duration_isoformat(expectation, format), 
+                                 durationstring)
             
     return unittest.TestLoader().loadTestsFromTestCase(TestParseDuration)
 
@@ -394,8 +420,9 @@ def test_suite():
     Return a test suite containing all test defined above.
     '''
     suite = unittest.TestSuite()
-    for durationstring, expectation in PARSE_TEST_CASES.items():
-        suite.addTest(create_parsetestcase(durationstring, expectation))
+    for durationstring, (expectation, format, altstr) in PARSE_TEST_CASES.items():
+        suite.addTest(create_parsetestcase(durationstring, expectation,
+                                           format, altstr))
     for testdata in MATH_TEST_CASES:
         suite.addTest(create_mathtestcase(*testdata))
     for testdata in DATE_TEST_CASES:

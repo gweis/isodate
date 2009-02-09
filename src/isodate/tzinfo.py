@@ -7,7 +7,7 @@ from datetime import timedelta, tzinfo
 import time
 
 ZERO = timedelta(0)
-# constant for zero time offset.
+# constant for zero time offset.    
 
 class Utc(tzinfo):
     '''UTC

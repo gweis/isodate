@@ -11,8 +11,8 @@ option.
 For instance, ISO8601:2004 never mentions 2 digit years. So, it is not
 intended by this module to support 2 digit years. (while it may still
 be valid as ISO date, because it is not explicitly forbidden.)
-Another example is, that if no time zone designation is given for a time,
-the it is a local time, and not UTC.
+Another example is, when no time zone information is given for a time,
+then it should be interpreted as local time, and not UTC.
 
 As this module maps ISO 8601 dates/times to standard Python data types, like
 *date*, *time*, *datetime* and *timedelta*, it is not possible to convert
@@ -31,18 +31,46 @@ Currently there are four parsing methods available.
         parses an ISO 8601 date-time string into a *datetime* object
    * parse_duration:
         parses an ISO 8601 duration string into a *timedelta* or *Duration*
-        object.	 
+        object.
+   * parse_tzinfo:
+   		parses the time zone info part of an ISO 8601 string into a
+   		*tzinfo* object.
 
 As ISO 8601 allows to define durations in years and months, and *timedelta*
 does not handle years and months, this module provides a *Duration* class,
 which can be used almost like a *timedelta* object (with some limitations).
 However, a *Duration* object can be converted into a *timedelta* object.
 
+There are also ISO formating methods for all supported data types. Each 
+*xxx_isoformat* method accepts a format parameter. The default format is
+always the ISO 8601 expanded format. This is the same format used by 
+*datetime.isoformat*:
+	* time_isoformat:
+		Intended to create ISO time strings with default format
+		*hh:mm:ssZ*.
+	* date_isoformat:
+		Intended to create ISO date strings with default format
+		*yyyy-mm-dd*.
+	* datetime_isoformat:
+		Intended to create ISO date-time strings with default format
+		*yyyy-mm-ddThh:mm:ssZ*.
+	* duration_isoformat:
+		Intended to create ISO duration strings with default format
+		*PnnYnnMnnDTnnHnnMnnS*.
+	* tz_isoformat:
+		Intended to create ISO time zone strings with default format
+		*hh:mm*.
+	* strftime:
+		A re-implementation mostly compatible with Python's *strftime*, but
+		supports only those format strings, which can also be used for dates
+		prior 1900. This method also understands how to format *datetime* and
+		*Duration* instances.
+
 Installation:
 -------------
 
 This module can easily be installed with Python standard installation methods.
-Just use *setuptools* or *easy_instal* as usual.
+Just use *setuptools* or *easy_install* as usual.
 
 Limitations:
 ------------
@@ -55,6 +83,7 @@ Limitations:
         It also allows short dates and times in date-time strings.
      2. For incomplete dates, the first day is chosen. e.g. 19th century results in a date of
         1901-01-01.
+     3. negative *Duration* and *timedelta* value are not fully supported yet. 
 
 Further information:
 --------------------

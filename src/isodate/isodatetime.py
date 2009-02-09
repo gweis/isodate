@@ -32,6 +32,8 @@ and time module.
 '''
 from datetime import datetime
 
+from isodate.isostrf import strftime
+from isodate.isostrf import DATE_EXT_COMPLETE, TIME_EXT_COMPLETE, TZ_EXT
 from isodate.isodates import parse_date
 from isodate.isotime import parse_time
 
@@ -47,3 +49,13 @@ def parse_datetime(datetimestring):
     tmpdate = parse_date(datestring)
     tmptime = parse_time(timestring)
     return datetime.combine(tmpdate, tmptime)
+
+def datetime_isoformat(tdt, format=DATE_EXT_COMPLETE + 'T' + 
+                                   TIME_EXT_COMPLETE + TZ_EXT):
+    '''
+    Format datetime strings. 
+    
+    This method is just a wrapper around isodate.isostrf.strftime and uses
+    Extended-Complete as default format.
+    '''
+    return strftime(tdt, format)
