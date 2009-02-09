@@ -277,6 +277,8 @@ class DurationTest(unittest.TestCase):
                         Duration(years=1, months=1))
         self.assertTrue(Duration(years=1, months=1) != Duration(months=14))
         self.assertTrue(Duration(years=1) != timedelta(days=365))
+        self.assertEqual(Duration(days=1), timedelta(days=1))
+        self.assertNotEqual(timedelta(days=1), Duration(days=1))
 
 def create_parsetestcase(durationstring, expectation, format, altstr):
     '''

@@ -209,6 +209,8 @@ class Duration(object):
         If the years, month part and the timedelta part are both equal, then
         the two Durations are considered equal.
         '''
+        if isinstance(other, timedelta) and self.years==0 and self.months==0:
+            return self.tdelta == other
         if not isinstance(other, Duration):
             return NotImplemented
         if ((self.years * 12 + self.months) == 
@@ -221,6 +223,8 @@ class Duration(object):
         If the years, month part or the timedelta part is not equal, then
         the two Durations are considered not equal.
         '''
+        if isinstance(other, timedelta) and self.years==0 and self.months==0:
+            return self.tdelta != other
         if not isinstance(other, Duration):
             return NotImplemented
         if ((self.years * 12 + self.months) != 
