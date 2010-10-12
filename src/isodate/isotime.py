@@ -14,11 +14,11 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
@@ -29,10 +29,10 @@ This modules provides a method to parse an ISO 8601:2004 time string to a
 Python datetime.time instance.
 
 It supports all basic and extended formats including time zone specifications
-as described in the ISO standard. 
+as described in the ISO standard.
 '''
 import re
-import math
+from decimal import Decimal
 from datetime import time
 
 from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
@@ -42,10 +42,11 @@ from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 TIME_REGEX_CACHE = []
 # used to cache regular expressions to parse ISO time strings.
 
+
 def build_time_regexps():
     '''
     Build regular expressions to parse ISO time string.
-    
+
     The regular expressions are compiled and stored in TIME_REGEX_CACHE
     for later reuse.
     '''
@@ -91,10 +92,11 @@ def build_time_regexps():
                                            + TZ_REGEX))
     return TIME_REGEX_CACHE
 
+
 def parse_time(timestring):
     '''
     Parses ISO 8601 times into datetime.time objects.
-    
+
     Following ISO 8601 formats are supported:
       (as decimal separator a ',' or a '.' is allowed)
       hhmmss.ssTZD    basic complete time
@@ -117,34 +119,37 @@ def parse_time(timestring):
             for key, value in groups.items():
                 if value is not None:
                     groups[key] = value.replace(',', '.')
-            tzinfo = build_tzinfo(groups['tzname'], groups['tzsign'], 
-                                  int(groups['tzhour'] or 0), 
+            tzinfo = build_tzinfo(groups['tzname'], groups['tzsign'],
+                                  int(groups['tzhour'] or 0),
                                   int(groups['tzmin'] or 0))
             if 'second' in groups:
-                frac, second = math.modf(float(groups['second']))
-                microsecond = frac * 1e6
-                return time(int(groups['hour']), int(groups['minute']), 
-                            int(second), int(microsecond), tzinfo)
+                second = Decimal(groups['second'])
+                microsecond = (second - int(second)) * long(1e6)
+                # int(...) ... no rounding
+                # to_integral() ... rounding
+                return time(int(groups['hour']), int(groups['minute']),
+                            int(second), microsecond.to_integral(), tzinfo)
             if 'minute' in groups:
-                frac, minute = math.modf(float(groups['minute']))
-                frac, second = math.modf(frac * 60.0)
-                microsecond = frac * 1e6
-                return time(int(groups['hour']), int(minute), int(second), 
-                            int(microsecond), tzinfo)
+                minute = Decimal(groups['minute'])
+                second = (minute - int(minute)) * 60
+                microsecond = (second - int(second)) * long(1e6)
+                return time(int(groups['hour']), int(minute), int(second),
+                            microsecond.to_integral(), tzinfo)
             else:
                 microsecond, second, minute = 0, 0, 0
-            frac, hour = math.modf(float(groups['hour']))
-            frac, minute = math.modf(frac * 60.0)
-            frac, second = math.modf(frac * 60.0)
-            microsecond = frac * 1e6
-            return time(int(hour), int(minute), int(second), int(microsecond),
-                        tzinfo)
+            hour = Decimal(groups['hour'])
+            minute = (hour - int(hour)) * 60
+            second = (minute - int(minute)) * 60
+            microsecond = (second - int(second)) * long(1e6)
+            return time(int(hour), int(minute), int(second),
+                        microsecond.to_integral(), tzinfo)
     raise ISO8601Error('Unrecognised ISO 8601 time format: %r' % timestring)
+
 
 def time_isoformat(ttime, format=TIME_EXT_COMPLETE + TZ_EXT):
     '''
-    Format time strings. 
-    
+    Format time strings.
+
     This method is just a wrapper around isodate.isostrf.strftime and uses
     Time-Extended-Complete with extended time zone as default format.
     '''

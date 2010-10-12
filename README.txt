@@ -5,8 +5,8 @@ ISO 8601 date/time parser
 This module implements ISO 8601 date, time and duration parsing.
 The implementation follows ISO8601:2004 standard, and implements only
 date/time representations mentioned in the standard. If something is not
-mentioned there, then it is treated as non existent, and not as an allowed 
-option. 
+mentioned there, then it is treated as non existent, and not as an allowed
+option.
 
 For instance, ISO8601:2004 never mentions 2 digit years. So, it is not
 intended by this module to support 2 digit years. (while it may still
@@ -17,7 +17,9 @@ then it should be interpreted as local time, and not UTC.
 As this module maps ISO 8601 dates/times to standard Python data types, like
 *date*, *time*, *datetime* and *timedelta*, it is not possible to convert
 all possible ISO 8601 dates/times. For instance, dates before 0001-01-01 are
-not allowed by the Python *date* and *datetime* classes.
+not allowed by the Python *date* and *datetime* classes. Additionally
+fractional seconds are limited to microseconds. That means if the parser finds
+for instance nanoseconds it will round it to microseconds.
 
 Documentation
 -------------
@@ -41,9 +43,9 @@ does not handle years and months, this module provides a *Duration* class,
 which can be used almost like a *timedelta* object (with some limitations).
 However, a *Duration* object can be converted into a *timedelta* object.
 
-There are also ISO formating methods for all supported data types. Each 
+There are also ISO formating methods for all supported data types. Each
 *xxx_isoformat* method accepts a format parameter. The default format is
-always the ISO 8601 expanded format. This is the same format used by 
+always the ISO 8601 expanded format. This is the same format used by
 *datetime.isoformat*:
 
     * time_isoformat:
@@ -84,7 +86,7 @@ Limitations:
         It also allows short dates and times in date-time strings.
      2. For incomplete dates, the first day is chosen. e.g. 19th century results in a date of
         1901-01-01.
-     3. negative *Duration* and *timedelta* value are not fully supported yet. 
+     3. negative *Duration* and *timedelta* value are not fully supported yet.
 
 Further information:
 --------------------

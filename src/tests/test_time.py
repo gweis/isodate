@@ -14,11 +14,11 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
@@ -46,51 +46,61 @@ TEST_CASES = [('232050', time(23, 20, 50), TIME_BAS_COMPLETE + TZ_BAS),
               ('23', time(23), TIME_HOUR),
               ('232050,5', time(23, 20, 50, 500000), None),
               ('23:20:50.5', time(23, 20, 50, 500000), None),
+              # test precision
+              ('15:33:42.123456', time(15, 33, 42, 123456), None),
+              ('15:33:42.1234564', time(15, 33, 42, 123456), None),
+              ('15:33:42.1234557', time(15, 33, 42, 123456), None),
               ('2320,8', time(23, 20, 48), None),
               ('23:20,8', time(23, 20, 48), None),
               ('23,3', time(23, 18), None),
-              ('232030Z', time(23, 20, 30, tzinfo=UTC), TIME_BAS_COMPLETE + TZ_BAS),
+              ('232030Z', time(23, 20, 30, tzinfo=UTC),
+                          TIME_BAS_COMPLETE + TZ_BAS),
               ('2320Z', time(23, 20, tzinfo=UTC), TIME_BAS_MINUTE + TZ_BAS),
               ('23Z', time(23, tzinfo=UTC), TIME_HOUR + TZ_BAS),
-              ('23:20:30Z', time(23, 20, 30, tzinfo=UTC), TIME_EXT_COMPLETE + TZ_EXT),
+              ('23:20:30Z', time(23, 20, 30, tzinfo=UTC),
+                            TIME_EXT_COMPLETE + TZ_EXT),
               ('23:20Z', time(23, 20, tzinfo=UTC), TIME_EXT_MINUTE + TZ_EXT),
-              ('152746+0100', time(15, 27, 46, tzinfo=FixedOffset(1, 0, '+0100')), TIME_BAS_COMPLETE + TZ_BAS),
-              ('152746-0500', time(15, 27, 46, tzinfo=FixedOffset(-5, 0, '-0500')), TIME_BAS_COMPLETE + TZ_BAS),
-              ('152746+01', time(15, 27, 46, 
+              ('152746+0100', time(15, 27, 46,
+                                   tzinfo=FixedOffset(1, 0, '+0100')),
+                              TIME_BAS_COMPLETE + TZ_BAS),
+              ('152746-0500', time(15, 27, 46,
+                                   tzinfo=FixedOffset(-5, 0, '-0500')),
+                              TIME_BAS_COMPLETE + TZ_BAS),
+              ('152746+01', time(15, 27, 46,
                                  tzinfo=FixedOffset(1, 0, '+01:00')),
-                                 TIME_BAS_COMPLETE + TZ_HOUR),
-              ('152746-05', time(15, 27, 46, 
+                            TIME_BAS_COMPLETE + TZ_HOUR),
+              ('152746-05', time(15, 27, 46,
                                  tzinfo=FixedOffset(-5, -0, '-05:00')),
-                                 TIME_BAS_COMPLETE + TZ_HOUR),
-              ('15:27:46+01:00', time(15, 27, 46, 
+                            TIME_BAS_COMPLETE + TZ_HOUR),
+              ('15:27:46+01:00', time(15, 27, 46,
                                       tzinfo=FixedOffset(1, 0, '+01:00')),
-                                      TIME_EXT_COMPLETE + TZ_EXT),
-              ('15:27:46-05:00', time(15, 27, 46, 
+                                 TIME_EXT_COMPLETE + TZ_EXT),
+              ('15:27:46-05:00', time(15, 27, 46,
                                       tzinfo=FixedOffset(-5, -0, '-05:00')),
-                                      TIME_EXT_COMPLETE + TZ_EXT),
-              ('15:27:46+01', time(15, 27, 46, 
+                                 TIME_EXT_COMPLETE + TZ_EXT),
+              ('15:27:46+01', time(15, 27, 46,
                                    tzinfo=FixedOffset(1, 0, '+01:00')),
-                                   TIME_EXT_COMPLETE + TZ_HOUR),
-              ('15:27:46-05', time(15, 27, 46, 
+                              TIME_EXT_COMPLETE + TZ_HOUR),
+              ('15:27:46-05', time(15, 27, 46,
                                    tzinfo=FixedOffset(-5, -0, '-05:00')),
-                                   TIME_EXT_COMPLETE + TZ_HOUR),
+                              TIME_EXT_COMPLETE + TZ_HOUR),
               ('1:17:30', None, TIME_EXT_COMPLETE)]
 
-    
+
 def create_testcase(timestring, expectation, format):
-    '''
+    """
     Create a TestCase class for a specific test.
-    
+
     This allows having a separate TestCase for each test tuple from the
     TEST_CASES list, so that a failed test won't stop other tests.
-    '''
-    
+    """
+
     class TestTime(unittest.TestCase):
         '''
         A test case template to parse an ISO time string into a time
         object.
         '''
-        
+
         def test_parse(self):
             '''
             Parse an ISO time string and compare it to the expected value.
@@ -100,7 +110,7 @@ def create_testcase(timestring, expectation, format):
             else:
                 result = parse_time(timestring)
                 self.assertEqual(result, expectation)
-                
+
         def test_format(self):
             '''
             Take time object and create ISO string from it.
@@ -112,8 +122,9 @@ def create_testcase(timestring, expectation, format):
             elif format is not None:
                 self.assertEqual(time_isoformat(expectation, format),
                                  timestring)
-            
+
     return unittest.TestLoader().loadTestsFromTestCase(TestTime)
+
 
 def test_suite():
     '''
