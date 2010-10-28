@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+0.4.2 (2010-10-28)
+------------------
+
+- Implemented unary - for Duration (supplied by David Brooks)
+- Output fractional seconds with '%P' format. (partly supplied by David Brooks)
+
 0.4.1 (2010-10-13)
 ------------------
 

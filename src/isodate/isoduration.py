@@ -14,11 +14,11 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
@@ -48,13 +48,14 @@ ISO8601_PERIOD_REGEX = re.compile(r"^(?P<sign>[+-])?"
                 r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$")
 # regular expression to parse ISO duartion strings.
 
+
 def parse_duration(datestring):
     """
     Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
-    
-    If the ISO date string does not contain years or months, a timedelta instance
-    is returned, else a Duration instance is returned.
-    
+
+    If the ISO date string does not contain years or months, a timedelta
+    instance is returned, else a Duration instance is returned.
+
     The following duration formats are supported:
       -PnnW                  duration in weeks
       -PnnYnnMnnDTnnHnnMnnS  complete duration specification
@@ -62,20 +63,19 @@ def parse_duration(datestring):
       -PYYYY-MM-DDThh:mm:ss  extended alternative complete date format
       -PYYYYDDDThhmmss       basic alternative ordinal date format
       -PYYYY-DDDThh:mm:ss    extended alternative ordinal date format
-      
+
     The '-' is optional.
-      
-    Limitations:
-      ISO standard defines some restrictions about where to use fractional numbers
-      and which component and format combinations are allowed. This parser 
-      implementation ignores all those restrictions and returns something when it is
-      able to find all necessary components.
+
+    Limitations:  ISO standard defines some restrictions about where to use
+      fractional numbers and which component and format combinations are
+      allowed. This parser implementation ignores all those restrictions and
+      returns something when it is able to find all necessary components.
       In detail:
         it does not check, whether only the last component has fractions.
         it allows weeks specified with all other combinations
-      
-      The alternative format does not support durations with years, months or days
-      set to 0. 
+
+      The alternative format does not support durations with years, months or
+      days set to 0.
     """
     if not isinstance(datestring, basestring):
         raise TypeError("Expecting a string %r" % datestring)
@@ -86,13 +86,13 @@ def parse_duration(datestring):
             durdt = parse_datetime(datestring[1:])
             if durdt.year != 0 or durdt.month != 0:
                 # create Duration
-                ret = Duration(days=durdt.day, seconds=durdt.second, 
-                               microseconds=durdt.microsecond, 
-                               minutes=durdt.minute, hours=durdt.hour, 
+                ret = Duration(days=durdt.day, seconds=durdt.second,
+                               microseconds=durdt.microsecond,
+                               minutes=durdt.minute, hours=durdt.hour,
                                months=durdt.month, years=durdt.year)
-            else: # FIXME: currently not possible in alternative format
+            else:  # FIXME: currently not possible in alternative format
                 # create timedelta
-                ret = timedelta(days=durdt.day, seconds=durdt.second, 
+                ret = timedelta(days=durdt.day, seconds=durdt.second,
                                 microseconds=durdt.microsecond,
                                 minutes=durdt.minute, hours=durdt.hour)
             return ret
@@ -110,7 +110,7 @@ def parse_duration(datestring):
                         weeks=groups["weeks"])
         if groups["sign"] == '-':
             ret = timedelta(0) - ret
-    else: 
+    else:
         ret = Duration(years=groups["years"], months=groups["months"],
                        days=groups["days"], hours=groups["hours"],
                        minutes=groups["minutes"], seconds=groups["seconds"],
@@ -119,16 +119,17 @@ def parse_duration(datestring):
             ret = Duration(0) - ret
     return ret
 
+
 def duration_isoformat(tduration, format=D_DEFAULT):
     '''
-    Format duration strings. 
-    
+    Format duration strings.
+
     This method is just a wrapper around isodate.isostrf.strftime and uses
     P%P (D_DEFAULT) as default format.
     '''
     # TODO: implement better decision for negative Durations.
     #       should be done in Duration class in consistent way with timedelta.
-    if ((isinstance(tduration, Duration) and (tduration.years < 0 or 
+    if ((isinstance(tduration, Duration) and (tduration.years < 0 or
                                              tduration.months < 0 or
                                              tduration.tdelta < timedelta(0)))
         or (isinstance(tduration, timedelta) and (tduration < timedelta(0)))):

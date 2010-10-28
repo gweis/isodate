@@ -14,25 +14,25 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
-'''
+"""
 This module provides an alternative strftime method.
 
 The strftime method in this module allows only a subset of Python's strftime
 format codes, plus a few additional. It supports the full range of date values
 possible with standard Python date/time objects. Furthermore there are several
 pr-defined format strings in this module to make ease producing of ISO 8601
-conforming strings. 
-'''
+conforming strings.
+"""
 import re
 from datetime import date, timedelta
 
@@ -73,7 +73,7 @@ DT_EXT_WEEK_COMPLETE = DATE_EXT_WEEK_COMPLETE + 'T' + TIME_EXT_COMPLETE +\
                        TZ_EXT
 DT_BAS_WEEK_COMPLETE = DATE_BAS_WEEK_COMPLETE + 'T' + TIME_BAS_COMPLETE +\
                        TZ_BAS
-                       
+
 # Duration formts
 D_DEFAULT = 'P%P'
 D_WEEK = 'P%p'
@@ -108,17 +108,19 @@ STRF_D_MAP = {'%d': lambda tdt, yds: '%02d' % tdt.days,
               '%m': lambda tdt, yds: '%02d' % tdt.months,
               '%M': lambda tdt, yds: '%02d' % ((tdt.seconds / 60) % 60),
               '%S': lambda tdt, yds: '%02d' % (tdt.seconds % 60),
-              '%W': lambda tdt, yds: '%02d' % (abs (tdt.days / 7)),
+              '%W': lambda tdt, yds: '%02d' % (abs(tdt.days / 7)),
               '%Y': lambda tdt, yds: (((yds != 4) and '+') or '') +\
                                    (('%%0%dd' % yds) % tdt.years),
               '%C': lambda tdt, yds: (((yds != 4) and '+') or '') +\
-                                   (('%%0%dd' % (yds - 2)) % (tdt.years / 100)),
+                                   (('%%0%dd' % (yds - 2)) %
+                                    (tdt.years / 100)),
               '%%': lambda tdt, yds: '%'}
+
 
 def _strfduration(tdt, format, yeardigits=4):
     '''
     this is the work method for timedelta and Duration instances.
-    
+
     see strftime for more details.
     '''
     def repl(match):
@@ -128,37 +130,42 @@ def _strfduration(tdt, format, yeardigits=4):
         if match.group(0) in STRF_D_MAP:
             return STRF_D_MAP[match.group(0)](tdt, yeardigits)
         elif match.group(0) == '%P':
-            ret = ''
+            ret = []
             if isinstance(tdt, Duration):
                 if tdt.years:
-                    ret += str(abs(tdt.years)) + 'Y'
+                    ret.append('%sY' % abs(tdt.years))
                 if tdt.months:
-                    ret += str(abs(tdt.months)) + 'M'
-            seconds = abs(tdt.days * 24 * 60 * 60 + tdt.seconds)  
+                    ret.append('%sM' % abs(tdt.months))
+            usecs = abs((tdt.days * 24 * 60 * 60 + tdt.seconds) * 1000000 +
+                        tdt.microseconds)
+            seconds, usecs = divmod(usecs, 1000000)
             minutes, seconds = divmod(seconds, 60)
             hours, minutes = divmod(minutes, 60)
             days, hours = divmod(hours, 24)
             if days:
-                ret += str(days) + 'D'
-            if hours or minutes or seconds:
-                ret += 'T'
+                ret.append('%sD' % days)
+            if hours or minutes or seconds or usecs:
+                ret.append('T')
                 if hours:
-                    ret += str(hours) + 'H'
+                    ret.append('%sH' % hours)
                 if minutes:
-                    ret += str(minutes) + 'M'
-                if seconds:
-                    ret += str(seconds) + 'S'
-            return ret or '0D' # at least one component has to be there.
+                    ret.append('%sM' % minutes)
+                if seconds or usecs:
+                    ret.append(("%d.%06d" % (seconds, usecs)).rstrip('.0'))
+                    ret.append('S')
+            # at least one component has to be there.
+            return ret and ''.join(ret) or '0D'
         elif match.group(0) == '%p':
             return str(abs(tdt.days / 7)) + 'W'
         return match.group(0)
     return re.sub('%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p', repl,
                   format)
 
+
 def _strfdt(tdt, format, yeardigits=4):
     '''
     this is the work method for time and date instances.
-    
+
     see strftime for more details.
     '''
     def repl(match):
@@ -171,20 +178,21 @@ def _strfdt(tdt, format, yeardigits=4):
     return re.sub('%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%C|%z|%Z|%h|%%', repl,
                   format)
 
+
 def strftime(tdt, format, yeardigits=4):
     '''
-    Directive    Meaning    Notes     
-    %d    Day of the month as a decimal number [01,31].     
+    Directive    Meaning    Notes
+    %d    Day of the month as a decimal number [01,31].
     %f    Microsecond as a decimal number [0,999999], zero-padded on the left    (1)
-    %H    Hour (24-hour clock) as a decimal number [00,23].          
-    %j    Day of the year as a decimal number [001,366].     
-    %m    Month as a decimal number [01,12].     
-    %M    Minute as a decimal number [00,59].     
+    %H    Hour (24-hour clock) as a decimal number [00,23].
+    %j    Day of the year as a decimal number [001,366].
+    %m    Month as a decimal number [01,12].
+    %M    Minute as a decimal number [00,59].
     %S    Second as a decimal number [00,61].    (3)
-    %w    Weekday as a decimal number [0(Monday),6].     
-    %W    Week number of the year (Monday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Monday are considered to be in week 0.    (4)     
+    %w    Weekday as a decimal number [0(Monday),6].
+    %W    Week number of the year (Monday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Monday are considered to be in week 0.    (4)
     %Y    Year with century as a decimal number. [0000,9999]
-    %C    Century as a decimal number. [00,99]     
+    %C    Century as a decimal number. [00,99]
     %z    UTC offset in the form +HHMM or -HHMM (empty string if the the object is naive).    (5)
     %Z    Time zone name (empty string if the object is naive).
     %P    ISO8601 duration format.
