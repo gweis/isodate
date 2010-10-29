@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+0.4.3 (2010-10-29)
+------------------
+
+- Fixed problem with %P formating and fractions (supplied by David Brooks)
+
 0.4.2 (2010-10-28)
 ------------------
 

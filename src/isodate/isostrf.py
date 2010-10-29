@@ -151,7 +151,10 @@ def _strfduration(tdt, format, yeardigits=4):
                 if minutes:
                     ret.append('%sM' % minutes)
                 if seconds or usecs:
-                    ret.append(("%d.%06d" % (seconds, usecs)).rstrip('.0'))
+                    if usecs:
+                        ret.append(("%d.%06d" % (seconds, usecs)).rstrip('0'))
+                    else:
+                        ret.append("%d" % seconds)
                     ret.append('S')
             # at least one component has to be there.
             return ret and ''.join(ret) or '0D'

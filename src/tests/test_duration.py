@@ -272,8 +272,8 @@ class DurationTest(unittest.TestCase):
         Test various other strftime combinations.
         '''
         self.assertEqual(duration_isoformat(Duration(0)), 'P0D')
-        self.assertEqual(duration_isoformat(Duration(0)), 'P0D')
-        self.assertEqual(duration_isoformat(Duration(0)), 'P0D')
+        self.assertEqual(duration_isoformat(-Duration(0)), 'P0D')
+        self.assertEqual(duration_isoformat(Duration(seconds=10)), 'PT10S')
         self.assertEqual(duration_isoformat(Duration(years=-1, months=-1)),
                          '-P1Y1M')
         self.assertEqual(duration_isoformat(-Duration(years=1, months=1)),
@@ -286,6 +286,7 @@ class DurationTest(unittest.TestCase):
                        milliseconds=330)
         self.assertEqual(duration_isoformat(dur), 'P3Y7M23DT5H25M0.33S')
         self.assertEqual(duration_isoformat(-dur), '-P3Y7M23DT5H25M0.33S')
+
 
     def test_equal(self):
         '''
