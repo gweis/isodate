@@ -11,6 +11,8 @@ Missing features:
 
     * time formating does not allow to create fractional representations.
     * parser for ISO intervals.
+    * currently microseconds are always padded to a length of 6 characters.
+      trailing 0s should be optional
 
 Documentation:
 --------------
@@ -19,20 +21,19 @@ Documentation:
        - complete documentation to show what this function allows, but ISO forbids.
          and vice verse.
        - support other separators between date and time than 'T'
-       
+
     * parse_date:
        - yeardigits should be always greater than 4
        - dates before 0001-01-01 are not supported
-       
+
     * parse_duration:
        - alternative formats are not fully supported due to parse_date restrictions
        - standard duration format is fully supported but not very restrictive.
-       
+
     * Duration:
        - support fractional years and month in calculations
        - implement w3c order relation? (`<http://www.w3.org/TR/xmlschema-2/#duration-order>`_)
        - refactor to have duration mathematics only at one place.
        - localize __str__ method (does timedelta do this?)
-       - when is a Duration negative? 
+       - when is a Duration negative?
        - normalize Durations. months [00-12] and years ]-inf,+inf[
-

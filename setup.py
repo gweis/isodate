@@ -35,9 +35,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-setup(name = 'isodate',
-      version = '0.4.3',
-      packages = find_packages('src', exclude=["tests"]),
+setup(name='isodate',
+      version='0.4.4',
+      packages=find_packages('src', exclude=["tests"]),
       package_dir={'': 'src'},
 
       # dependencies:
@@ -47,22 +47,22 @@ setup(name = 'isodate',
       author='Gerhard Weis',
       author_email='gerhard.weis@proclos.com',
       description='An ISO 8601 date/time/duration parser and formater',
-      license = 'BSD',
+      license='BSD',
       #keywords = '',
       url='http://cheeseshop.python.org/pypi/isodate',
 
       long_description=read('README.txt') +
                        read('CHANGES.txt') +
                        read('TODO.txt'),
-      
-      classifiers = ['Development Status :: 4 - Beta',
-                     # 'Environment :: Web Environment',
-                     'Intended Audience :: Developers',
-                     'License :: OSI Approved :: BSD License',
-                     'Operating System :: OS Independent',
-                     'Programming Language :: Python',
-                     'Topic :: Internet',
-                     'Topic :: Software Development :: Libraries :: Python Modules',
-                     ],
-      test_suite = "tests.test_suite"
+
+      classifiers=['Development Status :: 4 - Beta',
+                   # 'Environment :: Web Environment',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved :: BSD License',
+                   'Operating System :: OS Independent',
+                   'Programming Language :: Python',
+                   'Topic :: Internet',
+                   'Topic :: Software Development :: Libraries :: Python Modules',
+                   ],
+      test_suite="tests.test_suite"
      )

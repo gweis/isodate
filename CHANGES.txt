@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+0.4.4 (2011-04-16)
+------------------
+
+- Fixed formatting of microseconds for datetime objects
+
 0.4.3 (2010-10-29)
 ------------------
 
@@ -29,4 +34,3 @@ CHANGES
 ------------------
 
 - Initial release
-

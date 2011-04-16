@@ -83,7 +83,7 @@ D_ALT_EXT_ORD = 'P' + DATE_EXT_ORD_COMPLETE + 'T' + TIME_EXT_COMPLETE
 D_ALT_BAS_ORD = 'P' + DATE_BAS_ORD_COMPLETE + 'T' + TIME_BAS_COMPLETE
 
 STRF_DT_MAP = {'%d': lambda tdt, yds: '%02d' % tdt.day,
-               '%f': lambda tdt, yds: '%d' % tdt.microseconds,
+               '%f': lambda tdt, yds: '%d' % tdt.microsecond,
                '%H': lambda tdt, yds: '%02d' % tdt.hour,
                '%j': lambda tdt, yds: '%03d' % (tdt.toordinal() -
                                             date(tdt.year, 1, 1).toordinal() +
@@ -186,7 +186,7 @@ def strftime(tdt, format, yeardigits=4):
     '''
     Directive    Meaning    Notes
     %d    Day of the month as a decimal number [01,31].
-    %f    Microsecond as a decimal number [0,999999], zero-padded on the left    (1)
+    %f    Microsecond as a decimal number [0,999999], zero-padded on the left (1)
     %H    Hour (24-hour clock) as a decimal number [00,23].
     %j    Day of the year as a decimal number [001,366].
     %m    Month as a decimal number [01,12].
