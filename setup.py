@@ -30,17 +30,25 @@ import os
 setupargs = {}
 
 try:
+    from distutils.command.build_py import build_py_2to3 as build_py
+except ImportError:
+    # 2.x
+    from distutils.command.build_py import build_py
+
+try:
     from setuptools import setup
-    setupargs['test_suite'] = 'tests.test_suite'
+    setupargs['test_suite'] = 'isodate.tests.test_suite'
+    setupargs['use_2to3'] = True
 except ImportError:
     from distutils.core import setup
+    setupargs['cmdclass'] = {'build_py': build_py}
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='isodate',
-      version='0.4.5',
-      packages=['isodate',],
+      version='0.4.6',
+      packages=['isodate', 'isodate.tests'],
       package_dir={'': 'src'},
 
       # dependencies:
@@ -64,6 +72,8 @@ setup(name='isodate',
                    'License :: OSI Approved :: BSD License',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
+                   'Programming Language :: Python :: 2',
+                   'Programming Language :: Python :: 3',
                    'Topic :: Internet',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                    ],

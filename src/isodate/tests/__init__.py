@@ -29,7 +29,7 @@ Collect all test suites into one TestSuite instance.
 '''
 
 import unittest
-from tests import test_date, test_time, test_datetime, test_duration
+from isodate.tests import test_date, test_time, test_datetime, test_duration
 
 def test_suite():
     '''

@@ -159,7 +159,7 @@ def _strfduration(tdt, format, yeardigits=4):
             # at least one component has to be there.
             return ret and ''.join(ret) or '0D'
         elif match.group(0) == '%p':
-            return str(abs(tdt.days / 7)) + 'W'
+            return str(abs(tdt.days // 7)) + 'W'
         return match.group(0)
     return re.sub('%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p', repl,
                   format)
