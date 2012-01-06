@@ -2,3 +2,10 @@ syntax: glob
 *.pyc
 isodate.egg-info
 build/
+.installed.cfg
+.pydevproject
+.settings
+bin
+develop-eggs
+dist
+parts
