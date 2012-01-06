@@ -73,7 +73,9 @@ Installation:
 -------------
 
 This module can easily be installed with Python standard installation methods.
-Just use *setuptools* or *easy_install* as usual.
+
+Either use *python setup.py install* or in case you have *setuptools* or
+*distribute* available, you can also use *easy_install*.
 
 Limitations:
 ------------

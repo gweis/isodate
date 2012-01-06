@@ -26,18 +26,21 @@
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
 import os
-from setuptools import setup
-from setuptools import find_packages
-# for setuptools see: http://peak.telecommunity.com/DevCenter/setuptools
 
+setupargs = {}
+
+try:
+    from setuptools import setup
+    setupargs['test_suite'] = 'tests.test_suite'
+except ImportError:
+    from distutils.core import setup
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-
 setup(name='isodate',
-      version='0.4.4',
-      packages=find_packages('src', exclude=["tests"]),
+      version='0.4.5',
+      packages=['isodate',],
       package_dir={'': 'src'},
 
       # dependencies:
@@ -64,5 +67,5 @@ setup(name='isodate',
                    'Topic :: Internet',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                    ],
-      test_suite="tests.test_suite"
+      **setupargs
      )
