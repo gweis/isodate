@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+0.4.7 (2012-01-26)
+------------------
+
+- fixed tzinfo formatting (never pass None into tzinfo.utcoffset())
+
+
 0.4.6 (2012-01-06)
 ------------------
 
