@@ -93,9 +93,9 @@ DSTDIFF = DSTOFFSET - STDOFFSET
 # difference between local time zone and local DST time zone
 
 class LocalTimezone(tzinfo):
-    '''
+    """
     A class capturing the platform's idea of local time.
-    '''
+    """
 
     def utcoffset(self, dt):
         '''
