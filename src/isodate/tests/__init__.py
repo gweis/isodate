@@ -29,7 +29,8 @@ Collect all test suites into one TestSuite instance.
 '''
 
 import unittest
-from isodate.tests import test_date, test_time, test_datetime, test_duration
+from isodate.tests import (test_date, test_time, test_datetime, test_duration,
+                           test_strf)
 
 def test_suite():
     '''
@@ -39,7 +40,9 @@ def test_suite():
         test_date.test_suite(),
         test_time.test_suite(),
         test_datetime.test_suite(),
-        test_duration.test_suite()])
+        test_duration.test_suite(),
+        test_strf.test_suite(),
+        ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
