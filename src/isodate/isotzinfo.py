@@ -74,7 +74,7 @@ def parse_tzinfo(tzstring):
                             int(groups['tzmin'] or 0))
     raise ISO8601Error('%s not a valid time zone info' % tzstring)
 
-def tz_isoformat(tzinfo, format='%Z'):
+def tz_isoformat(dt, format='%Z'):
     '''
     return time zone offset ISO 8601 formatted. 
     The various ISO formats can be chosen with the format parameter.
@@ -87,11 +87,12 @@ def tz_isoformat(tzinfo, format='%Z'):
         %z ... +-HHMM
         %Z ... +-HH:MM
     '''
-    if (tzinfo is None) or (tzinfo.utcoffset(None) is None):
+    tzinfo = dt.tzinfo
+    if (tzinfo is None) or (tzinfo.utcoffset(dt) is None):
         return ''
-    if tzinfo.utcoffset(None) == ZERO and tzinfo.dst(None) == ZERO:
+    if tzinfo.utcoffset(dt) == ZERO and tzinfo.dst(dt) == ZERO:
         return 'Z'
-    tdelta = tzinfo.utcoffset(None)
+    tdelta = tzinfo.utcoffset(dt)
     seconds = tdelta.days * 24 * 60 * 60 + tdelta.seconds
     sign = ((seconds < 0) and '-') or '+'
     seconds = abs(seconds)

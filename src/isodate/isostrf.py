@@ -97,9 +97,9 @@ STRF_DT_MAP = {'%d': lambda tdt, yds: '%02d' % tdt.day,
                                    (('%%0%dd' % yds) % tdt.year),
                '%C': lambda tdt, yds: (((yds != 4) and '+') or '') +\
                                    (('%%0%dd' % (yds - 2)) % (tdt.year / 100)),
-               '%h': lambda tdt, yds: tz_isoformat(tdt.tzinfo, '%h'),
-               '%Z': lambda tdt, yds: tz_isoformat(tdt.tzinfo, '%Z'),
-               '%z': lambda tdt, yds: tz_isoformat(tdt.tzinfo, '%z'),
+               '%h': lambda tdt, yds: tz_isoformat(tdt, '%h'),
+               '%Z': lambda tdt, yds: tz_isoformat(tdt, '%Z'),
+               '%z': lambda tdt, yds: tz_isoformat(tdt, '%z'),
                '%%': lambda tdt, yds: '%'}
 
 STRF_D_MAP = {'%d': lambda tdt, yds: '%02d' % tdt.days,
