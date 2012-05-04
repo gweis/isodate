@@ -26,22 +26,21 @@
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
 import os
+import sys
 
 setupargs = {}
 
 try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    # 2.x
-    from distutils.command.build_py import build_py
-
-try:
     from setuptools import setup
     setupargs['test_suite'] = 'isodate.tests.test_suite'
-    setupargs['use_2to3'] = True
+    if sys.version[0] == '3':
+        setupargs['use_2to3'] = True
 except ImportError:
     from distutils.core import setup
-    setupargs['cmdclass'] = {'build_py': build_py}
+    if sys.version[0] == '3':
+        from distutils.command.build_py import build_py_2to3
+        setupargs['cmdclass'] = {'build_py': build_py_2to3}
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
