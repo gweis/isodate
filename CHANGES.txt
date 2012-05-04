@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+0.4.8 (2012-05-04)
+------------------
+
+- fixed incompatibility of unittests with python 2.5 and 2.6 (runs fine on 2.7
+  and 3.2)
+
+
 0.4.7 (2012-01-26)
 ------------------
 
