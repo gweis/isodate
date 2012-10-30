@@ -1,4 +1,3 @@
-syntax: glob
 *.pyc
 isodate.egg-info
 build/
@@ -9,4 +8,3 @@ bin
 develop-eggs
 dist
 parts
-MANIFEST
