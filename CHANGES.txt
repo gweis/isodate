@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.4.9 (unreleased)
+0.4.9 (2012-10-30)
 ------------------
 
 - support pickling FixedOffset instances
