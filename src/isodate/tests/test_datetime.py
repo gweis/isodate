@@ -32,7 +32,7 @@ from datetime import datetime
 
 from isodate import parse_datetime, UTC, FixedOffset, datetime_isoformat
 from isodate import DATE_BAS_COMPLETE, TIME_BAS_MINUTE, TIME_BAS_COMPLETE
-from isodate import DATE_EXT_COMPLETE, TIME_EXT_MINUTE
+from isodate import DATE_EXT_COMPLETE, TIME_EXT_MINUTE, TIME_EXT_COMPLETE
 from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
 from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
 from isodate import DATE_BAS_WEEK_COMPLETE, DATE_EXT_WEEK_COMPLETE
@@ -58,7 +58,15 @@ TEST_CASES = [('19850412T1015', datetime(1985, 4, 12, 10, 15),
                DATE_EXT_WEEK_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_HOUR),
               ('20110410T101225.123000Z',
                datetime(2011, 4, 10, 10, 12, 25, 123000, tzinfo=UTC),
-               DATE_BAS_COMPLETE + 'T' + TIME_BAS_COMPLETE + ".%f" + TZ_BAS)]
+               DATE_BAS_COMPLETE + 'T' + TIME_BAS_COMPLETE + ".%f" + TZ_BAS),
+              ('2012-10-12T08:29:46.069178Z',
+               datetime(2012, 10, 12, 8, 29, 46, 69178, tzinfo=UTC),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + ".%f" + TZ_BAS),
+              ('2012-10-12T08:29:46.691780Z',
+               datetime(2012, 10, 12, 8, 29, 46, 691780, tzinfo=UTC),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + ".%f" + TZ_BAS),
+               ]
+
 
 
 def create_testcase(datetimestring, expectation, format):
