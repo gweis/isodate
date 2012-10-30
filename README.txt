@@ -99,5 +99,4 @@ the methods and their limitations.
 The source release provides a *setup.py* script and a *buildout.cfg*. Both can
 be used to run the unit tests included.
 
-Source code is available at `<http://hg.proclos.com/isodate>`_.
-
+Source code is available at `<http://github.com/gweis/isodate>`_.
