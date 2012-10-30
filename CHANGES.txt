@@ -5,6 +5,7 @@ CHANGES
 0.4.9 (unreleased)
 ------------------
 
+- make sure parsed fractional seconds are in microseconds
 - add leading zeros when formattig microseconds (Jarom Loveridge)
 
 0.4.8 (2012-05-04)

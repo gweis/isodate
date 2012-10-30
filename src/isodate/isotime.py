@@ -123,7 +123,8 @@ def parse_time(timestring):
                                   int(groups['tzhour'] or 0),
                                   int(groups['tzmin'] or 0))
             if 'second' in groups:
-                second = Decimal(groups['second'])
+                # round to microseconds if fractional seconds are more precise
+                second = Decimal(groups['second']).quantize(Decimal('.000001'))
                 microsecond = (second - int(second)) * long(1e6)
                 # int(...) ... no rounding
                 # to_integral() ... rounding

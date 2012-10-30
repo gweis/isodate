@@ -41,35 +41,51 @@ from isodate import DATE_BAS_WEEK_COMPLETE, DATE_EXT_WEEK_COMPLETE
 # result from the parse_datetime method. A result of None means an ISO8601Error
 # is expected.
 TEST_CASES = [('19850412T1015', datetime(1985, 4, 12, 10, 15),
-               DATE_BAS_COMPLETE + 'T' + TIME_BAS_MINUTE),
+               DATE_BAS_COMPLETE + 'T' + TIME_BAS_MINUTE,
+               '19850412T1015'),
               ('1985-04-12T10:15', datetime(1985, 4, 12, 10, 15),
-               DATE_EXT_COMPLETE + 'T' + TIME_EXT_MINUTE),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_MINUTE,
+               '1985-04-12T10:15'),
               ('1985102T1015Z', datetime(1985, 4, 12, 10, 15, tzinfo=UTC),
-               DATE_BAS_ORD_COMPLETE + 'T' + TIME_BAS_MINUTE + TZ_BAS),
+               DATE_BAS_ORD_COMPLETE + 'T' + TIME_BAS_MINUTE + TZ_BAS,
+               '1985102T1015Z'),
               ('1985-102T10:15Z', datetime(1985, 4, 12, 10, 15, tzinfo=UTC),
-               DATE_EXT_ORD_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_EXT),
+               DATE_EXT_ORD_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_EXT,
+               '1985-102T10:15Z'),
               ('1985W155T1015+0400', datetime(1985, 4, 12, 10, 15,
                                               tzinfo=FixedOffset(4, 0,
                                                                  '+0400')),
-               DATE_BAS_WEEK_COMPLETE + 'T' + TIME_BAS_MINUTE + TZ_BAS),
+               DATE_BAS_WEEK_COMPLETE + 'T' + TIME_BAS_MINUTE + TZ_BAS,
+               '1985W155T1015+0400'),
               ('1985-W15-5T10:15+04', datetime(1985, 4, 12, 10, 15,
                                                tzinfo=FixedOffset(4, 0,
-                                                                  '+0400')),
-               DATE_EXT_WEEK_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_HOUR),
+                                                                  '+0400'),),
+               DATE_EXT_WEEK_COMPLETE + 'T' + TIME_EXT_MINUTE + TZ_HOUR,
+               '1985-W15-5T10:15+04'),
               ('20110410T101225.123000Z',
                datetime(2011, 4, 10, 10, 12, 25, 123000, tzinfo=UTC),
-               DATE_BAS_COMPLETE + 'T' + TIME_BAS_COMPLETE + ".%f" + TZ_BAS),
+               DATE_BAS_COMPLETE + 'T' + TIME_BAS_COMPLETE + ".%f" + TZ_BAS,
+               '20110410T101225.123000Z'),
               ('2012-10-12T08:29:46.069178Z',
                datetime(2012, 10, 12, 8, 29, 46, 69178, tzinfo=UTC),
-               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + ".%f" + TZ_BAS),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
+               '2012-10-12T08:29:46.069178Z'),
               ('2012-10-12T08:29:46.691780Z',
                datetime(2012, 10, 12, 8, 29, 46, 691780, tzinfo=UTC),
-               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + ".%f" + TZ_BAS),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
+               '2012-10-12T08:29:46.691780Z'),
+              ('2012-10-30T08:55:22.1234567Z',
+               datetime(2012, 10, 30, 8, 55, 22, 123457, tzinfo=UTC),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
+               '2012-10-30T08:55:22.123457Z'),
+              ('2012-10-30T08:55:22.1234561Z',
+               datetime(2012, 10, 30, 8, 55, 22, 123456, tzinfo=UTC),
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
+               '2012-10-30T08:55:22.123456Z')
                ]
 
 
-
-def create_testcase(datetimestring, expectation, format):
+def create_testcase(datetimestring, expectation, format, output):
     """
     Create a TestCase class for a specific test.
 
@@ -100,7 +116,7 @@ def create_testcase(datetimestring, expectation, format):
                                   datetime_isoformat, expectation, format)
             else:
                 self.assertEqual(datetime_isoformat(expectation, format),
-                                 datetimestring)
+                                 output)
 
     return unittest.TestLoader().loadTestsFromTestCase(TestDateTime)
 
@@ -110,8 +126,8 @@ def test_suite():
     Construct a TestSuite instance for all test cases.
     '''
     suite = unittest.TestSuite()
-    for datetimestring, expectation, format in TEST_CASES:
-        suite.addTest(create_testcase(datetimestring, expectation, format))
+    for datetimestring, expectation, format, output in TEST_CASES:
+        suite.addTest(create_testcase(datetimestring, expectation, format, output))
     return suite
 
 if __name__ == '__main__':
