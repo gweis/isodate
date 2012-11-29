@@ -101,9 +101,15 @@ def parse_duration(datestring):
     for key, val in groups.items():
         if key not in ('separator', 'sign'):
             if val is None:
-                groups[key] = "0n"
-            #print groups[key]
-            groups[key] = float(groups[key][:-1].replace(',', '.'))
+                val = '0'
+            else:
+                val = groups[key][:-1]
+            val = val.replace(',', '.')
+            if '.' in val:
+                val = float(val)
+            else:
+                val = int(val)
+            groups[key] = val
     if groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(days=groups["days"], hours=groups["hours"],
                         minutes=groups["minutes"], seconds=groups["seconds"],

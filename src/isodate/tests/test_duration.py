@@ -322,6 +322,13 @@ class DurationTest(unittest.TestCase):
         #        treats a != b the same b != a
         #self.assertNotEqual(timedelta(days=1), Duration(days=1))
 
+    def test_types(self):
+        '''
+        Test that integral ISO durations are parsed into integer Durations
+        '''
+        dur = parse_duration('P1Y')
+        self.assertTrue(isinstance(dur.years, int))
+
 
 def create_parsetestcase(durationstring, expectation, format, altstr):
     """
