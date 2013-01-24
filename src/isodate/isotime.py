@@ -129,13 +129,13 @@ def parse_time(timestring):
                 # int(...) ... no rounding
                 # to_integral() ... rounding
                 return time(int(groups['hour']), int(groups['minute']),
-                            int(second), microsecond.to_integral(), tzinfo)
+                            int(second), int(microsecond.to_integral()), tzinfo)
             if 'minute' in groups:
                 minute = Decimal(groups['minute'])
                 second = (minute - int(minute)) * 60
                 microsecond = (second - int(second)) * long(1e6)
                 return time(int(groups['hour']), int(minute), int(second),
-                            microsecond.to_integral(), tzinfo)
+                            int(microsecond.to_integral()), tzinfo)
             else:
                 microsecond, second, minute = 0, 0, 0
             hour = Decimal(groups['hour'])
@@ -143,7 +143,7 @@ def parse_time(timestring):
             second = (minute - int(minute)) * 60
             microsecond = (second - int(second)) * long(1e6)
             return time(int(hour), int(minute), int(second),
-                        microsecond.to_integral(), tzinfo)
+                        int(microsecond.to_integral()), tzinfo)
     raise ISO8601Error('Unrecognised ISO 8601 time format: %r' % timestring)
 
 
