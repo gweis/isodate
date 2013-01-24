@@ -192,6 +192,15 @@ DATE_CALC_TEST_CASES = (
                     (Duration(years=1, months=1, weeks=5),
                      date(2000, 1, 30),
                      date(2001, 4, 4)),
+                    (parse_duration("P1Y1M5W"),
+                     date(2000, 1, 30),
+                     date(2001, 4, 4)),
+                    (Duration(years=1, months=1, hours=3),
+                     datetime(2000, 1, 30, 12, 15, 00),
+                     datetime(2001, 2, 28, 15, 15, 00)),
+                    (parse_duration("P1Y1MT3H"),
+                     datetime(2000, 1, 30, 12, 15, 00),
+                     datetime(2001, 2, 28, 15, 15, 00)),
                     (Duration(years=1, months=1, weeks=5),
                      'raise exception',
                      None),
@@ -312,6 +321,13 @@ class DurationTest(unittest.TestCase):
         # FIXME: this test fails in python 3... it seems like python3
         #        treats a != b the same b != a
         #self.assertNotEqual(timedelta(days=1), Duration(days=1))
+
+    def test_types(self):
+        '''
+        Test that integral ISO durations are parsed into integer Durations
+        '''
+        dur = parse_duration('P1Y')
+        self.assertTrue(isinstance(dur.years, int))
 
 
 def create_parsetestcase(durationstring, expectation, format, altstr):
