@@ -192,12 +192,18 @@ DATE_CALC_TEST_CASES = (
                     (Duration(years=1, months=1, weeks=5),
                      date(2000, 1, 30),
                      date(2001, 4, 4)),
-                    (Duration(years=1, months=1, weeks=5),
-                     'raise exception',
+                    (parse_duration("P1Y1M5W"),
+                     date(2000, 1, 30),
+                     date(2001, 4, 4)),
+                    (parse_duration("P0.5Y"),
+                     date(2000, 1, 30),
                      None),
-                    ('raise exception',
-                     Duration(years=1, months=1, weeks=5),
-                     None),
+                    (Duration(years=1, months=1, hours=3),
+                     datetime(2000, 1, 30, 12, 15, 00),
+                     datetime(2001, 2, 28, 15, 15, 00)),
+                    (parse_duration("P1Y1MT3H"),
+                     datetime(2000, 1, 30, 12, 15, 00),
+                     datetime(2001, 2, 28, 15, 15, 00)),
                     (Duration(years=1, months=2),
                      timedelta(days=1),
                      Duration(years=1, months=2, days=1)),
@@ -239,7 +245,11 @@ class DurationTest(unittest.TestCase):
                           date(2000, 1, 1))
         self.assertRaises(TypeError, operator.sub, 'raise exc',
                           Duration(years=1))
-
+        self.assertRaises(TypeError, operator.add, Duration(years=1, months=1, weeks=5),
+                          'raise exception')
+        self.assertRaises(TypeError, operator.add, 'raise exception', 
+                          Duration(years=1, months=1, weeks=5))
+        
     def test_parseerror(self):
         '''
         Test for unparseable duration string.
@@ -451,7 +461,7 @@ def create_datecalctestcase(start, duration, expectation):
             Test operator +.
             '''
             if expectation is None:
-                self.assertRaises(TypeError, operator.add, start, duration)
+                self.assertRaises(ValueError, operator.add, start, duration)
             else:
                 self.assertEqual(start + duration, expectation)
 

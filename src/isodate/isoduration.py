@@ -31,6 +31,7 @@ It also provides a wrapper to strftime. This wrapper makes it easier to
 format timedelta or Duration instances as ISO conforming strings.
 '''
 from datetime import timedelta
+from decimal import Decimal
 import re
 
 from isodate.duration import Duration
@@ -103,7 +104,11 @@ def parse_duration(datestring):
             if val is None:
                 groups[key] = "0n"
             #print groups[key]
-            groups[key] = float(groups[key][:-1].replace(',', '.'))
+            if key in ('years', 'months'):
+                groups[key] = Decimal(groups[key][:-1].replace(',', '.'))
+            else:
+                # these values are passed into a timedelta object, which works with floats.
+                groups[key] = float(groups[key][:-1].replace(',', '.'))
     if groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(days=groups["days"], hours=groups["hours"],
                         minutes=groups["minutes"], seconds=groups["seconds"],

@@ -140,6 +140,8 @@ class Duration(object):
             newduration.tdelta = self.tdelta + other.tdelta
             return newduration
         if isinstance(other, (date, datetime)):
+            if (not( float(self.years).is_integer() and float(self.months).is_integer())):
+                raise ValueError('fractional years or months not supported for date calculations')
             newmonth = other.month + self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year + self.years + carry
@@ -162,6 +164,8 @@ class Duration(object):
             newduration.tdelta = self.tdelta + other
             return newduration
         if isinstance(other, (date, datetime)):
+            if (not( float(self.years).is_integer() and float(self.months).is_integer())):
+                raise ValueError('fractional years or months not supported for date calculations')
             newmonth = other.month + self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year + self.years + carry
@@ -199,6 +203,8 @@ class Duration(object):
         '''
         #print '__rsub__:', self, other
         if isinstance(other, (date, datetime)):
+            if (not( float(self.years).is_integer() and float(self.months).is_integer())):
+                raise ValueError('fractional years or months not supported for date calculations')
             newmonth = other.month - self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year - self.years + carry
