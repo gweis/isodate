@@ -31,6 +31,7 @@ The class Duration allows to define durations in years and months and can be
 used as limited replacement for timedelta objects.
 '''
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 
 
 def fquotmod(val, low, high):
@@ -83,6 +84,10 @@ class Duration(object):
         '''
         Initialise this Duration instance with the given parameters.
         '''
+        if isinstance(months, float):
+            months = Decimal(str(months))
+        if isinstance(years, float):
+            years = Decimal(str(years))
         self.months = months
         self.years = years
         self.tdelta = timedelta(days, seconds, microseconds, milliseconds,
