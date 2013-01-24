@@ -106,4 +106,4 @@ def tz_isoformat(dt, format='%Z'):
         return '%s%02d%02d' % (sign, hours, minutes)
     elif format == '%h':
         return '%s%02d' % (sign, hours)
-    raise AttributeError('unknown format string "%s"' % format)
+    raise ValueError('unknown format string "%s"' % format)
