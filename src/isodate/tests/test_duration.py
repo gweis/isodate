@@ -323,6 +323,20 @@ class DurationTest(unittest.TestCase):
         #        treats a != b the same b != a
         #self.assertNotEqual(timedelta(days=1), Duration(days=1))
 
+    def test_totimedelta(self):
+        '''
+        Test conversion form Duration to timedelta.
+        '''
+        dur = Duration(years=1, months=2, days=10)
+        self.assertEqual(dur.totimedelta(datetime(1998, 2, 25)), timedelta(434))
+        # leap year has one day more in february
+        self.assertEqual(dur.totimedelta(datetime(2000, 2, 25)), timedelta(435))        
+        dur = Duration(months=2)
+        # march is longer than february, but april is shorter than march (cause only one day difference compared to 2)
+        self.assertEqual(dur.totimedelta(datetime(2000, 2, 25)), timedelta(60))        
+        self.assertEqual(dur.totimedelta(datetime(2001, 2, 25)), timedelta(59))        
+        self.assertEqual(dur.totimedelta(datetime(2001, 3, 25)), timedelta(61))        
+
 
 def create_parsetestcase(durationstring, expectation, format, altstr):
     """

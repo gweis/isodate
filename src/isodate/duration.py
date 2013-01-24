@@ -251,7 +251,7 @@ class Duration(object):
             return True
         return False
 
-    def todatetime(self, start=None, end=None):
+    def totimedelta(self, start=None, end=None):
         '''
         Convert this duration into a timedelta object.
 
