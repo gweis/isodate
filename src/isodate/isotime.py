@@ -32,6 +32,7 @@ It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 '''
 import re
+import platform
 from decimal import Decimal
 from datetime import time
 
@@ -127,15 +128,25 @@ def parse_time(timestring):
                 second = Decimal(groups['second']).quantize(Decimal('.000001'))
                 microsecond = (second - int(second)) * long(1e6)
                 # int(...) ... no rounding
-                # to_integral() ... rounding
-                return time(int(groups['hour']), int(groups['minute']),
-                            int(second), microsecond.to_integral(), tzinfo)
+                # to_integral() ... rounding (but not in PyPy 1.9)
+                if platform.python_implementation() == 'PyPy':
+                    return time(int(groups['hour']), int(groups['minute']),
+                                int(second), int(microsecond.to_integral()),
+                                tzinfo)
+                else:
+                    return time(int(groups['hour']), int(groups['minute']),
+                                int(second), microsecond.to_integral(),
+                                tzinfo)
             if 'minute' in groups:
                 minute = Decimal(groups['minute'])
                 second = (minute - int(minute)) * 60
                 microsecond = (second - int(second)) * long(1e6)
-                return time(int(groups['hour']), int(minute), int(second),
-                            microsecond.to_integral(), tzinfo)
+                if platform.python_implementation() == 'PyPy':
+                    return time(int(groups['hour']), int(minute), int(second),
+                                int(microsecond.to_integral()), tzinfo)
+                else:
+                    return time(int(groups['hour']), int(minute),
+                        int(second), microsecond.to_integral(), tzinfo)
             else:
                 microsecond, second, minute = 0, 0, 0
             hour = Decimal(groups['hour'])
