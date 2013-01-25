@@ -31,13 +31,22 @@ The class Duration allows to define durations in years and months and can be
 used as limited replacement for timedelta objects.
 '''
 from datetime import date, datetime, timedelta
+from decimal import Decimal, ROUND_FLOOR
 
 
 def fquotmod(val, low, high):
     '''
     A divmod function with boundaries.
+
     '''
-    div, mod = divmod(val - low, high - low)
+    # assumes that all the maths is done with Decimals.
+    # divmod for Decimal uses truncate instead of floor as builtin divmod, so we have
+    # to do it manually here.
+    a, b = val - low, high - low
+    div = (a / b).to_integral(ROUND_FLOOR)
+    mod = a - div * b
+    # if we were not usig Decimal, it would look like this.
+    #div, mod = divmod(val - low, high - low)
     mod += low
     return int(div), mod
 
@@ -83,6 +92,10 @@ class Duration(object):
         '''
         Initialise this Duration instance with the given parameters.
         '''
+        if not isinstance(months, Decimal):
+            months = Decimal(str(months))
+        if not isinstance(years, Decimal):
+            years = Decimal(str(years))
         self.months = months
         self.years = years
         self.tdelta = timedelta(days, seconds, microseconds, milliseconds,
