@@ -122,5 +122,9 @@ def test_suite():
         suite.addTest(create_testcase(dt, format, expectation))
     return suite
 
+# load_tests Protocol
+def load_tests(loader, tests, pattern):
+    return test_suite()
+    
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
