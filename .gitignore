@@ -4,6 +4,7 @@ build/
 .installed.cfg
 .pydevproject
 .settings
+.tox
 bin
 develop-eggs
 dist
