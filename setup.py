@@ -46,7 +46,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='isodate',
-      version='0.5.0',
+      version='0.5.0.yola1',
       packages=['isodate', 'isodate.tests'],
       package_dir={'': 'src'},
 
