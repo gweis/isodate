@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/gweis/isodate.png?branch=master)](https://travis-ci.org/gweis/isodate)
 
 ISO 8601 date/time parser
 =========================
@@ -101,3 +100,5 @@ The source release provides a *setup.py* script and a *buildout.cfg*. Both can
 be used to run the unit tests included.
 
 Source code is available at `<http://github.com/gweis/isodate>`_.
+
+.. image: https://travis-ci.org/gweis/isodate.png?branch=master
