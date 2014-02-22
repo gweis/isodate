@@ -61,9 +61,9 @@ setup(name='isodate',
       #keywords = '',
       url='http://cheeseshop.python.org/pypi/isodate',
 
-      long_description=read('README.txt') +
-                       read('CHANGES.txt') +
-                       read('TODO.txt'),
+      long_description=(read('README.rst') +
+                        read('CHANGES.txt') +
+                        read('TODO.txt')),
 
       classifiers=['Development Status :: 4 - Beta',
                    # 'Environment :: Web Environment',
