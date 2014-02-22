@@ -2,6 +2,8 @@
 ISO 8601 date/time parser
 =========================
 
+.. image:: https://travis-ci.org/gweis/isodate.png?branch=master   :target: https://travis-ci.org/gweis/isodate
+
 This module implements ISO 8601 date, time and duration parsing.
 The implementation follows ISO8601:2004 standard, and implements only
 date/time representations mentioned in the standard. If something is not
@@ -100,5 +102,3 @@ The source release provides a *setup.py* script and a *buildout.cfg*. Both can
 be used to run the unit tests included.
 
 Source code is available at `<http://github.com/gweis/isodate>`_.
-
-.. image: https://travis-ci.org/gweis/isodate.png?branch=master
