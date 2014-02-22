@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/gweis/isodate.png?branch=master)](https://travis-ci.org/gweis/isodate)
 
 ISO 8601 date/time parser
 =========================
