@@ -210,13 +210,25 @@ DATE_CALC_TEST_CASES = (
                     (timedelta(days=1),
                      Duration(years=1, months=2),
                      Duration(years=1, months=2, days=1)),
-                    #(date(2000, 1, 1),
-                    # Duration(years=1.5),
-                    # date(2001, 6, 1)),
-                    #(date(2000, 1, 1),
-                    # Duration(years=1, months=1.5),
-                    # date(2001, 2, 14)),
-                     )
+                    (datetime(2008, 1, 1, 0, 2),
+                     Duration(months=1),
+                     datetime(2008, 2, 1, 0, 2)),
+                    (datetime.strptime("200802", "%Y%M"),
+                     parse_duration("P1M"),
+                     datetime(2008, 2, 1, 0, 2)),
+                    (datetime(2008, 2, 1),
+                     Duration(months=1),
+                     datetime(2008, 3, 1)),
+                    (datetime.strptime("200802", "%Y%m"),
+                     parse_duration("P1M"),
+                     datetime(2008, 3, 1)),
+                    # (date(2000, 1, 1),
+                    #  Duration(years=1.5),
+                    #  date(2001, 6, 1)),
+                    # (date(2000, 1, 1),
+                    #  Duration(years=1, months=1.5),
+                    #  date(2001, 2, 14)),
+                    )
 
 
 class DurationTest(unittest.TestCase):
@@ -245,11 +257,12 @@ class DurationTest(unittest.TestCase):
                           date(2000, 1, 1))
         self.assertRaises(TypeError, operator.sub, 'raise exc',
                           Duration(years=1))
-        self.assertRaises(TypeError, operator.add, Duration(years=1, months=1, weeks=5),
+        self.assertRaises(TypeError, operator.add,
+                          Duration(years=1, months=1, weeks=5),
                           'raise exception')
-        self.assertRaises(TypeError, operator.add, 'raise exception', 
+        self.assertRaises(TypeError, operator.add, 'raise exception',
                           Duration(years=1, months=1, weeks=5))
-        
+
     def test_parseerror(self):
         '''
         Test for unparseable duration string.
@@ -299,7 +312,6 @@ class DurationTest(unittest.TestCase):
         self.assertEqual(duration_isoformat(dur), 'P3Y7M23DT5H25M0.33S')
         self.assertEqual(duration_isoformat(-dur), '-P3Y7M23DT5H25M0.33S')
 
-
     def test_equal(self):
         '''
         Test __eq__ and __ne__ methods.
@@ -330,12 +342,12 @@ class DurationTest(unittest.TestCase):
         dur = Duration(years=1, months=2, days=10)
         self.assertEqual(dur.totimedelta(datetime(1998, 2, 25)), timedelta(434))
         # leap year has one day more in february
-        self.assertEqual(dur.totimedelta(datetime(2000, 2, 25)), timedelta(435))        
+        self.assertEqual(dur.totimedelta(datetime(2000, 2, 25)), timedelta(435))
         dur = Duration(months=2)
         # march is longer than february, but april is shorter than march (cause only one day difference compared to 2)
-        self.assertEqual(dur.totimedelta(datetime(2000, 2, 25)), timedelta(60))        
-        self.assertEqual(dur.totimedelta(datetime(2001, 2, 25)), timedelta(59))        
-        self.assertEqual(dur.totimedelta(datetime(2001, 3, 25)), timedelta(61))        
+        self.assertEqual(dur.totimedelta(datetime(2000, 2, 25)), timedelta(60))
+        self.assertEqual(dur.totimedelta(datetime(2001, 2, 25)), timedelta(59))
+        self.assertEqual(dur.totimedelta(datetime(2001, 3, 25)), timedelta(61))
 
 
 def create_parsetestcase(durationstring, expectation, format, altstr):
