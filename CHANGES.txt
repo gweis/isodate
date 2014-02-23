@@ -2,10 +2,14 @@
 CHANGES
 =======
 
-0.5.0 (unreleased)
+0.5.0 (2014-02-23)
 ------------------
 
-- nothing changed yet
+- ISO8601Error are subclasses of ValueError now
+- improve compatibility across various python variants and versions
+- raise exceptions when using fractional years and months in date
+  maths with durations
+- renamed method todatetime on Duraction objects to totimedelta
 
 
 0.4.9 (2012-10-30)
