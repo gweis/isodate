@@ -2,7 +2,8 @@
 ISO 8601 date/time parser
 =========================
 
-.. image:: https://travis-ci.org/gweis/isodate.png?branch=master   :target: https://travis-ci.org/gweis/isodate
+.. image:: https://travis-ci.org/gweis/isodate.png?branch=master
+   :target: https://travis-ci.org/gweis/isodate
 
 This module implements ISO 8601 date, time and duration parsing.
 The implementation follows ISO8601:2004 standard, and implements only
