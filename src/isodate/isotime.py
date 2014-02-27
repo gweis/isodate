@@ -129,7 +129,8 @@ def parse_time(timestring):
                 # int(...) ... no rounding
                 # to_integral() ... rounding
                 return time(int(groups['hour']), int(groups['minute']),
-                            int(second), int(microsecond.to_integral()), tzinfo)
+                            int(second), int(microsecond.to_integral()),
+                            tzinfo)
             if 'minute' in groups:
                 minute = Decimal(groups['minute'])
                 second = (minute - int(minute)) * 60

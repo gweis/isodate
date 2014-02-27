@@ -69,10 +69,10 @@ DT_EXT_COMPLETE = DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + TZ_EXT
 DT_BAS_COMPLETE = DATE_BAS_COMPLETE + 'T' + TIME_BAS_COMPLETE + TZ_BAS
 DT_EXT_ORD_COMPLETE = DATE_EXT_ORD_COMPLETE + 'T' + TIME_EXT_COMPLETE + TZ_EXT
 DT_BAS_ORD_COMPLETE = DATE_BAS_ORD_COMPLETE + 'T' + TIME_BAS_COMPLETE + TZ_BAS
-DT_EXT_WEEK_COMPLETE = DATE_EXT_WEEK_COMPLETE + 'T' + TIME_EXT_COMPLETE +\
-                       TZ_EXT
-DT_BAS_WEEK_COMPLETE = DATE_BAS_WEEK_COMPLETE + 'T' + TIME_BAS_COMPLETE +\
-                       TZ_BAS
+DT_EXT_WEEK_COMPLETE = (DATE_EXT_WEEK_COMPLETE + 'T' +
+                        TIME_EXT_COMPLETE + TZ_EXT)
+DT_BAS_WEEK_COMPLETE = (DATE_BAS_WEEK_COMPLETE + 'T' +
+                        TIME_BAS_COMPLETE + TZ_BAS)
 
 # Duration formts
 D_DEFAULT = 'P%P'
@@ -86,17 +86,19 @@ STRF_DT_MAP = {'%d': lambda tdt, yds: '%02d' % tdt.day,
                '%f': lambda tdt, yds: '%06d' % tdt.microsecond,
                '%H': lambda tdt, yds: '%02d' % tdt.hour,
                '%j': lambda tdt, yds: '%03d' % (tdt.toordinal() -
-                                            date(tdt.year, 1, 1).toordinal() +
-                                            1),
+                                                date(tdt.year,
+                                                     1, 1).toordinal() +
+                                                1),
                '%m': lambda tdt, yds: '%02d' % tdt.month,
                '%M': lambda tdt, yds: '%02d' % tdt.minute,
                '%S': lambda tdt, yds: '%02d' % tdt.second,
                '%w': lambda tdt, yds: '%1d' % tdt.isoweekday(),
                '%W': lambda tdt, yds: '%02d' % tdt.isocalendar()[1],
-               '%Y': lambda tdt, yds: (((yds != 4) and '+') or '') +\
-                                   (('%%0%dd' % yds) % tdt.year),
-               '%C': lambda tdt, yds: (((yds != 4) and '+') or '') +\
-                                   (('%%0%dd' % (yds - 2)) % (tdt.year / 100)),
+               '%Y': lambda tdt, yds: (((yds != 4) and '+') or '') +
+                                      (('%%0%dd' % yds) % tdt.year),
+               '%C': lambda tdt, yds: (((yds != 4) and '+') or '') +
+                                      (('%%0%dd' % (yds - 2)) %
+                                       (tdt.year / 100)),
                '%h': lambda tdt, yds: tz_isoformat(tdt, '%h'),
                '%Z': lambda tdt, yds: tz_isoformat(tdt, '%Z'),
                '%z': lambda tdt, yds: tz_isoformat(tdt, '%z'),
@@ -109,11 +111,11 @@ STRF_D_MAP = {'%d': lambda tdt, yds: '%02d' % tdt.days,
               '%M': lambda tdt, yds: '%02d' % ((tdt.seconds / 60) % 60),
               '%S': lambda tdt, yds: '%02d' % (tdt.seconds % 60),
               '%W': lambda tdt, yds: '%02d' % (abs(tdt.days / 7)),
-              '%Y': lambda tdt, yds: (((yds != 4) and '+') or '') +\
-                                   (('%%0%dd' % yds) % tdt.years),
-              '%C': lambda tdt, yds: (((yds != 4) and '+') or '') +\
-                                   (('%%0%dd' % (yds - 2)) %
-                                    (tdt.years / 100)),
+              '%Y': lambda tdt, yds: (((yds != 4) and '+') or '') +
+                                     (('%%0%dd' % yds) % tdt.years),
+              '%C': lambda tdt, yds: (((yds != 4) and '+') or '') +
+                                     (('%%0%dd' % (yds - 2)) %
+                                      (tdt.years / 100)),
               '%%': lambda tdt, yds: '%'}
 
 
@@ -183,24 +185,28 @@ def _strfdt(tdt, format, yeardigits=4):
 
 
 def strftime(tdt, format, yeardigits=4):
-    '''
-    Directive    Meaning    Notes
+    '''Directive    Meaning    Notes
     %d    Day of the month as a decimal number [01,31].
-    %f    Microsecond as a decimal number [0,999999], zero-padded on the left (1)
+    %f    Microsecond as a decimal number [0,999999], zero-padded
+          on the left (1)
     %H    Hour (24-hour clock) as a decimal number [00,23].
     %j    Day of the year as a decimal number [001,366].
     %m    Month as a decimal number [01,12].
     %M    Minute as a decimal number [00,59].
     %S    Second as a decimal number [00,61].    (3)
     %w    Weekday as a decimal number [0(Monday),6].
-    %W    Week number of the year (Monday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Monday are considered to be in week 0.    (4)
+    %W    Week number of the year (Monday as the first day of the week)
+          as a decimal number [00,53]. All days in a new year preceding the
+          first Monday are considered to be in week 0.  (4)
     %Y    Year with century as a decimal number. [0000,9999]
     %C    Century as a decimal number. [00,99]
-    %z    UTC offset in the form +HHMM or -HHMM (empty string if the the object is naive).    (5)
+    %z    UTC offset in the form +HHMM or -HHMM (empty string if the
+          object is naive).    (5)
     %Z    Time zone name (empty string if the object is naive).
     %P    ISO8601 duration format.
     %p    ISO8601 duration format in weeks.
     %%    A literal '%' character.
+
     '''
     if isinstance(tdt, (timedelta, Duration)):
         return _strfduration(tdt, format, yeardigits)

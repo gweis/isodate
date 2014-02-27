@@ -82,7 +82,7 @@ TEST_CASES = [('19850412T1015', datetime(1985, 4, 12, 10, 15),
                datetime(2012, 10, 30, 8, 55, 22, 123456, tzinfo=UTC),
                DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
                '2012-10-30T08:55:22.123456Z')
-               ]
+              ]
 
 
 def create_testcase(datetimestring, expectation, format, output):
@@ -127,12 +127,14 @@ def test_suite():
     '''
     suite = unittest.TestSuite()
     for datetimestring, expectation, format, output in TEST_CASES:
-        suite.addTest(create_testcase(datetimestring, expectation, format, output))
+        suite.addTest(create_testcase(datetimestring, expectation,
+                                      format, output))
     return suite
+
 
 # load_tests Protocol
 def load_tests(loader, tests, pattern):
     return test_suite()
-    
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

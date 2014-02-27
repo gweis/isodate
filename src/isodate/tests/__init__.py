@@ -32,6 +32,7 @@ import unittest
 from isodate.tests import (test_date, test_time, test_datetime, test_duration,
                            test_strf, test_pickle)
 
+
 def test_suite():
     '''
     Return a new TestSuite instance consisting of all available TestSuites.

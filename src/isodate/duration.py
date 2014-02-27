@@ -40,8 +40,8 @@ def fquotmod(val, low, high):
 
     '''
     # assumes that all the maths is done with Decimals.
-    # divmod for Decimal uses truncate instead of floor as builtin divmod, so we have
-    # to do it manually here.
+    # divmod for Decimal uses truncate instead of floor as builtin
+    # divmod, so we have to do it manually here.
     a, b = val - low, high - low
     div = (a / b).to_integral(ROUND_FLOOR)
     mod = a - div * b
@@ -124,9 +124,9 @@ class Duration(object):
         Return a string suitable for repr(x) calls.
         '''
         return "%s.%s(%d, %d, %d, years=%d, months=%d)" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.tdelta.days, self.tdelta.seconds,
-                self.tdelta.microseconds, self.years, self.months)
+            self.__class__.__module__, self.__class__.__name__,
+            self.tdelta.days, self.tdelta.seconds,
+            self.tdelta.microseconds, self.years, self.months)
 
     def __neg__(self):
         """
@@ -153,8 +153,10 @@ class Duration(object):
             newduration.tdelta = self.tdelta + other.tdelta
             return newduration
         if isinstance(other, (date, datetime)):
-            if (not( float(self.years).is_integer() and float(self.months).is_integer())):
-                raise ValueError('fractional years or months not supported for date calculations')
+            if (not(float(self.years).is_integer()
+                    and float(self.months).is_integer())):
+                raise ValueError('fractional years or months not supported'
+                                 ' for date calculations')
             newmonth = other.month + self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year + self.years + carry
@@ -177,8 +179,10 @@ class Duration(object):
             newduration.tdelta = self.tdelta + other
             return newduration
         if isinstance(other, (date, datetime)):
-            if (not( float(self.years).is_integer() and float(self.months).is_integer())):
-                raise ValueError('fractional years or months not supported for date calculations')
+            if (not(float(self.years).is_integer()
+                    and float(self.months).is_integer())):
+                raise ValueError('fractional years or months not supported'
+                                 ' for date calculations')
             newmonth = other.month + self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year + self.years + carry
@@ -216,8 +220,10 @@ class Duration(object):
         '''
         #print '__rsub__:', self, other
         if isinstance(other, (date, datetime)):
-            if (not( float(self.years).is_integer() and float(self.months).is_integer())):
-                raise ValueError('fractional years or months not supported for date calculations')
+            if (not(float(self.years).is_integer()
+                    and float(self.months).is_integer())):
+                raise ValueError('fractional years or months not supported'
+                                 ' for date calculations')
             newmonth = other.month - self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year - self.years + carry
@@ -240,13 +246,14 @@ class Duration(object):
         If the years, month part and the timedelta part are both equal, then
         the two Durations are considered equal.
         '''
-        if (isinstance(other, timedelta) and
-            self.years == 0 and self.months == 0):
+        if ((isinstance(other, timedelta) and
+             self.years == 0 and self.months == 0)):
             return self.tdelta == other
         if not isinstance(other, Duration):
             return NotImplemented
-        if ((self.years * 12 + self.months) ==
-            (other.years * 12 + other.months) and self.tdelta == other.tdelta):
+        if (((self.years * 12 + self.months) ==
+             (other.years * 12 + other.months)
+             and self.tdelta == other.tdelta)):
             return True
         return False
 
@@ -255,12 +262,15 @@ class Duration(object):
         If the years, month part or the timedelta part is not equal, then
         the two Durations are considered not equal.
         '''
-        if isinstance(other, timedelta) and self.years == 0 and self.months == 0:
+        if ((isinstance(other, timedelta)
+             and self.years == 0
+             and self.months == 0)):
             return self.tdelta != other
         if not isinstance(other, Duration):
             return NotImplemented
-        if ((self.years * 12 + self.months) !=
-            (other.years * 12 + other.months) or self.tdelta != other.tdelta):
+        if (((self.years * 12 + self.months) !=
+             (other.years * 12 + other.months)
+             or self.tdelta != other.tdelta)):
             return True
         return False
 

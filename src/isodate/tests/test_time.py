@@ -54,36 +54,35 @@ TEST_CASES = [('232050', time(23, 20, 50), TIME_BAS_COMPLETE + TZ_BAS),
               ('23:20,8', time(23, 20, 48), None),
               ('23,3', time(23, 18), None),
               ('232030Z', time(23, 20, 30, tzinfo=UTC),
-                          TIME_BAS_COMPLETE + TZ_BAS),
+               TIME_BAS_COMPLETE + TZ_BAS),
               ('2320Z', time(23, 20, tzinfo=UTC), TIME_BAS_MINUTE + TZ_BAS),
               ('23Z', time(23, tzinfo=UTC), TIME_HOUR + TZ_BAS),
               ('23:20:30Z', time(23, 20, 30, tzinfo=UTC),
-                            TIME_EXT_COMPLETE + TZ_EXT),
+               TIME_EXT_COMPLETE + TZ_EXT),
               ('23:20Z', time(23, 20, tzinfo=UTC), TIME_EXT_MINUTE + TZ_EXT),
               ('152746+0100', time(15, 27, 46,
-                                   tzinfo=FixedOffset(1, 0, '+0100')),
-                              TIME_BAS_COMPLETE + TZ_BAS),
+               tzinfo=FixedOffset(1, 0, '+0100')), TIME_BAS_COMPLETE + TZ_BAS),
               ('152746-0500', time(15, 27, 46,
                                    tzinfo=FixedOffset(-5, 0, '-0500')),
-                              TIME_BAS_COMPLETE + TZ_BAS),
+               TIME_BAS_COMPLETE + TZ_BAS),
               ('152746+01', time(15, 27, 46,
                                  tzinfo=FixedOffset(1, 0, '+01:00')),
-                            TIME_BAS_COMPLETE + TZ_HOUR),
+               TIME_BAS_COMPLETE + TZ_HOUR),
               ('152746-05', time(15, 27, 46,
                                  tzinfo=FixedOffset(-5, -0, '-05:00')),
-                            TIME_BAS_COMPLETE + TZ_HOUR),
+               TIME_BAS_COMPLETE + TZ_HOUR),
               ('15:27:46+01:00', time(15, 27, 46,
                                       tzinfo=FixedOffset(1, 0, '+01:00')),
-                                 TIME_EXT_COMPLETE + TZ_EXT),
+               TIME_EXT_COMPLETE + TZ_EXT),
               ('15:27:46-05:00', time(15, 27, 46,
                                       tzinfo=FixedOffset(-5, -0, '-05:00')),
-                                 TIME_EXT_COMPLETE + TZ_EXT),
+               TIME_EXT_COMPLETE + TZ_EXT),
               ('15:27:46+01', time(15, 27, 46,
                                    tzinfo=FixedOffset(1, 0, '+01:00')),
-                              TIME_EXT_COMPLETE + TZ_HOUR),
+               TIME_EXT_COMPLETE + TZ_HOUR),
               ('15:27:46-05', time(15, 27, 46,
                                    tzinfo=FixedOffset(-5, -0, '-05:00')),
-                              TIME_EXT_COMPLETE + TZ_HOUR),
+               TIME_EXT_COMPLETE + TZ_HOUR),
               ('1:17:30', None, TIME_EXT_COMPLETE)]
 
 
@@ -135,7 +134,8 @@ def test_suite():
         suite.addTest(create_testcase(timestring, expectation, format))
     return suite
 
- # load_tests Protocol
+
+# load_tests Protocol
 def load_tests(loader, tests, pattern):
     return test_suite()
 

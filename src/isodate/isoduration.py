@@ -39,14 +39,15 @@ from isodate.isoerror import ISO8601Error
 from isodate.isodatetime import parse_datetime
 from isodate.isostrf import strftime, D_DEFAULT
 
-ISO8601_PERIOD_REGEX = re.compile(r"^(?P<sign>[+-])?"
-                r"P(?P<years>[0-9]+([,.][0-9]+)?Y)?"
-                r"(?P<months>[0-9]+([,.][0-9]+)?M)?"
-                r"(?P<weeks>[0-9]+([,.][0-9]+)?W)?"
-                r"(?P<days>[0-9]+([,.][0-9]+)?D)?"
-                r"((?P<separator>T)(?P<hours>[0-9]+([,.][0-9]+)?H)?"
-                r"(?P<minutes>[0-9]+([,.][0-9]+)?M)?"
-                r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$")
+ISO8601_PERIOD_REGEX = re.compile(
+    r"^(?P<sign>[+-])?"
+    r"P(?P<years>[0-9]+([,.][0-9]+)?Y)?"
+    r"(?P<months>[0-9]+([,.][0-9]+)?M)?"
+    r"(?P<weeks>[0-9]+([,.][0-9]+)?W)?"
+    r"(?P<days>[0-9]+([,.][0-9]+)?D)?"
+    r"((?P<separator>T)(?P<hours>[0-9]+([,.][0-9]+)?H)?"
+    r"(?P<minutes>[0-9]+([,.][0-9]+)?M)?"
+    r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$")
 # regular expression to parse ISO duartion strings.
 
 
@@ -107,7 +108,8 @@ def parse_duration(datestring):
             if key in ('years', 'months'):
                 groups[key] = Decimal(groups[key][:-1].replace(',', '.'))
             else:
-                # these values are passed into a timedelta object, which works with floats.
+                # these values are passed into a timedelta object,
+                # which works with floats.
                 groups[key] = float(groups[key][:-1].replace(',', '.'))
     if groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(days=groups["days"], hours=groups["hours"],
@@ -134,10 +136,11 @@ def duration_isoformat(tduration, format=D_DEFAULT):
     '''
     # TODO: implement better decision for negative Durations.
     #       should be done in Duration class in consistent way with timedelta.
-    if ((isinstance(tduration, Duration) and (tduration.years < 0 or
-                                             tduration.months < 0 or
-                                             tduration.tdelta < timedelta(0)))
-        or (isinstance(tduration, timedelta) and (tduration < timedelta(0)))):
+    if (((isinstance(tduration, Duration)
+          and (tduration.years < 0 or tduration.months < 0
+               or tduration.tdelta < timedelta(0)))
+         or (isinstance(tduration, timedelta)
+             and (tduration < timedelta(0))))):
         ret = '-'
     else:
         ret = ''

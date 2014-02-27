@@ -42,9 +42,11 @@ TEST_CASES = ((datetime(2012, 12, 25, 13, 30, 0, 0, LOCAL), DT_EXT_COMPLETE,
               (datetime(1999, 12, 25, 13, 30, 0, 0, LOCAL), DT_EXT_COMPLETE,
                "1999-12-25T13:30:00+11:00"),
               # microseconds
-              (datetime(2012, 10, 12, 8, 29, 46, 69178), "%Y-%m-%dT%H:%M:%S.%f",
+              (datetime(2012, 10, 12, 8, 29, 46, 69178),
+               "%Y-%m-%dT%H:%M:%S.%f",
                "2012-10-12T08:29:46.069178"),
-              (datetime(2012, 10, 12, 8, 29, 46, 691780), "%Y-%m-%dT%H:%M:%S.%f",
+              (datetime(2012, 10, 12, 8, 29, 46, 691780),
+               "%Y-%m-%dT%H:%M:%S.%f",
                "2012-10-12T08:29:46.691780"),
               )
 
@@ -65,7 +67,8 @@ def create_testcase(dt, format, expectation):
         # local time zone mock function
         def localtime_mock(self, secs):
             """
-            mock time.localtime so that it always returns a time_struct with tm_idst=1
+            mock time.localtime so that it always returns a time_struct with
+            tm_idst=1
             """
             tt = self.ORIG['localtime'](secs)
             # befor 2000 everything is dst, after 2000 no dst.
@@ -85,8 +88,9 @@ def create_testcase(dt, format, expectation):
             self.ORIG['DSTDIFF'] = tzinfo.DSTDIFF
             self.ORIG['localtime'] = time.localtime
             # ovveride all saved values with fixtures.
-            # calculate LOCAL TZ offset, so that this test runs in every time zone
-            tzinfo.STDOFFSET = timedelta(seconds=36000)  # assume we are in +10:00
+            # calculate LOCAL TZ offset, so that this test runs in
+            # every time zone
+            tzinfo.STDOFFSET = timedelta(seconds=36000)  # assume LOC = +10:00
             tzinfo.DSTOFFSET = timedelta(seconds=39600)  # assume DST = +11:00
             tzinfo.DSTDIFF = tzinfo.DSTOFFSET - tzinfo.STDOFFSET
             time.localtime = self.localtime_mock
@@ -122,9 +126,10 @@ def test_suite():
         suite.addTest(create_testcase(dt, format, expectation))
     return suite
 
+
 # load_tests Protocol
 def load_tests(loader, tests, pattern):
     return test_suite()
-    
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
