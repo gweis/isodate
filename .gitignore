@@ -9,3 +9,5 @@ bin
 develop-eggs
 dist
 parts
+.coverage
+htmlcov
