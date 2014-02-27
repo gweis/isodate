@@ -10,6 +10,8 @@ env:
   - TOX_ENV=py32
   - TOX_ENV=py33
   - TOX_ENV=pypy
+  - TOX_ENV=flake
+  - TOX_ENV=cover
 
 install:
   - pip install tox
@@ -17,3 +19,8 @@ install:
 script:
   - tox -e $TOX_ENV
 
+after_script:
+  - if [ $TOXENV == "cover" ]; then
+    pip install --queiet --use-mirrors coveralls
+    coveralls;
+    fi
