@@ -3,7 +3,21 @@ ISO 8601 date/time parser
 =========================
 
 .. image:: https://travis-ci.org/gweis/isodate.png?branch=master
-   :target: https://travis-ci.org/gweis/isodate
+    :target: https://travis-ci.org/gweis/isodate
+    :alt: Travis-CI
+.. image:: https://coveralls.io/repos/gweis/isodate/badge.png?branch=master
+    :target: https://coveralls.io/r/gweis/isodate?branch=master
+    :alt: Coveralls
+.. image:: https://pypip.in/v/isodate/badge.png
+    :target: https://pypi.python.org/pypi/isodate/
+    :alt: Latest Version
+.. image:: https://pypip.in/d/isodate/badge.png
+    :target: https://pypi.python.org/pypi//isodate/
+    :alt: Downloads
+.. image:: https://pypip.in/license/isodate/badge.png
+    :target: https://pypi.python.org/pypi/isodate/
+    :alt: License
+
 
 This module implements ISO 8601 date, time and duration parsing.
 The implementation follows ISO8601:2004 standard, and implements only
