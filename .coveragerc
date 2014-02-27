@@ -1,0 +1,3 @@
+[run]
+include=src/isodate/*
+omit=src/isodate/tests/*

@@ -21,6 +21,6 @@ script:
 
 after_script:
   - if [ $TOXENV == "cover" ]; then
-    pip install --queiet --use-mirrors coveralls
+    pip install --quiet coveralls;
     coveralls;
     fi
