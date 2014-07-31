@@ -353,6 +353,15 @@ class DurationTest(unittest.TestCase):
         self.assertEqual(dur.totimedelta(datetime(2001, 2, 25)), timedelta(59))
         self.assertEqual(dur.totimedelta(datetime(2001, 3, 25)), timedelta(61))
 
+    def test_getattr_recursion(self):
+        """
+        Test that when attempting to retrieve 'tdelta', which is used in __getattr__,
+        an AttributeError is raised. Some classes (like pickle) do not call __init__,
+        so when __getattr__ is called, it ends in an infinite recursive loop.
+        """
+        dur = Duration.__new__(Duration)
+        self.assertRaises(AttributeError, getattr, dur, 'tdelta')
+
 
 def create_parsetestcase(durationstring, expectation, format, altstr):
     """
