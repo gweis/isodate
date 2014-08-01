@@ -355,9 +355,10 @@ class DurationTest(unittest.TestCase):
 
     def test_getattr_recursion(self):
         """
-        Test that when attempting to retrieve 'tdelta', which is used in __getattr__,
-        an AttributeError is raised. Some classes (like pickle) do not call __init__,
-        so when __getattr__ is called, it ends in an infinite recursive loop.
+        Test that when attempting to retrieve 'tdelta', which is used in
+        __getattr__, an AttributeError is raised. Some classes (like pickle)
+        do not call __init__, so when __getattr__ is called, it ends in an
+        infinite recursive loop.
         """
         dur = Duration.__new__(Duration)
         self.assertRaises(AttributeError, getattr, dur, 'tdelta')
