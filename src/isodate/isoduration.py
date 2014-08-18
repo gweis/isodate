@@ -104,7 +104,7 @@ def parse_duration(datestring):
         if key not in ('separator', 'sign'):
             if val is None:
                 groups[key] = "0n"
-            #print groups[key]
+            # print groups[key]
             if key in ('years', 'months'):
                 groups[key] = Decimal(groups[key][:-1].replace(',', '.'))
             else:

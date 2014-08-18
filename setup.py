@@ -58,7 +58,7 @@ setup(name='isodate',
       author_email='gerhard.weis@proclos.com',
       description='An ISO 8601 date/time/duration parser and formater',
       license='BSD',
-      #keywords = '',
+      # keywords = '',
       url='http://cheeseshop.python.org/pypi/isodate',
 
       long_description=(read('README.rst') +
@@ -77,7 +77,7 @@ setup(name='isodate',
                    'Programming Language :: Python :: 3.3',
                    'Programming Language :: Python :: Implementation :: PyPy',
                    'Topic :: Internet',
-                   'Topic :: Software Development :: Libraries :: Python Modules',
+                   ('Topic :: Software Development :'
+                    ': Libraries :: Python Modules'),
                    ],
-      **setupargs
-     )
+      **setupargs)
