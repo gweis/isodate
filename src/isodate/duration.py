@@ -101,6 +101,12 @@ class Duration(object):
         self.tdelta = timedelta(days, seconds, microseconds, milliseconds,
                                 minutes, hours, weeks)
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
     def __getattr__(self, name):
         '''
         Provide direct access to attributes of included timedelta instance.
