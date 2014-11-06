@@ -46,7 +46,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='isodate',
-      version='0.5.1-dev',
+      version='0.5.1',
       packages=['isodate', 'isodate.tests'],
       package_dir={'': 'src'},
 
