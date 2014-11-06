@@ -31,6 +31,7 @@ import unittest
 from datetime import datetime
 
 from isodate import parse_datetime, UTC, FixedOffset, datetime_isoformat
+from isodate import ISO8601Error
 from isodate import DATE_BAS_COMPLETE, TIME_BAS_MINUTE, TIME_BAS_COMPLETE
 from isodate import DATE_EXT_COMPLETE, TIME_EXT_MINUTE, TIME_EXT_COMPLETE
 from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
@@ -81,7 +82,10 @@ TEST_CASES = [('19850412T1015', datetime(1985, 4, 12, 10, 15),
               ('2012-10-30T08:55:22.1234561Z',
                datetime(2012, 10, 30, 8, 55, 22, 123456, tzinfo=UTC),
                DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
-               '2012-10-30T08:55:22.123456Z')
+               '2012-10-30T08:55:22.123456Z'),
+              ('2014-08-18 14:55:22.123456Z', None,
+               DATE_EXT_COMPLETE + 'T' + TIME_EXT_COMPLETE + '.%f' + TZ_BAS,
+               '2014-08-18T14:55:22.123456Z'),
               ]
 
 
@@ -103,8 +107,10 @@ def create_testcase(datetimestring, expectation, format, output):
             '''
             Parse an ISO datetime string and compare it to the expected value.
             '''
-            result = parse_datetime(datetimestring)
-            self.assertEqual(result, expectation)
+            if expectation is None:
+                self.assertRaises(ISO8601Error, parse_datetime, datetimestring)
+            else:
+                self.assertEqual(parse_datetime(datetimestring), expectation)
 
         def test_format(self):
             '''

@@ -35,6 +35,7 @@ from datetime import datetime
 from isodate.isostrf import strftime
 from isodate.isostrf import DATE_EXT_COMPLETE, TIME_EXT_COMPLETE, TZ_EXT
 from isodate.isodates import parse_date
+from isodate.isoerror import ISO8601Error
 from isodate.isotime import parse_time
 
 
@@ -46,7 +47,11 @@ def parse_datetime(datetimestring):
     more combinations of date and time representations, than the actual
     ISO 8601:2004 standard allows.
     '''
-    datestring, timestring = datetimestring.split('T')
+    try:
+        datestring, timestring = datetimestring.split('T')
+    except ValueError:
+        raise ISO8601Error("ISO 8601 time designator 'T' missing. Unable to"
+                           " parse datetime string %r" % datetimestring)
     tmpdate = parse_date(datestring)
     tmptime = parse_time(timestring)
     return datetime.combine(tmpdate, tmptime)
