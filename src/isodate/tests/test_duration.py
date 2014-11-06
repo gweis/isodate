@@ -76,7 +76,7 @@ PARSE_TEST_CASES = {'P18Y9M4DT11H9M8S': (Duration(4, 8, 0, 0, 9, 11, 0, 9, 18),
                     # alternative format
                     'P0018-09-04T11:09:08': (Duration(4, 8, 0, 0, 9, 11, 0, 9,
                                                       18), D_ALT_EXT, None),
-                    #'PT000022.22': timedelta(seconds=22.22),
+                    # 'PT000022.22': timedelta(seconds=22.22),
                     }
 
 #                       d1                    d2           '+', '-', '>'
@@ -291,7 +291,7 @@ class DurationTest(unittest.TestCase):
         self.assertNotEqual(-timedelta(days=365), Duration(years=-1))
         # FIXME: this test fails in python 3... it seems like python3
         #        treats a == b the same b == a
-        #self.assertNotEqual(-timedelta(days=10), -Duration(days=10))
+        # self.assertNotEqual(-timedelta(days=10), -Duration(days=10))
 
     def test_format(self):
         '''
@@ -334,7 +334,7 @@ class DurationTest(unittest.TestCase):
         self.assertEqual(Duration(days=1), timedelta(days=1))
         # FIXME: this test fails in python 3... it seems like python3
         #        treats a != b the same b != a
-        #self.assertNotEqual(timedelta(days=1), Duration(days=1))
+        # self.assertNotEqual(timedelta(days=1), Duration(days=1))
 
     def test_totimedelta(self):
         '''

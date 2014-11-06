@@ -168,7 +168,7 @@ def parse_date(datestring, yeardigits=4, expanded=False):
             sign = (groups['sign'] == '-' and -1) or 1
             if 'century' in groups:
                 return date(sign * (int(groups['century']) * 100 + 1), 1, 1)
-            if not 'month' in groups:  # weekdate or ordinal date
+            if 'month' not in groups:  # weekdate or ordinal date
                 ret = date(sign * int(groups['year']), 1, 1)
                 if 'week' in groups:
                     isotuple = ret.isocalendar()
