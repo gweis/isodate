@@ -87,21 +87,15 @@ def build_date_regexps(yeardigits=4, expanded=False):
                                       % (sign, yeardigits)))
         # 3. ordinal dates:
         #    YYYY-DDD or +-YYYYYY-DDD ... extended format
-        cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                                      r"-(?P<day>[0-9]{3})"
-                                      % (sign, yeardigits)))
         #    YYYYDDD or +-YYYYYYDDD ... basic format
         cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                                      r"(?P<day>[0-9]{3})"
+                                      r"-?(?P<day>[0-9]{3})"
                                       % (sign, yeardigits)))
         # 4. week dates:
         #    YYYY-Www or +-YYYYYY-Www ... extended reduced accuracy week date
-        cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                                      r"-W(?P<week>[0-9]{2})"
-                                      % (sign, yeardigits)))
         #    YYYYWww or +-YYYYYYWww ... basic reduced accuracy week date
-        cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W"
-                                      r"(?P<week>[0-9]{2})"
+        cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+                                      r"-?W(?P<week>[0-9]{2})"
                                       % (sign, yeardigits)))
         # 5. month dates:
         #    YYY-MM or +-YYYYYY-MM ... reduced accuracy specific month

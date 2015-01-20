@@ -80,11 +80,8 @@ def build_time_regexps():
                                            + TZ_REGEX))
         # 2. reduced accuracy:
         #    hh:mm.mm ... extended format
-        TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2}):"
-                                           r"(?P<minute>[0-9]{2}([,.][0-9]+)?)"
-                                           + TZ_REGEX))
         #    hhmm.mm ... basic format
-        TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2})"
+        TIME_REGEX_CACHE.append(re.compile(r"T?(?P<hour>[0-9]{2}):?"
                                            r"(?P<minute>[0-9]{2}([,.][0-9]+)?)"
                                            + TZ_REGEX))
         #    hh.hh ... basic format
