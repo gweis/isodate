@@ -2,19 +2,19 @@
 ISO 8601 date/time parser
 =========================
 
-.. image:: https://travis-ci.org/gweis/isodate.png?branch=master
+.. image:: https://travis-ci.org/gweis/isodate.svg?branch=master
     :target: https://travis-ci.org/gweis/isodate
     :alt: Travis-CI
-.. image:: https://coveralls.io/repos/gweis/isodate/badge.png?branch=master
+.. image:: https://coveralls.io/repos/gweis/isodate/badge.svg?branch=master
     :target: https://coveralls.io/r/gweis/isodate?branch=master
     :alt: Coveralls
-.. image:: https://pypip.in/v/isodate/badge.png
+.. image:: https://pypip.in/version/isodate/badge.svg
     :target: https://pypi.python.org/pypi/isodate/
     :alt: Latest Version
-.. image:: https://pypip.in/d/isodate/badge.png
-    :target: https://pypi.python.org/pypi//isodate/
+.. image:: https://pypip.in/download/isodate/badge.svg
+    :target: https://pypi.python.org/pypi/isodate/
     :alt: Downloads
-.. image:: https://pypip.in/license/isodate/badge.png
+.. image:: https://pypip.in/license/isodate/badge.svg
     :target: https://pypi.python.org/pypi/isodate/
     :alt: License
 
