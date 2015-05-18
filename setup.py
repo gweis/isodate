@@ -56,7 +56,7 @@ setup(name='isodate',
       # PyPI metadata
       author='Gerhard Weis',
       author_email='gerhard.weis@proclos.com',
-      description='An ISO 8601 date/time/duration parser and formater',
+      description='An ISO 8601 date/time/duration parser and formatter',
       license='BSD',
       # keywords = '',
       url='http://cheeseshop.python.org/pypi/isodate',
