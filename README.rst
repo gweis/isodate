@@ -60,7 +60,7 @@ does not handle years and months, this module provides a *Duration* class,
 which can be used almost like a *timedelta* object (with some limitations).
 However, a *Duration* object can be converted into a *timedelta* object.
 
-There are also ISO formating methods for all supported data types. Each
+There are also ISO formatting methods for all supported data types. Each
 *xxx_isoformat* method accepts a format parameter. The default format is
 always the ISO 8601 expanded format. This is the same format used by
 *datetime.isoformat*:
