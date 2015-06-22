@@ -272,7 +272,7 @@ class DurationTest(unittest.TestCase):
 
     def test_repr(self):
         '''
-        Test __repr__ and __str__ for Duration obqects.
+        Test __repr__ and __str__ for Duration objects.
         '''
         dur = Duration(10, 10, years=10, months=10)
         self.assertEqual('10 years, 10 months, 10 days, 0:00:10', str(dur))
