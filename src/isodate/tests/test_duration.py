@@ -279,6 +279,23 @@ class DurationTest(unittest.TestCase):
         self.assertEqual('isodate.duration.Duration(10, 10, 0,'
                          ' years=10, months=10)', repr(dur))
 
+    def test_hash(self):
+        '''
+        Test __hash__ for Duration objects.
+        '''
+        dur1 = Duration(10, 10, years=10, months=10)
+        dur2 = Duration(9, 9, years=9, months=9)
+        dur3 = Duration(10, 10, years=10, months=10)
+        self.assertNotEqual(hash(dur1), hash(dur2))
+        self.assertNotEqual(id(dur1), id(dur2))
+        self.assertEqual(hash(dur1), hash(dur3))
+        self.assertNotEqual(id(dur1), id(dur3))
+        durSet = set()
+        durSet.add(dur1)
+        durSet.add(dur2)
+        durSet.add(dur3)
+        self.assertEqual(len(durSet), 2)
+
     def test_neg(self):
         '''
         Test __neg__ for Duration objects.

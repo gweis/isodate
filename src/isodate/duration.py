@@ -134,6 +134,13 @@ class Duration(object):
             self.tdelta.days, self.tdelta.seconds,
             self.tdelta.microseconds, self.years, self.months)
 
+    def __hash__(self):
+        '''
+        Return a hash of this instance so that it can be used in, for
+        example, dicts and sets.
+        '''
+        return hash((self.tdelta, self.months, self.years))
+
     def __neg__(self):
         """
         A simple unary minus.
