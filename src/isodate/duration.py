@@ -209,6 +209,27 @@ class Duration(object):
         raise TypeError('unsupported operand type(s) for +: %s and %s' %
                         (other.__class__, self.__class__))
 
+    def __mul__(self, other):
+        if isinstance(other, int):
+            newduration = Duration(
+                years=self.years * other,
+                months=self.months * other,
+                seconds=self.tdelta.total_seconds() * other)
+            return newduration
+        raise TypeError('unsupported operand type(s) for +: %s and %s' %
+                        (self.__class__, other.__class__))
+
+    def __rmul__(self, other):
+
+        if isinstance(other, int):
+            newduration = Duration(
+                years=self.years * other,
+                months=self.months * other,
+                seconds=self.tdelta.total_seconds() * other)
+            return newduration
+        raise TypeError('unsupported operand type(s) for +: %s and %s' %
+                        (other.__class__, self.__class__))
+
     def __sub__(self, other):
         '''
         It is possible to subtract Duration and timedelta objects from Duration
