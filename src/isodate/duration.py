@@ -213,8 +213,8 @@ class Duration(object):
         if isinstance(other, int):
             newduration = Duration(
                 years=self.years * other,
-                months=self.months * other,
-                seconds=self.tdelta.total_seconds() * other)
+                months=self.months * other)
+            newduration.tdelta = self.tdelta * other
             return newduration
         raise TypeError('unsupported operand type(s) for +: %s and %s' %
                         (self.__class__, other.__class__))
@@ -224,8 +224,8 @@ class Duration(object):
         if isinstance(other, int):
             newduration = Duration(
                 years=self.years * other,
-                months=self.months * other,
-                seconds=self.tdelta.total_seconds() * other)
+                months=self.months * other)
+            newduration.tdelta = self.tdelta * other
             return newduration
         raise TypeError('unsupported operand type(s) for +: %s and %s' %
                         (other.__class__, self.__class__))
