@@ -231,6 +231,31 @@ DATE_CALC_TEST_CASES = (
     #  date(2001, 2, 14)),
     )
 
+# A list of test cases of multiplications of durations
+# are compared against a given expected result.
+DATE_MUL_TEST_CASES = (
+    (Duration(years=1, months=1),
+     3,
+     Duration(years=3, months=3)),
+    (Duration(years=1, months=1),
+     -3,
+     Duration(years=-3, months=-3)),
+    (3,
+     Duration(years=1, months=1),
+     Duration(years=3, months=3)),
+    (-3,
+     Duration(years=1, months=1),
+     Duration(years=-3, months=-3)),
+    (5,
+     Duration(years=2, minutes=40),
+     Duration(years=10, hours=3, minutes=20)),
+    (-5,
+     Duration(years=2, minutes=40),
+     Duration(years=-10, hours=-3, minutes=-20)),
+    (7,
+     Duration(years=1, months=2, weeks=40),
+     Duration(years=8, months=2, weeks=280)))
+
 
 class DurationTest(unittest.TestCase):
     '''
@@ -262,6 +287,16 @@ class DurationTest(unittest.TestCase):
                           Duration(years=1, months=1, weeks=5),
                           'raise exception')
         self.assertRaises(TypeError, operator.add, 'raise exception',
+                          Duration(years=1, months=1, weeks=5))
+        self.assertRaises(TypeError, operator.mul,
+                          Duration(years=1, months=1, weeks=5),
+                          'raise exception')
+        self.assertRaises(TypeError, operator.mul, 'raise exception',
+                          Duration(years=1, months=1, weeks=5))
+        self.assertRaises(TypeError, operator.mul,
+                          Duration(years=1, months=1, weeks=5),
+                          3.14)
+        self.assertRaises(TypeError, operator.mul, 3.14,
                           Duration(years=1, months=1, weeks=5))
 
     def test_parseerror(self):
@@ -515,6 +550,28 @@ def create_datecalctestcase(start, duration, expectation):
     return unittest.TestLoader().loadTestsFromTestCase(TestDateCalc)
 
 
+def create_datemultestcase(operand1, operand2, expectation):
+    """
+    Create a TestCase class for a specific test.
+
+    This allows having a separate TestCase for each test tuple from the
+    DATE_CALC_TEST_CASES list, so that a failed test won't stop other tests.
+    """
+
+    class TestDateMul(unittest.TestCase):
+        '''
+        A test case template test addition operators for Duration objects.
+        '''
+
+        def test_mul(self):
+            '''
+            Test operator *.
+            '''
+            self.assertEqual(operand1 * operand2, expectation)
+
+    return unittest.TestLoader().loadTestsFromTestCase(TestDateMul)
+
+
 def test_suite():
     '''
     Return a test suite containing all test defined above.
@@ -530,6 +587,8 @@ def test_suite():
         suite.addTest(create_datetestcase(*testdata))
     for testdata in DATE_CALC_TEST_CASES:
         suite.addTest(create_datecalctestcase(*testdata))
+    for testdata in DATE_MUL_TEST_CASES:
+        suite.addTest(create_datemultestcase(*testdata))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(DurationTest))
     return suite
 
