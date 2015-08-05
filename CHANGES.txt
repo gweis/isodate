@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-0.5.2 (2015-08-06)
------------------
+0.5.4 (2015-08-06)
+------------------
 
 - Fix parsing of Periods (Fabien Bochu)
 - Make Duration objects hashable (Geoffrey Fairchild)
