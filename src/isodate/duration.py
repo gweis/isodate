@@ -216,7 +216,7 @@ class Duration(object):
                 months=self.months * other)
             newduration.tdelta = self.tdelta * other
             return newduration
-        raise TypeError('unsupported operand type(s) for +: %s and %s' %
+        raise TypeError('unsupported operand type(s) for *: %s and %s' %
                         (self.__class__, other.__class__))
 
     def __rmul__(self, other):
@@ -227,7 +227,7 @@ class Duration(object):
                 months=self.months * other)
             newduration.tdelta = self.tdelta * other
             return newduration
-        raise TypeError('unsupported operand type(s) for +: %s and %s' %
+        raise TypeError('unsupported operand type(s) for *: %s and %s' %
                         (other.__class__, self.__class__))
 
     def __sub__(self, other):
