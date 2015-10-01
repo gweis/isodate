@@ -59,7 +59,7 @@ setup(name='isodate',
       description='An ISO 8601 date/time/duration parser and formatter',
       license='BSD',
       # keywords = '',
-      url='http://cheeseshop.python.org/pypi/isodate',
+      url='https://github.com/gweis/isodate/',
 
       long_description=(read('README.rst') +
                         read('CHANGES.txt') +
