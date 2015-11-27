@@ -36,6 +36,12 @@ class TestPickle(unittest.TestCase):
         self.assertEqual(len(failed), 0, "pickle protos failed: %s" %
                          str(failed))
 
+    def test_pickle_utc(self):
+        '''
+        isodate.UTC objects remain the same after pickling.
+        '''
+        self.assertTrue(isodate.UTC is pickle.loads(pickle.dumps(isodate.UTC)))
+
 
 def test_suite():
     '''

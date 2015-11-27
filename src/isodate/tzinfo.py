@@ -36,8 +36,22 @@ class Utc(tzinfo):
         '''
         return ZERO
 
+    def __reduce__(self):
+        '''
+        When unpickling a Utc object, return the default instance below, UTC.
+        '''
+        return _Utc, ()
+
+
 UTC = Utc()
 # the default instance for UTC.
+
+
+def _Utc():
+    '''
+    Helper function for unpickling a Utc object.
+    '''
+    return UTC
 
 
 class FixedOffset(tzinfo):
