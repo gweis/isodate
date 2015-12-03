@@ -121,7 +121,10 @@ class Duration(object):
         if self.years:
             params.append('%d years' % self.years)
         if self.months:
-            params.append('%d months' % self.months)
+            fmt = "%d months"
+            if self.months <= 1: 
+                fmt = "%d month"
+            params.append(fmt % self.months)
         params.append(str(self.tdelta))
         return ', '.join(params)
 
