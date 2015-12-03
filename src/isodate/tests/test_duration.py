@@ -313,13 +313,10 @@ class DurationTest(unittest.TestCase):
         self.assertEqual('10 years, 10 months, 10 days, 0:00:10', str(dur))
         self.assertEqual('isodate.duration.Duration(10, 10, 0,'
                          ' years=10, months=10)', repr(dur))
-
         dur = Duration(months=0)
         self.assertEqual('0:00:00', str(dur))
-
         dur = Duration(months=1)
         self.assertEqual('1 month, 0:00:00', str(dur))
-
 
     def test_hash(self):
         '''
