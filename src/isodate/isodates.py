@@ -108,6 +108,10 @@ def build_date_regexps(yeardigits=4, expanded=False):
         cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
                                       r"-(?P<month>[0-9]{2})"
                                       % (sign, yeardigits)))
+        #    YYYMM or +-YYYYYYMM ... basic incomplete month date format
+        cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+                                      r"(?P<month>[0-9]{2})"
+                                      % (sign, yeardigits)))
         # 6. year dates:
         #    YYYY or +-YYYYYY ... reduced accuracy specific year
         cache_entry.append(re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
@@ -143,6 +147,7 @@ def parse_date(datestring, yeardigits=4, expanded=False):
       YYYY-DDD    +-YYYYYY-DDD      extended ordinal date
       YYYYWww     +-YYYYYYWww       basic incomplete week date
       YYYY-Www    +-YYYYYY-Www      extended incomplete week date
+      YYYMM       +-YYYYYYMM        basic incomplete month date
       YYY-MM      +-YYYYYY-MM       incomplete month date
       YYYY        +-YYYYYY          incomplete year date
       YY          +-YYYY            incomplete century date
@@ -181,7 +186,7 @@ def parse_date(datestring, yeardigits=4, expanded=False):
                                            (((isotuple[1] == 1) and 1) or 0),
                                            days=-isotuple[2] + days)
                 elif 'day' in groups:  # ordinal date
-                    return ret + timedelta(days=int(groups['day'])-1)
+                    return ret + timedelta(days=int(groups['day']) - 1)
                 else:  # year date
                     return ret
             # year-, month-, or complete date
