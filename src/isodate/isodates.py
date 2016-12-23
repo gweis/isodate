@@ -126,7 +126,9 @@ def build_date_regexps(yeardigits=4, expanded=False):
     return DATE_REGEX_CACHE[(yeardigits, expanded)]
 
 
-def parse_date(datestring, yeardigits=4, expanded=False):
+def parse_date(
+        datestring,
+        yeardigits=4, expanded=False, defaultmonth=1, defaultday=1):
     '''
     Parse an ISO 8601 date string into a datetime.date object.
 
@@ -172,7 +174,9 @@ def parse_date(datestring, yeardigits=4, expanded=False):
             # FIXME: negative dates not possible with python standard types
             sign = (groups['sign'] == '-' and -1) or 1
             if 'century' in groups:
-                return date(sign * (int(groups['century']) * 100 + 1), 1, 1)
+                return date(
+                    sign * (int(groups['century']) * 100 + 1),
+                    defaultmonth, defaultday)
             if 'month' not in groups:  # weekdate or ordinal date
                 ret = date(sign * int(groups['year']), 1, 1)
                 if 'week' in groups:
@@ -188,14 +192,14 @@ def parse_date(datestring, yeardigits=4, expanded=False):
                 elif 'day' in groups:  # ordinal date
                     return ret + timedelta(days=int(groups['day']) - 1)
                 else:  # year date
-                    return ret
+                    return ret.replace(month=defaultmonth, day=defaultday)
             # year-, month-, or complete date
             if 'day' not in groups or groups['day'] is None:
-                day = 1
+                day = defaultday
             else:
                 day = int(groups['day'])
             return date(sign * int(groups['year']),
-                        int(groups['month']) or 1, day)
+                        int(groups['month']) or defaultmonth, day)
     raise ISO8601Error('Unrecognised ISO 8601 date format: %r' % datestring)
 
 
