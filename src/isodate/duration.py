@@ -111,6 +111,9 @@ class Duration(object):
         '''
         Provide direct access to attributes of included timedelta instance.
         '''
+        # Guard against infinite recursion
+        if name == 'tdelta':
+            raise AttributeError()
         return getattr(self.tdelta, name)
 
     def __str__(self):
