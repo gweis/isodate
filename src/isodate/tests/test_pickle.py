@@ -1,5 +1,8 @@
-import unittest
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+import unittest    
 import isodate
 
 
@@ -31,7 +34,7 @@ class TestPickle(unittest.TestCase):
                 pikl = pickle.dumps(dur, proto)
                 if dur != pickle.loads(pikl):
                     raise Exception("not equal")
-            except Exception, e:
+            except Exception as e:
                 failed.append("pickle proto %d failed (%s)" % (proto, repr(e)))
         self.assertEqual(len(failed), 0, "pickle protos failed: %s" %
                          str(failed))

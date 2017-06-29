@@ -32,8 +32,12 @@ It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 '''
 import re
+import sys
 from decimal import Decimal
 from datetime import time
+
+if sys.version_info > (3,):
+    long = int
 
 from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
 from isodate.isoerror import ISO8601Error
