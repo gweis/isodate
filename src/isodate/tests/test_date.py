@@ -125,5 +125,6 @@ def test_suite():
 def load_tests(loader, tests, pattern):
     return test_suite()
 
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

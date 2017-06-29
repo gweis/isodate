@@ -26,15 +26,15 @@
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
 import os
-import sys
+from setuptools import setup
 
 setupargs = {}
-
-from setuptools import setup
 setupargs['test_suite'] = 'isodate.tests.test_suite'
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 
 setup(name='isodate',
       version='0.5.5.dev',

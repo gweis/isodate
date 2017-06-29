@@ -2,7 +2,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
-import unittest    
+import unittest
 import isodate
 
 
@@ -52,6 +52,7 @@ def test_suite():
 # load_tests Protocol
 def load_tests(loader, tests, pattern):
     return test_suite()
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
