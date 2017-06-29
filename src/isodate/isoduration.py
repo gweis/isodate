@@ -80,7 +80,7 @@ def parse_duration(datestring):
       The alternative format does not support durations with years, months or
       days set to 0.
     """
-    if not isinstance(datestring, basestring):
+    if not isinstance(datestring, (str, unicode)):
         raise TypeError("Expecting a string %r" % datestring)
     match = ISO8601_PERIOD_REGEX.match(datestring)
     if not match:
