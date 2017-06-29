@@ -33,6 +33,7 @@ format timedelta or Duration instances as ISO conforming strings.
 from datetime import timedelta
 from decimal import Decimal
 import re
+import sys
 
 from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
@@ -51,6 +52,8 @@ ISO8601_PERIOD_REGEX = re.compile(
     r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$")
 # regular expression to parse ISO duartion strings.
 
+if sys.version_info[0] >= 3:
+    basestring = str
 
 def parse_duration(datestring):
     """
@@ -80,7 +83,7 @@ def parse_duration(datestring):
       The alternative format does not support durations with years, months or
       days set to 0.
     """
-    if not isinstance(datestring, (str, unicode)):
+    if not isinstance(datestring, basestring):
         raise TypeError("Expecting a string %r" % datestring)
     match = ISO8601_PERIOD_REGEX.match(datestring)
     if not match:
