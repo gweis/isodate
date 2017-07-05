@@ -1,8 +1,6 @@
 language: python
 matrix:
   include:
-    - python: 2.6
-      env: TOXENV=py26
     - python: 2.7
       env: TOXENV=py27
     - python: 3.3
@@ -13,9 +11,9 @@ matrix:
       env: TOXENV=py35
     - python: 3.6
       env: TOXENV=py36
-    - python: 3.4
+    - python: 3.6
       env: TOXENV=flake
-    - python: 3.4
+    - python: 3.6
       env: TOXENV=cover
 install:
   - pip install tox
