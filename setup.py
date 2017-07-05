@@ -26,20 +26,10 @@
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
 import os
-import sys
+from setuptools import setup
 
 setupargs = {}
-
-try:
-    from setuptools import setup
-    setupargs['test_suite'] = 'isodate.tests.test_suite'
-    if sys.version[0] == '3':
-        setupargs['use_2to3'] = True
-except ImportError:
-    from distutils.core import setup
-    if sys.version[0] == '3':
-        from distutils.command.build_py import build_py_2to3
-        setupargs['cmdclass'] = {'build_py': build_py_2to3}
+setupargs['test_suite'] = 'isodate.tests.test_suite'
 
 
 def read(*rnames):
@@ -72,7 +62,6 @@ setup(name='isodate',
                    'License :: OSI Approved :: BSD License',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
-                   'Programming Language :: Python :: 2.6',
                    'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 3.3',
                    'Programming Language :: Python :: 3.4',
