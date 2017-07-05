@@ -156,8 +156,8 @@ class Duration(object):
 
     def __add__(self, other):
         '''
-        Durations can be added with Duration, timedelta, date and datetime
-        objects.
+        Durations can be added with Duration, timedelta, date, datetime and
+        arrow objects.
         '''
         if isinstance(other, timedelta):
             newduration = Duration(years=self.years, months=self.months)
@@ -168,7 +168,14 @@ class Duration(object):
                                    months=self.months + other.months)
             newduration.tdelta = self.tdelta + other.tdelta
             return newduration
-        if isinstance(other, (date, datetime)):
+
+        try:
+            import arrow
+            others = (date, datetime, arrow.Arrow)
+        except ImportError:
+            others = (date, datetime)
+
+        if isinstance(other, others):
             if (not(float(self.years).is_integer() and
                     float(self.months).is_integer())):
                 raise ValueError('fractional years or months not supported'
@@ -188,13 +195,20 @@ class Duration(object):
 
     def __radd__(self, other):
         '''
-        Add durations to timedelta, date and datetime objects.
+        Add durations to timedelta, date, datetime and arrow objects.
         '''
         if isinstance(other, timedelta):
             newduration = Duration(years=self.years, months=self.months)
             newduration.tdelta = self.tdelta + other
             return newduration
-        if isinstance(other, (date, datetime)):
+
+        try:
+            import arrow
+            others = (date, datetime, arrow.Arrow)
+        except ImportError:
+            others = (date, datetime)
+
+        if isinstance(other, others):
             if (not(float(self.years).is_integer() and
                     float(self.months).is_integer())):
                 raise ValueError('fractional years or months not supported'
@@ -252,11 +266,17 @@ class Duration(object):
 
     def __rsub__(self, other):
         '''
-        It is possible to subtract Duration objecs from date, datetime and
-        timedelta objects.
+        It is possible to subtract Duration objecs from date, datetime, arrow
+        and timedelta objects.
         '''
         # print '__rsub__:', self, other
-        if isinstance(other, (date, datetime)):
+        try:
+            import arrow
+            others = (date, datetime, arrow.Arrow)
+        except ImportError:
+            others = (date, datetime)
+
+        if isinstance(other, others):
             if (not(float(self.years).is_integer() and
                     float(self.months).is_integer())):
                 raise ValueError('fractional years or months not supported'
