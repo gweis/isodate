@@ -152,5 +152,6 @@ class LocalTimezone(tzinfo):
         tt = time.localtime(stamp)
         return tt.tm_isdst > 0
 
-LOCAL = LocalTimezone()
+
 # the default instance for local time zone.
+LOCAL = LocalTimezone()

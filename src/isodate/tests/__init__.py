@@ -46,5 +46,6 @@ def test_suite():
         test_pickle.test_suite(),
         ])
 
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
