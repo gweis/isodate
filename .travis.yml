@@ -22,7 +22,7 @@ install:
 script:
   - tox
 after_script:
-  - if [ $TOX_ENV == "cover" ]; then
+  - if [ $TOXENV == "cover" ]; then
     pip install --quiet coveralls;
     coveralls;
     fi
