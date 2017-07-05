@@ -28,21 +28,20 @@
 import os
 from setuptools import setup
 
-setupargs = {}
-setupargs['test_suite'] = 'isodate.tests.test_suite'
-
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
 setup(name='isodate',
-      version='0.5.5.dev',
+      version='0.7.0.dev',
       packages=['isodate', 'isodate.tests'],
       package_dir={'': 'src'},
 
       # dependencies:
-      # install_requires = [],
+      install_requires=[
+          'six'
+      ],
 
       # PyPI metadata
       author='Gerhard Weis',
@@ -73,4 +72,4 @@ setup(name='isodate',
                    ('Topic :: Software Development :'
                     ': Libraries :: Python Modules'),
                    ],
-      **setupargs)
+      test_suite='isodate.tests.test_suite')

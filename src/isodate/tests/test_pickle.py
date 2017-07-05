@@ -1,8 +1,7 @@
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 import unittest
+
+from six.moves import cPickle as pickle
+
 import isodate
 
 

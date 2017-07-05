@@ -32,16 +32,12 @@ It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 '''
 import re
-import sys
 from decimal import Decimal
 from datetime import time
 
 from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
 from isodate.isoerror import ISO8601Error
 from isodate.isotzinfo import TZ_REGEX, build_tzinfo
-
-if sys.version_info > (3,):
-    long = int
 
 TIME_REGEX_CACHE = []
 # used to cache regular expressions to parse ISO time strings.
@@ -129,7 +125,7 @@ def parse_time(timestring):
             if 'second' in groups:
                 # round to microseconds if fractional seconds are more precise
                 second = Decimal(groups['second']).quantize(Decimal('.000001'))
-                microsecond = (second - int(second)) * long(1e6)
+                microsecond = (second - int(second)) * int(1e6)
                 # int(...) ... no rounding
                 # to_integral() ... rounding
                 return time(int(groups['hour']), int(groups['minute']),
@@ -138,7 +134,7 @@ def parse_time(timestring):
             if 'minute' in groups:
                 minute = Decimal(groups['minute'])
                 second = (minute - int(minute)) * 60
-                microsecond = (second - int(second)) * long(1e6)
+                microsecond = (second - int(second)) * int(1e6)
                 return time(int(groups['hour']), int(minute), int(second),
                             int(microsecond.to_integral()), tzinfo)
             else:
@@ -146,7 +142,7 @@ def parse_time(timestring):
             hour = Decimal(groups['hour'])
             minute = (hour - int(hour)) * 60
             second = (minute - int(minute)) * 60
-            microsecond = (second - int(second)) * long(1e6)
+            microsecond = (second - int(second)) * int(1e6)
             return time(int(hour), int(minute), int(second),
                         int(microsecond.to_integral()), tzinfo)
     raise ISO8601Error('Unrecognised ISO 8601 time format: %r' % timestring)
