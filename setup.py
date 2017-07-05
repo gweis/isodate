@@ -34,7 +34,7 @@ def read(*rnames):
 
 
 setup(name='isodate',
-      version='0.7.0.dev',
+      version='0.6.0.dev',
       packages=['isodate', 'isodate.tests'],
       package_dir={'': 'src'},
 
