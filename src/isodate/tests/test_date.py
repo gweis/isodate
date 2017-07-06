@@ -30,7 +30,8 @@ Test cases for the isodate module.
 import unittest
 from datetime import date
 from isodate import parse_date, ISO8601Error, date_isoformat
-from isodate import DATE_CENTURY, DATE_YEAR, DATE_MONTH
+from isodate import DATE_CENTURY, DATE_YEAR
+from isodate import DATE_BAS_MONTH, DATE_EXT_MONTH
 from isodate import DATE_EXT_COMPLETE, DATE_BAS_COMPLETE
 from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
 from isodate import DATE_BAS_WEEK, DATE_BAS_WEEK_COMPLETE
@@ -42,7 +43,8 @@ from isodate import DATE_EXT_WEEK, DATE_EXT_WEEK_COMPLETE
 # and 6 digit years.
 TEST_CASES = {4: [('19', date(1901, 1, 1), DATE_CENTURY),
                   ('1985', date(1985, 1, 1), DATE_YEAR),
-                  ('1985-04', date(1985, 4, 1), DATE_MONTH),
+                  ('1985-04', date(1985, 4, 1), DATE_EXT_MONTH),
+                  ('198504', date(1985, 4, 1), DATE_BAS_MONTH),
                   ('1985-04-12', date(1985, 4, 12), DATE_EXT_COMPLETE),
                   ('19850412', date(1985, 4, 12), DATE_BAS_COMPLETE),
                   ('1985102', date(1985, 4, 12), DATE_BAS_ORD_COMPLETE),
@@ -56,7 +58,7 @@ TEST_CASES = {4: [('19', date(1901, 1, 1), DATE_CENTURY),
                   ('1-W1-1', None, DATE_BAS_WEEK_COMPLETE)],
               6: [('+0019', date(1901, 1, 1), DATE_CENTURY),
                   ('+001985', date(1985, 1, 1), DATE_YEAR),
-                  ('+001985-04', date(1985, 4, 1), DATE_MONTH),
+                  ('+001985-04', date(1985, 4, 1), DATE_EXT_MONTH),
                   ('+001985-04-12', date(1985, 4, 12), DATE_EXT_COMPLETE),
                   ('+0019850412', date(1985, 4, 12), DATE_BAS_COMPLETE),
                   ('+001985102', date(1985, 4, 12), DATE_BAS_ORD_COMPLETE),
