@@ -83,6 +83,12 @@ TEST_CASES = [('232050', time(23, 20, 50), TIME_BAS_COMPLETE + TZ_BAS),
               ('15:27:46-05', time(15, 27, 46,
                                    tzinfo=FixedOffset(-5, -0, '-05:00')),
                TIME_EXT_COMPLETE + TZ_HOUR),
+              ('15:27:46-05:30', time(15, 27, 46,
+                                      tzinfo=FixedOffset(-5, -30, '-05:30')),
+               TIME_EXT_COMPLETE + TZ_EXT),
+              ('15:27:46-0545', time(15, 27, 46,
+                                     tzinfo=FixedOffset(-5, -45, '-0545')),
+               TIME_EXT_COMPLETE + TZ_BAS),
               ('1:17:30', None, TIME_EXT_COMPLETE)]
 
 
