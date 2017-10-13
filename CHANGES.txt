@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-0.5.5 (unreleased)
+0.6.0 (2017-10-13)
 ------------------
 
-- Nothing changed yet
+- support incomplete month date (Fabien Loffredo)
+- rely on duck typing when doing duration maths
+- support ':' as separator in fractional time zones (usrenmae)
 
 
 0.5.4 (2015-08-06)
