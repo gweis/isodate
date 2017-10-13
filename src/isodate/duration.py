@@ -166,7 +166,7 @@ class Duration(object):
             return newduration
         try:
             # try anything that looks like a date or datetime
-            # other has attributes year, month, day
+            # 'other' has attributes year, month, day
             # and relies on 'timedelta + other' being implemented
             if (not(float(self.years).is_integer() and
                     float(self.months).is_integer())):
@@ -193,7 +193,7 @@ class Duration(object):
             newduration.tdelta = self.tdelta + other
             return newduration
         except AttributeError:
-            # ignore ... other probably was not a timedelt compatible object
+            # ignore ... other probably was not a timedelta compatible object
             pass
         # we have tried everything .... return a NotImplemented
         return NotImplemented
