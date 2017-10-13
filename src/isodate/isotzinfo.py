@@ -35,7 +35,7 @@ from isodate.isoerror import ISO8601Error
 from isodate.tzinfo import UTC, FixedOffset, ZERO
 
 TZ_REGEX = r"(?P<tzname>(Z|(?P<tzsign>[+-])"\
-           r"(?P<tzhour>[0-9]{2})(:(?P<tzmin>[0-9]{2}))?)?)"
+           r"(?P<tzhour>[0-9]{2})(:?(?P<tzmin>[0-9]{2}))?)?)"
 
 TZ_RE = re.compile(TZ_REGEX)
 
