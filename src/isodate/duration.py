@@ -319,3 +319,11 @@ class Duration(object):
         if start is not None:
             return (start + self) - start
         return end - (end - self)
+
+    def astimedelta(self):
+        ''' Convert this duration into a timedelta object when no start and end are given (see also totimedelta). '''
+        extra_days = float(self.months * 30 + self.years * 365)
+
+        return timedelta(days=extra_days + self.tdelta.days,
+                         seconds=self.tdelta.seconds,
+                         microseconds=self.tdelta.microseconds)
