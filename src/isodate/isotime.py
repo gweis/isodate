@@ -125,6 +125,8 @@ def parse_time(timestring):
             if 'second' in groups:
                 # round to microseconds if fractional seconds are more precise
                 second = Decimal(groups['second']).quantize(Decimal('.000001'))
+                second = min(second, Decimal('59.999999'))
+
                 microsecond = (second - int(second)) * int(1e6)
                 # int(...) ... no rounding
                 # to_integral() ... rounding
