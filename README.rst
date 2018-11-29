@@ -38,7 +38,7 @@ for instance nanoseconds it will round it to microseconds.
 Documentation
 -------------
 
-Currently there are four parsing methods available.
+Currently there are five parsing methods available.
    * parse_time:
         parses an ISO 8601 time string into a *time* object
    * parse_date:
@@ -83,16 +83,16 @@ always the ISO 8601 expanded format. This is the same format used by
         prior 1900. This method also understands how to format *datetime* and
         *Duration* instances.
 
-Installation:
--------------
+Installation
+------------
 
 This module can easily be installed with Python standard installation methods.
 
 Either use *python setup.py install* or in case you have *setuptools* or
 *distribute* available, you can also use *easy_install*.
 
-Limitations:
-------------
+Limitations
+-----------
 
    * The parser accepts several date/time representation which should be invalid
      according to ISO 8601 standard.
@@ -104,8 +104,8 @@ Limitations:
         1901-01-01.
      3. negative *Duration* and *timedelta* value are not fully supported yet.
 
-Further information:
---------------------
+Further information
+-------------------
 
 The doc strings and unit tests should provide rather detailed information about
 the methods and their limitations.
