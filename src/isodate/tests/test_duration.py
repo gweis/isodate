@@ -87,9 +87,9 @@ PARSE_TEST_CASES = {'P18Y9M4DT11H9M8S': (Duration(4, 8, 0, 0, 9, 11, 0, 9, 18),
                                                         minutes=-30, seconds=-5
                                                         ), D_DEFAULT,
                                                '-P3Y6M4DT12H30M5S'),
-                    '-P-2W': (Duration(weeks=2), D_WEEK, 'P2W'),
-                    'P-2W': (Duration(weeks=-2), D_WEEK, '-P2W'),
-                    'P1DT-1H': (Duration(hours=23), D_DEFAULT, 'PT23H'),
+                    '-P-2W': (timedelta(weeks=2), D_WEEK, 'P2W'),
+                    'P-2W': (timedelta(weeks=-2), D_WEEK, '-P2W'),
+                    'P1DT-1H': (timedelta(hours=23), D_DEFAULT, 'PT23H'),
                     # alternative format
                     'P0018-09-04T11:09:08': (Duration(4, 8, 0, 0, 9, 11, 0, 9,
                                                       18), D_ALT_EXT, None),
