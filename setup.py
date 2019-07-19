@@ -30,7 +30,8 @@ from setuptools import setup
 
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    with open(os.path.join(os.path.dirname(__file__), *rnames)) as read_file:
+        return read_file.read()
 
 
 setup(name='isodate',
