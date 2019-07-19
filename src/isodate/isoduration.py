@@ -43,7 +43,7 @@ from isodate.isostrf import strftime, D_DEFAULT
 
 ISO8601_PERIOD_REGEX = re.compile(
     r"^(?P<sign>[+-])?"
-    r"P(?!\b^-)"
+    r"P(?=[0-9T-])"
     r"(?P<years>-?[0-9]+([,.][0-9]+)?Y)?"
     r"(?P<months>-?[0-9]+([,.][0-9]+)?M)?"
     r"(?P<weeks>-?[0-9]+([,.][0-9]+)?W)?"
