@@ -278,8 +278,8 @@ class Duration(object):
         '''
         if isinstance(other, Duration):
             if ((self.years * 12 + self.months) ==
-                 (other.years * 12 + other.months) and
-                 self.tdelta == other.tdelta):
+                    (other.years * 12 + other.months) and
+                    self.tdelta == other.tdelta):
                 return True
             return False
         # check if other con be compared against timedelta object
@@ -295,8 +295,8 @@ class Duration(object):
         '''
         if isinstance(other, Duration):
             if ((self.years * 12 + self.months) !=
-                 (other.years * 12 + other.months) or
-                 self.tdelta != other.tdelta):
+                    (other.years * 12 + other.months) or
+                    self.tdelta != other.tdelta):
                 return True
             return False
         # check if other can be compared against timedelta object
