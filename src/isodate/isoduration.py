@@ -139,11 +139,11 @@ def duration_isoformat(tduration, format=D_DEFAULT):
     '''
     # TODO: implement better decision for negative Durations.
     #       should be done in Duration class in consistent way with timedelta.
-    if (((isinstance(tduration, Duration) and
+    if ((isinstance(tduration, Duration) and
           (tduration.years < 0 or tduration.months < 0 or
            tduration.tdelta < timedelta(0))) or
         (isinstance(tduration, timedelta) and
-         (tduration < timedelta(0))))):
+         (tduration < timedelta(0)))):
         ret = '-'
     else:
         ret = ''
