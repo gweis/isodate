@@ -38,7 +38,7 @@ for instance nanoseconds it will round it to microseconds.
 Documentation
 -------------
 
-Currently there are five parsing methods available.
+The following parsing methods are available.
    * parse_time:
         parses an ISO 8601 time string into a *time* object
    * parse_date:
