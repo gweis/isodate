@@ -54,7 +54,7 @@ ISO8601_PERIOD_REGEX = re.compile(
 # regular expression to parse ISO duration strings.
 
 
-def parse_duration(datestring, as_timedelta_if_possible: bool = True):
+def parse_duration(datestring, as_timedelta_if_possible=True):
     """
     Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
