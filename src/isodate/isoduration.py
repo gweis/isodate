@@ -89,7 +89,11 @@ def parse_duration(datestring, as_timedelta_if_possible=True):
         # try alternative format:
         if datestring.startswith("P"):
             durdt = parse_datetime(datestring[1:])
-            if as_timedelta_if_possible and durdt.year == 0 and durdt.month == 0:
+            if (
+                as_timedelta_if_possible
+                and durdt.year == 0
+                and durdt.month == 0
+            ):
                 # FIXME: currently not possible in alternative format
                 # create timedelta
                 ret = timedelta(days=durdt.day, seconds=durdt.second,
@@ -115,7 +119,11 @@ def parse_duration(datestring, as_timedelta_if_possible=True):
                 # these values are passed into a timedelta object,
                 # which works with floats.
                 groups[key] = float(groups[key][:-1].replace(',', '.'))
-    if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
+    if (
+        as_timedelta_if_possible
+        and groups["years"] == 0
+        and groups["months"] == 0
+    ):
         ret = timedelta(days=groups["days"], hours=groups["hours"],
                         minutes=groups["minutes"], seconds=groups["seconds"],
                         weeks=groups["weeks"])
