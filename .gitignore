@@ -10,4 +10,5 @@ develop-eggs
 dist
 parts
 .coverage
+coverage.xml
 htmlcov
