@@ -180,7 +180,9 @@ class Duration(object):
                 newday = maxdays
             else:
                 newday = other.day
-            newdt = other.replace(year=newyear, month=newmonth, day=newday)
+            newdt = other.replace(
+                year=int(newyear), month=int(newmonth), day=int(newday)
+            )
             # does a timedelta + date/datetime
             return self.tdelta + newdt
         except AttributeError:
@@ -264,7 +266,9 @@ class Duration(object):
                 newday = maxdays
             else:
                 newday = other.day
-            newdt = other.replace(year=newyear, month=newmonth, day=newday)
+            newdt = other.replace(
+                year=int(newyear), month=int(newmonth), day=int(newday)
+            )
             return newdt - self.tdelta
         except AttributeError:
             # other probably was not compatible with data/datetime
