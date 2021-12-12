@@ -24,28 +24,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
-'''
+"""
 Collect all test suites into one TestSuite instance.
-'''
+"""
 
 import unittest
-from isodate.tests import (test_date, test_time, test_datetime, test_duration,
-                           test_strf, test_pickle)
+from isodate.tests import (
+    test_date,
+    test_time,
+    test_datetime,
+    test_duration,
+    test_strf,
+    test_pickle,
+)
 
 
 def test_suite():
-    '''
+    """
     Return a new TestSuite instance consisting of all available TestSuites.
-    '''
-    return unittest.TestSuite([
-        test_date.test_suite(),
-        test_time.test_suite(),
-        test_datetime.test_suite(),
-        test_duration.test_suite(),
-        test_strf.test_suite(),
-        test_pickle.test_suite(),
-        ])
+    """
+    return unittest.TestSuite(
+        [
+            test_date.test_suite(),
+            test_time.test_suite(),
+            test_datetime.test_suite(),
+            test_duration.test_suite(),
+            test_strf.test_suite(),
+            test_pickle.test_suite(),
+        ]
+    )
 
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+if __name__ == "__main__":
+    unittest.main(defaultTest="test_suite")

@@ -24,10 +24,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 # CONTRACT, STRICT LIABILITY, OR TORT
 ##############################################################################
-'''
+"""
 This module defines all exception classes in the whole package.
-'''
+"""
 
 
 class ISO8601Error(ValueError):
-    '''Raised when the given ISO string can not be parsed.'''
+    """Raised when the given ISO string can not be parsed."""
