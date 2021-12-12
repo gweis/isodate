@@ -41,93 +41,75 @@ def build_date_regexps(yeardigits=4, expanded=False):
             sign = 1
         else:
             sign = 0
+
+        def add_re(regex_text):
+            cache_entry.append(re.compile(r"\A" + regex_text + r"\Z"))
+
         # 1. complete dates:
         #    YYYY-MM-DD or +- YYYYYY-MM-DD... extended date format
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})" % (sign, yeardigits)
         )
         #    YYYYMMDD or +- YYYYYYMMDD... basic date format
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"(?P<month>[0-9]{2})(?P<day>[0-9]{2})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"(?P<month>[0-9]{2})(?P<day>[0-9]{2})" % (sign, yeardigits)
         )
         # 2. complete week dates:
         #    YYYY-Www-D or +-YYYYYY-Www-D ... extended week date
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"-W(?P<week>[0-9]{2})-(?P<day>[0-9]{1})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"-W(?P<week>[0-9]{2})-(?P<day>[0-9]{1})" % (sign, yeardigits)
         )
         #    YYYYWwwD or +-YYYYYYWwwD ... basic week date
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W"
-                r"(?P<week>[0-9]{2})(?P<day>[0-9]{1})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W"
+            r"(?P<week>[0-9]{2})(?P<day>[0-9]{1})" % (sign, yeardigits)
         )
         # 3. ordinal dates:
         #    YYYY-DDD or +-YYYYYY-DDD ... extended format
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"-(?P<day>[0-9]{3})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"-(?P<day>[0-9]{3})" % (sign, yeardigits)
         )
         #    YYYYDDD or +-YYYYYYDDD ... basic format
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"(?P<day>[0-9]{3})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"(?P<day>[0-9]{3})" % (sign, yeardigits)
         )
         # 4. week dates:
         #    YYYY-Www or +-YYYYYY-Www ... extended reduced accuracy week date
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"-W(?P<week>[0-9]{2})" % (sign, yeardigits)
-            )
+        # 4. week dates:
+        #    YYYY-Www or +-YYYYYY-Www ... extended reduced accuracy week date
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"-W(?P<week>[0-9]{2})" % (sign, yeardigits)
         )
         #    YYYYWww or +-YYYYYYWww ... basic reduced accuracy week date
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W"
-                r"(?P<week>[0-9]{2})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W"
+            r"(?P<week>[0-9]{2})" % (sign, yeardigits)
         )
         # 5. month dates:
         #    YYY-MM or +-YYYYYY-MM ... reduced accuracy specific month
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"-(?P<month>[0-9]{2})" % (sign, yeardigits)
-            )
+        # 5. month dates:
+        #    YYY-MM or +-YYYYYY-MM ... reduced accuracy specific month
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"-(?P<month>[0-9]{2})" % (sign, yeardigits)
         )
         #    YYYMM or +-YYYYYYMM ... basic incomplete month date format
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-                r"(?P<month>[0-9]{2})" % (sign, yeardigits)
-            )
+        add_re(
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
+            r"(?P<month>[0-9]{2})" % (sign, yeardigits)
         )
         # 6. year dates:
         #    YYYY or +-YYYYYY ... reduced accuracy specific year
-        cache_entry.append(
-            re.compile(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" % (sign, yeardigits))
-        )
+        add_re(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" % (sign, yeardigits))
         # 7. century dates:
         #    YY or +-YYYY ... reduced accuracy specific century
-        cache_entry.append(
-            re.compile(
-                r"(?P<sign>[+-]){%d}" r"(?P<century>[0-9]{%d})" % (sign, yeardigits - 2)
-            )
-        )
+        add_re(r"(?P<sign>[+-]){%d}" r"(?P<century>[0-9]{%d})" % (sign, yeardigits - 2))
 
         DATE_REGEX_CACHE[(yeardigits, expanded)] = cache_entry
     return DATE_REGEX_CACHE[(yeardigits, expanded)]

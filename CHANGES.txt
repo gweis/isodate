@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - drop end of life python versions
+- Don't match garbage characters at the end of parsed strings #16 (Gabriel de Perthuis)
 
 
 0.6.1 (2021-12-13)

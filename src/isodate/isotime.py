@@ -41,46 +41,31 @@ def build_time_regexps():
         #    +-hhmm
         #    +-hh =>
         #    isotzinfo.TZ_REGEX
+        def add_re(regex_text):
+            TIME_REGEX_CACHE.append(re.compile(r"\A" + regex_text + TZ_REGEX + r"\Z"))
+
         # 1. complete time:
         #    hh:mm:ss.ss ... extended format
-        TIME_REGEX_CACHE.append(
-            re.compile(
-                r"T?(?P<hour>[0-9]{2}):"
-                r"(?P<minute>[0-9]{2}):"
-                r"(?P<second>[0-9]{2}"
-                r"([,.][0-9]+)?)" + TZ_REGEX
-            )
+        add_re(
+            r"T?(?P<hour>[0-9]{2}):"
+            r"(?P<minute>[0-9]{2}):"
+            r"(?P<second>[0-9]{2}"
+            r"([,.][0-9]+)?)"
         )
         #    hhmmss.ss ... basic format
-        TIME_REGEX_CACHE.append(
-            re.compile(
-                r"T?(?P<hour>[0-9]{2})"
-                r"(?P<minute>[0-9]{2})"
-                r"(?P<second>[0-9]{2}"
-                r"([,.][0-9]+)?)" + TZ_REGEX
-            )
+        add_re(
+            r"T?(?P<hour>[0-9]{2})"
+            r"(?P<minute>[0-9]{2})"
+            r"(?P<second>[0-9]{2}"
+            r"([,.][0-9]+)?)"
         )
         # 2. reduced accuracy:
         #    hh:mm.mm ... extended format
-        TIME_REGEX_CACHE.append(
-            re.compile(
-                r"T?(?P<hour>[0-9]{2}):"
-                r"(?P<minute>[0-9]{2}"
-                r"([,.][0-9]+)?)" + TZ_REGEX
-            )
-        )
+        add_re(r"T?(?P<hour>[0-9]{2}):" r"(?P<minute>[0-9]{2}" r"([,.][0-9]+)?)")
         #    hhmm.mm ... basic format
-        TIME_REGEX_CACHE.append(
-            re.compile(
-                r"T?(?P<hour>[0-9]{2})"
-                r"(?P<minute>[0-9]{2}"
-                r"([,.][0-9]+)?)" + TZ_REGEX
-            )
-        )
+        add_re(r"T?(?P<hour>[0-9]{2})" r"(?P<minute>[0-9]{2}" r"([,.][0-9]+)?)")
         #    hh.hh ... basic format
-        TIME_REGEX_CACHE.append(
-            re.compile(r"T?(?P<hour>[0-9]{2}" r"([,.][0-9]+)?)" + TZ_REGEX)
-        )
+        add_re(r"T?(?P<hour>[0-9]{2}" r"([,.][0-9]+)?)")
     return TIME_REGEX_CACHE
 
 
