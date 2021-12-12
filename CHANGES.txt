@@ -11,7 +11,7 @@ CHANGES
 0.6.1 (2021-12-13)
 ------------------
 
-- support python 3.10 ()
+- support python 3.10 (Hugo van Kemenade)
 - last version to support py 2.7
 
 
