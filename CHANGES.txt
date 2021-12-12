@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-0.7.0.dev (unreleased)
-----------------------
+0.6.1 (2021-12-13)
+------------------
 
-- no changes yet
+- support python 3.10 ()
+- last version to support py 2.7
 
 
 0.6.0 (2017-10-13)
