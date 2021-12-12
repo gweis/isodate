@@ -38,7 +38,7 @@ def max_days_in_month(year, month):
     return 28
 
 
-class Duration(object):
+class Duration:
     """
     A class which represents a duration.
 

@@ -36,7 +36,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Internet",
-        ("Topic :: Software Development :" ": Libraries :: Python Modules"),
+        "Topic :: Software Development :" ": Libraries :: Python Modules",
     ],
     test_suite="isodate.tests.test_suite",
 )
