@@ -9,10 +9,10 @@ ISO 8601 date/time parser
     :target: https://coveralls.io/r/gweis/isodate?branch=master
     :alt: Coveralls
 .. image:: https://img.shields.io/pypi/v/isodate.svg
-    :target: https://pypi.python.org/pypi/isodate/          
+    :target: https://pypi.python.org/pypi/isodate/
     :alt: Latest Version
 .. image:: https://img.shields.io/pypi/l/isodate.svg
-    :target: https://pypi.python.org/pypi/isodate/          
+    :target: https://pypi.python.org/pypi/isodate/
     :alt: License
 
 
