@@ -8,6 +8,7 @@ CHANGES
 - drop end of life python versions
 - Don't match garbage characters at the end of parsed strings #16 (Gabriel de Perthuis)
 - Breaking: fractional seconds are cut off to microseconds (round down)
+- Allow control over return type of parse_duration #64 (Felix Claessen)
 
 
 0.6.1 (2021-12-13)
