@@ -24,10 +24,10 @@ ISO8601_PERIOD_REGEX = re.compile(
     r"(?P<minutes>[0-9]+([,.][0-9]+)?M)?"
     r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$"
 )
-# regular expression to parse ISO duartion strings.
+# regular expression to parse ISO duration strings.
 
 
-def parse_duration(datestring):
+def parse_duration(datestring, as_timedelta_if_possible=True):
     """
     Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
@@ -62,7 +62,17 @@ def parse_duration(datestring):
         # try alternative format:
         if datestring.startswith("P"):
             durdt = parse_datetime(datestring[1:])
-            if durdt.year != 0 or durdt.month != 0:
+            if as_timedelta_if_possible and durdt.year == 0 and durdt.month == 0:
+                # FIXME: currently not possible in alternative format
+                # create timedelta
+                ret = timedelta(
+                    days=durdt.day,
+                    seconds=durdt.second,
+                    microseconds=durdt.microsecond,
+                    minutes=durdt.minute,
+                    hours=durdt.hour,
+                )
+            else:
                 # create Duration
                 ret = Duration(
                     days=durdt.day,
@@ -72,15 +82,6 @@ def parse_duration(datestring):
                     hours=durdt.hour,
                     months=durdt.month,
                     years=durdt.year,
-                )
-            else:  # FIXME: currently not possible in alternative format
-                # create timedelta
-                ret = timedelta(
-                    days=durdt.day,
-                    seconds=durdt.second,
-                    microseconds=durdt.microsecond,
-                    minutes=durdt.minute,
-                    hours=durdt.hour,
                 )
             return ret
         raise ISO8601Error("Unable to parse duration string %r" % datestring)
@@ -96,7 +97,7 @@ def parse_duration(datestring):
                 # these values are passed into a timedelta object,
                 # which works with floats.
                 groups[key] = float(groups[key][:-1].replace(",", "."))
-    if groups["years"] == 0 and groups["months"] == 0:
+    if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(
             days=groups["days"],
             hours=groups["hours"],
