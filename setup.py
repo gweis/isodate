@@ -22,6 +22,7 @@ setup(
     # keywords = '',
     url="https://github.com/gweis/isodate/",
     long_description=(read("README.rst") + read("CHANGES.txt") + read("TODO.txt")),
+    python_requires=">=3.7",
     classifiers=[
         "Development Status :: 4 - Beta",
         # 'Environment :: Web Environment',
