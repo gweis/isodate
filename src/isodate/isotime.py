@@ -6,7 +6,7 @@ It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 """
 import re
-from decimal import Decimal
+from decimal import Decimal, ROUND_FLOOR
 from datetime import time
 
 from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
@@ -102,8 +102,9 @@ def parse_time(timestring):
                 int(groups["tzmin"] or 0),
             )
             if "second" in groups:
-                # round to microseconds if fractional seconds are more precise
-                second = Decimal(groups["second"]).quantize(Decimal(".000001"))
+                second = Decimal(groups["second"]).quantize(
+                    Decimal(".000001"), rounding=ROUND_FLOOR
+                )
                 microsecond = (second - int(second)) * int(1e6)
                 # int(...) ... no rounding
                 # to_integral() ... rounding
@@ -116,7 +117,9 @@ def parse_time(timestring):
                 )
             if "minute" in groups:
                 minute = Decimal(groups["minute"])
-                second = (minute - int(minute)) * 60
+                second = Decimal((minute - int(minute)) * 60).quantize(
+                    Decimal(".000001"), rounding=ROUND_FLOOR
+                )
                 microsecond = (second - int(second)) * int(1e6)
                 return time(
                     int(groups["hour"]),
