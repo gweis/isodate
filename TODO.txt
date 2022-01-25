@@ -9,7 +9,7 @@ not complete.
 Missing features:
 -----------------
 
-    * time formating does not allow to create fractional representations.
+    * time formatting does not allow to create fractional representations.
     * parser for ISO intervals.
     * currently microseconds are always padded to a length of 6 characters.
       trailing 0s should be optional

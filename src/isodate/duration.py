@@ -19,7 +19,7 @@ def fquotmod(val, low, high):
     a, b = val - low, high - low
     div = (a / b).to_integral(ROUND_FLOOR)
     mod = a - div * b
-    # if we were not usig Decimal, it would look like this.
+    # if we were not using Decimal, it would look like this.
     # div, mod = divmod(val - low, high - low)
     mod += low
     return int(div), mod
@@ -225,7 +225,7 @@ class Duration(object):
 
     def __rsub__(self, other):
         """
-        It is possible to subtract Duration objecs from date, datetime and
+        It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
 
         TODO: there is some weird behaviour in date - timedelta ...
