@@ -8,6 +8,7 @@ from isodate import strftime
 from isodate import LOCAL
 from isodate import DT_EXT_COMPLETE
 from isodate import tzinfo
+from unittest.suite import TestSuite
 
 
 TEST_CASES = (
@@ -36,7 +37,7 @@ TEST_CASES = (
 )
 
 
-def create_testcase(dt, format, expectation):
+def create_testcase(dt: datetime, format: str, expectation: str) -> TestSuite:
     """
     Create a TestCase class for a specific test.
 
@@ -108,7 +109,7 @@ def create_testcase(dt, format, expectation):
     return unittest.TestLoader().loadTestsFromTestCase(TestDate)
 
 
-def test_suite():
+def test_suite() -> TestSuite:
     """
     Construct a TestSuite instance for all test cases.
     """

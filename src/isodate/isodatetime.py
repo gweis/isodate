@@ -13,7 +13,7 @@ from isodate.isoerror import ISO8601Error
 from isodate.isotime import parse_time
 
 
-def parse_datetime(datetimestring):
+def parse_datetime(datetimestring: str) -> datetime:
     """
     Parses ISO 8601 date-times into datetime.datetime objects.
 

@@ -91,7 +91,7 @@ STRF_D_MAP = {
 }
 
 
-def _strfduration(tdt, format, yeardigits=4):
+def _strfduration(tdt: Duration, format: str, yeardigits: int=4) -> str:
     """
     this is the work method for timedelta and Duration instances.
 
@@ -159,7 +159,7 @@ def _strfdt(tdt, format, yeardigits=4):
     return re.sub("%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%C|%z|%Z|%h|%%", repl, format)
 
 
-def strftime(tdt, format, yeardigits=4):
+def strftime(tdt: Duration, format: str, yeardigits: int=4) -> str:
     """Directive    Meaning    Notes
     %d    Day of the month as a decimal number [01,31].
     %f    Microsecond as a decimal number [0,999999], zero-padded

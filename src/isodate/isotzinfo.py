@@ -6,7 +6,8 @@ It offers a function to parse the time zone offset as specified by ISO 8601.
 import re
 
 from isodate.isoerror import ISO8601Error
-from isodate.tzinfo import UTC, FixedOffset, ZERO
+from isodate.tzinfo import Utc, UTC, FixedOffset, ZERO
+from typing import Optional, Union
 
 TZ_REGEX = (
     r"(?P<tzname>(Z|(?P<tzsign>[+-])" r"(?P<tzhour>[0-9]{2})(:?(?P<tzmin>[0-9]{2}))?)?)"
@@ -15,7 +16,7 @@ TZ_REGEX = (
 TZ_RE = re.compile(TZ_REGEX)
 
 
-def build_tzinfo(tzname, tzsign="+", tzhour=0, tzmin=0):
+def build_tzinfo(tzname: str, tzsign: str="+", tzhour: int=0, tzmin: int=0) -> Optional[Union[Utc, FixedOffset]]:
     """
     create a tzinfo instance according to given parameters.
 
@@ -28,8 +29,8 @@ def build_tzinfo(tzname, tzsign="+", tzhour=0, tzmin=0):
         return None
     if tzname == "Z":
         return UTC
-    tzsign = ((tzsign == "-") and -1) or 1
-    return FixedOffset(tzsign * tzhour, tzsign * tzmin, tzname)
+    tzsign_ = ((tzsign == "-") and -1) or 1
+    return FixedOffset(tzsign_ * tzhour, tzsign_ * tzmin, tzname)
 
 
 def parse_tzinfo(tzstring):

@@ -10,6 +10,8 @@ from isodate import DATE_EXT_COMPLETE, DATE_BAS_COMPLETE
 from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
 from isodate import DATE_BAS_WEEK, DATE_BAS_WEEK_COMPLETE
 from isodate import DATE_EXT_WEEK, DATE_EXT_WEEK_COMPLETE
+from typing import Optional
+from unittest.suite import TestSuite
 
 # the following list contains tuples of ISO date strings and the expected
 # result from the parse_date method. A result of None means an ISO8601Error
@@ -49,7 +51,7 @@ TEST_CASES = {
 }
 
 
-def create_testcase(yeardigits, datestring, expectation, format):
+def create_testcase(yeardigits: int, datestring: str, expectation: Optional[date], format: str) -> TestSuite:
     """
     Create a TestCase class for a specific test.
 
@@ -90,7 +92,7 @@ def create_testcase(yeardigits, datestring, expectation, format):
     return unittest.TestLoader().loadTestsFromTestCase(TestDate)
 
 
-def test_suite():
+def test_suite() -> TestSuite:
     """
     Construct a TestSuite instance for all test cases.
     """

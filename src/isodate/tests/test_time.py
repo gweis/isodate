@@ -9,6 +9,8 @@ from isodate import TIME_BAS_COMPLETE, TIME_BAS_MINUTE
 from isodate import TIME_EXT_COMPLETE, TIME_EXT_MINUTE
 from isodate import TIME_HOUR
 from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
+from typing import Optional
+from unittest.suite import TestSuite
 
 # the following list contains tuples of ISO time strings and the expected
 # result from the parse_time method. A result of None means an ISO8601Error
@@ -92,7 +94,7 @@ TEST_CASES = [
 ]
 
 
-def create_testcase(timestring, expectation, format):
+def create_testcase(timestring: str, expectation: Optional[time], format: Optional[str]) -> TestSuite:
     """
     Create a TestCase class for a specific test.
 
@@ -129,7 +131,7 @@ def create_testcase(timestring, expectation, format):
     return unittest.TestLoader().loadTestsFromTestCase(TestTime)
 
 
-def test_suite():
+def test_suite() -> TestSuite:
     """
     Construct a TestSuite instance for all test cases.
     """

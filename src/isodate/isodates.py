@@ -11,6 +11,7 @@ from datetime import date, timedelta
 
 from isodate.isostrf import strftime, DATE_EXT_COMPLETE
 from isodate.isoerror import ISO8601Error
+from typing import List
 
 DATE_REGEX_CACHE = {}
 # A dictionary to cache pre-compiled regular expressions.
@@ -19,7 +20,7 @@ DATE_REGEX_CACHE = {}
 # only for 4 digit years).
 
 
-def build_date_regexps(yeardigits=4, expanded=False):
+def build_date_regexps(yeardigits: int=4, expanded: bool=False) -> List[re.Pattern]:
     """
     Compile set of regular expressions to parse ISO dates. The expressions will
     be created only if they are not already in REGEX_CACHE.
@@ -115,7 +116,7 @@ def build_date_regexps(yeardigits=4, expanded=False):
     return DATE_REGEX_CACHE[(yeardigits, expanded)]
 
 
-def parse_date(datestring, yeardigits=4, expanded=False, defaultmonth=1, defaultday=1):
+def parse_date(datestring: str, yeardigits: int=4, expanded: bool=False, defaultmonth: int=1, defaultday: int=1) -> date:
     """
     Parse an ISO 8601 date string into a datetime.date object.
 

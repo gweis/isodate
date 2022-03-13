@@ -4,7 +4,7 @@ This module provides an ISO 8601:2004 duration parser.
 It also provides a wrapper to strftime. This wrapper makes it easier to
 format timedelta or Duration instances as ISO conforming strings.
 """
-from datetime import timedelta
+from datetime import date, timedelta
 from decimal import Decimal
 import re
 
@@ -12,6 +12,7 @@ from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.isodatetime import parse_datetime
 from isodate.isostrf import strftime, D_DEFAULT
+from typing import Union
 
 ISO8601_PERIOD_REGEX = re.compile(
     r"^(?P<sign>[+-])?"
@@ -27,7 +28,9 @@ ISO8601_PERIOD_REGEX = re.compile(
 # regular expression to parse ISO duration strings.
 
 
-def parse_duration(datestring, as_timedelta_if_possible=True):
+def parse_duration(
+    datestring: Union[str, date], as_timedelta_if_possible: bool = True
+) -> Union[Duration, timedelta]:
     """
     Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
@@ -55,6 +58,7 @@ def parse_duration(datestring, as_timedelta_if_possible=True):
       The alternative format does not support durations with years, months or
       days set to 0.
     """
+    ret: Union[Duration, timedelta]
     if not isinstance(datestring, str):
         raise TypeError("Expecting a string %r" % datestring)
     match = ISO8601_PERIOD_REGEX.match(datestring)
@@ -99,11 +103,11 @@ def parse_duration(datestring, as_timedelta_if_possible=True):
                 groups[key] = float(groups[key][:-1].replace(",", "."))
     if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(
-            days=groups["days"],
-            hours=groups["hours"],
-            minutes=groups["minutes"],
-            seconds=groups["seconds"],
-            weeks=groups["weeks"],
+            days=float(groups["days"]),
+            hours=float(groups["hours"]),
+            minutes=float(groups["minutes"]),
+            seconds=float(groups["seconds"]),
+            weeks=float(groups["weeks"]),
         )
         if groups["sign"] == "-":
             ret = timedelta(0) - ret
@@ -122,7 +126,7 @@ def parse_duration(datestring, as_timedelta_if_possible=True):
     return ret
 
 
-def duration_isoformat(tduration, format=D_DEFAULT):
+def duration_isoformat(tduration: Duration, format: str = D_DEFAULT) -> str:
     """
     Format duration strings.
 
