@@ -10,6 +10,8 @@ from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.tzinfo import UTC, ZERO, FixedOffset, Utc
 
+# from typeguard import typechecked
+
 TZ_REGEX = (
     r"(?P<tzname>(Z|(?P<tzsign>[+-])" r"(?P<tzhour>[0-9]{2})(:?(?P<tzmin>[0-9]{2}))?)?)"
 )
@@ -17,6 +19,7 @@ TZ_REGEX = (
 TZ_RE = re.compile(TZ_REGEX)
 
 
+# @typechecked
 def build_tzinfo(
     tzname: str, tzsign: str = "+", tzhour: int = 0, tzmin: int = 0
 ) -> Optional[Union[Utc, FixedOffset]]:
@@ -36,6 +39,7 @@ def build_tzinfo(
     return FixedOffset(tzsign_ * tzhour, tzsign_ * tzmin, tzname)
 
 
+# @typechecked
 def parse_tzinfo(tzstring: str) -> Optional[Union[Utc, FixedOffset]]:
     """
     Parses ISO 8601 time zone designators to tzinfo objects.
@@ -59,6 +63,7 @@ def parse_tzinfo(tzstring: str) -> Optional[Union[Utc, FixedOffset]]:
     raise ISO8601Error("%s not a valid time zone info" % tzstring)
 
 
+# @typechecked
 def tz_isoformat(dt: Duration, format: str = "%Z") -> str:
     """
     return time zone offset ISO 8601 formatted.

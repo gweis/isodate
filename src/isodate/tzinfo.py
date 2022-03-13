@@ -7,10 +7,13 @@ import time
 from datetime import datetime, timedelta, tzinfo
 from typing import Callable, Optional, Tuple
 
+# from typeguard import typechecked
+
 ZERO = timedelta(0)
 # constant for zero time offset.
 
 
+# @typechecked
 class Utc(tzinfo):
     """UTC
 
@@ -48,6 +51,7 @@ UTC = Utc()
 # the default instance for UTC.
 
 
+# @typechecked
 def _Utc() -> Utc:
     """
     Helper function for unpickling a Utc object.
@@ -55,6 +59,7 @@ def _Utc() -> Utc:
     return UTC
 
 
+# @typechecked
 class FixedOffset(tzinfo):
     """
     A class building tzinfo objects for fixed-offset time zones.
@@ -114,6 +119,7 @@ DSTDIFF = DSTOFFSET - STDOFFSET
 # difference between local time zone and local DST time zone
 
 
+# @typechecked
 class LocalTimezone(tzinfo):
     """
     A class capturing the platform's idea of local time.

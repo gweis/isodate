@@ -14,6 +14,8 @@ from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import DATE_EXT_COMPLETE, strftime
 
+# from typeguard import typechecked
+
 DATE_REGEX_CACHE = {}
 # A dictionary to cache pre-compiled regular expressions.
 # A set of regular expressions is identified, by number of year digits allowed
@@ -21,6 +23,7 @@ DATE_REGEX_CACHE = {}
 # only for 4 digit years).
 
 
+# @typechecked
 def build_date_regexps(
     yeardigits: int = 4, expanded: bool = False
 ) -> List[re.Pattern[Any]]:
@@ -119,6 +122,7 @@ def build_date_regexps(
     return DATE_REGEX_CACHE[(yeardigits, expanded)]
 
 
+# @typechecked
 def parse_date(
     datestring: str,
     yeardigits: int = 4,
@@ -202,6 +206,7 @@ def parse_date(
     raise ISO8601Error("Unrecognised ISO 8601 date format: %r" % datestring)
 
 
+# @typechecked
 def date_isoformat(
     tdate: Duration, format: str = DATE_EXT_COMPLETE, yeardigits: int = 4
 ) -> str:

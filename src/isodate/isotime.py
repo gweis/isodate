@@ -15,10 +15,13 @@ from isodate.isoerror import ISO8601Error
 from isodate.isostrf import TIME_EXT_COMPLETE, TZ_EXT, strftime
 from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
+# from typeguard import typechecked
+
 TIME_REGEX_CACHE: List[re.Pattern[Any]] = []
 # used to cache regular expressions to parse ISO time strings.
 
 
+# @typechecked
 def build_time_regexps() -> List[re.Pattern[Any]]:
     """
     Build regular expressions to parse ISO time string.
@@ -71,6 +74,7 @@ def build_time_regexps() -> List[re.Pattern[Any]]:
     return TIME_REGEX_CACHE
 
 
+# @typechecked
 def parse_time(timestring: str) -> time:
     """
     Parses ISO 8601 times into datetime.time objects.
@@ -146,6 +150,7 @@ def parse_time(timestring: str) -> time:
     raise ISO8601Error("Unrecognised ISO 8601 time format: %r" % timestring)
 
 
+# @typechecked
 def time_isoformat(ttime: Duration, format: str = TIME_EXT_COMPLETE + TZ_EXT) -> str:
     """
     Format time strings.

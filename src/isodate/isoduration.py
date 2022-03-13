@@ -14,6 +14,8 @@ from isodate.isodatetime import parse_datetime
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import D_DEFAULT, strftime
 
+# from typeguard import typechecked
+
 ISO8601_PERIOD_REGEX = re.compile(
     r"^(?P<sign>[+-])?"
     r"P(?!\b)"
@@ -28,6 +30,7 @@ ISO8601_PERIOD_REGEX = re.compile(
 # regular expression to parse ISO duration strings.
 
 
+# @typechecked
 def parse_duration(
     datestring: Union[str, date], as_timedelta_if_possible: bool = True
 ) -> Union[Duration, timedelta]:
@@ -126,6 +129,7 @@ def parse_duration(
     return ret
 
 
+# @typechecked
 def duration_isoformat(tduration: Duration, format: str = D_DEFAULT) -> str:
     """
     Format duration strings.

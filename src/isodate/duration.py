@@ -4,11 +4,14 @@ This module defines a Duration class.
 The class Duration allows to define durations in years and months and can be
 used as limited replacement for timedelta objects.
 """
-from datetime import timedelta
+from datetime import datetime, timedelta
 from decimal import ROUND_FLOOR, Decimal
 from typing import Any, Dict, Optional, Tuple, Union
 
+# from typeguard import typechecked
 
+
+# @typechecked
 def fquotmod(val: Decimal, low: int, high: int) -> Tuple[int, Union[Decimal, float]]:
     """
     A divmod function with boundaries.
@@ -26,7 +29,8 @@ def fquotmod(val: Decimal, low: int, high: int) -> Tuple[int, Union[Decimal, flo
     return int(div), mod
 
 
-def max_days_in_month(year: int, month: int) -> int:
+# @typechecked
+def max_days_in_month(year: Union[int, Decimal], month: Union[int, Decimal]) -> int:
     """
     Determines the number of days of a specific month in a specific year.
     """
@@ -39,6 +43,7 @@ def max_days_in_month(year: int, month: int) -> int:
     return 28
 
 
+# @typechecked
 class Duration:
     """
     A class which represents a duration.
@@ -302,9 +307,9 @@ class Duration:
 
     def totimedelta(
         self,
-        start: Optional[Union["Duration", timedelta]] = None,
-        end: Optional[Union["Duration", timedelta]] = None,
-    ) -> Union["Duration", timedelta]:
+        start: Optional[Union["Duration", timedelta, datetime]] = None,
+        end: Optional[Union["Duration", timedelta, datetime]] = None,
+    ) -> Union["Duration", timedelta, datetime]:
         """
         Convert this duration into a timedelta object.
 

@@ -12,7 +12,10 @@ from isodate.isoerror import ISO8601Error
 from isodate.isostrf import DATE_EXT_COMPLETE, TIME_EXT_COMPLETE, TZ_EXT, strftime
 from isodate.isotime import parse_time
 
+# from typeguard import typechecked
 
+
+# @typechecked
 def parse_datetime(datetimestring: str) -> datetime:
     """
     Parses ISO 8601 date-times into datetime.datetime objects.
@@ -33,6 +36,7 @@ def parse_datetime(datetimestring: str) -> datetime:
     return datetime.combine(tmpdate, tmptime)
 
 
+# @typechecked
 def datetime_isoformat(
     tdt: Duration, format: str = DATE_EXT_COMPLETE + "T" + TIME_EXT_COMPLETE + TZ_EXT
 ) -> str:

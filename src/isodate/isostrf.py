@@ -14,6 +14,8 @@ from typing import Any, Callable, Dict
 from isodate.duration import Duration
 from isodate.isotzinfo import tz_isoformat
 
+# from typeguard import typechecked
+
 # Date specific format strings
 DATE_BAS_COMPLETE = "%Y%m%d"
 DATE_EXT_COMPLETE = "%Y-%m-%d"
@@ -97,6 +99,7 @@ STRF_D_MAP: Dict[str, Callable[[Duration, int], str]] = {
 }
 
 
+# @typechecked
 def _strfduration(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     """
     this is the work method for timedelta and Duration instances.
@@ -147,6 +150,7 @@ def _strfduration(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     return re.sub("%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p", repl, format)
 
 
+# @typechecked
 def _strfdt(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     """
     this is the work method for time and date instances.
@@ -165,6 +169,7 @@ def _strfdt(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     return re.sub("%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%C|%z|%Z|%h|%%", repl, format)
 
 
+# @typechecked
 def strftime(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     """Directive    Meaning    Notes
     %d    Day of the month as a decimal number [01,31].
