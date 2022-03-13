@@ -12,3 +12,4 @@ parts
 .coverage
 coverage.xml
 htmlcov
+.vscode/
