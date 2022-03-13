@@ -22,6 +22,7 @@ setup(
     # keywords = '',
     url="https://github.com/gweis/isodate/",
     long_description=(read("README.rst") + read("CHANGES.txt") + read("TODO.txt")),
+    python_requires=">=3.7",
     classifiers=[
         "Development Status :: 4 - Beta",
         # 'Environment :: Web Environment',
@@ -36,7 +37,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Internet",
-        ("Topic :: Software Development :" ": Libraries :: Python Modules"),
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     test_suite="isodate.tests.test_suite",
 )
