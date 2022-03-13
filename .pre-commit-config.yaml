@@ -39,4 +39,4 @@ repos:
     rev: v0.940
     hooks:
       - id: mypy
-        exclude: ^tests/
+        exclude: ^src/isodate/tests/
