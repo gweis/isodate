@@ -3,8 +3,9 @@ This module provides an ISO 8601:2004 time zone info parser.
 
 It offers a function to parse the time zone offset as specified by ISO 8601.
 """
+from __future__ import annotations
+
 import re
-from typing import Optional, Union
 
 from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
@@ -22,7 +23,7 @@ TZ_RE = re.compile(TZ_REGEX)
 # @typechecked
 def build_tzinfo(
     tzname: str, tzsign: str = "+", tzhour: int = 0, tzmin: int = 0
-) -> Optional[Union[Utc, FixedOffset]]:
+) -> Utc | FixedOffset | None:
     """
     create a tzinfo instance according to given parameters.
 
@@ -40,7 +41,7 @@ def build_tzinfo(
 
 
 # @typechecked
-def parse_tzinfo(tzstring: str) -> Optional[Union[Utc, FixedOffset]]:
+def parse_tzinfo(tzstring: str) -> Utc | FixedOffset | None:
     """
     Parses ISO 8601 time zone designators to tzinfo objects.
 

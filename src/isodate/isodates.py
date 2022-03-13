@@ -6,9 +6,11 @@ It supports all basic, extended and expanded formats as described in the ISO
 standard. The only limitations it has, are given by the Python datetime.date
 implementation, which does not support dates before 0001-01-01.
 """
+from __future__ import annotations
+
 import re
 from datetime import date, timedelta
-from typing import Any, List
+from typing import Any
 
 from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
@@ -26,7 +28,7 @@ DATE_REGEX_CACHE = {}
 # @typechecked
 def build_date_regexps(
     yeardigits: int = 4, expanded: bool = False
-) -> List[re.Pattern[Any]]:
+) -> list[re.Pattern[Any]]:
     """
     Compile set of regular expressions to parse ISO dates. The expressions will
     be created only if they are not already in REGEX_CACHE.

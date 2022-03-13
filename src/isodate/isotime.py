@@ -5,10 +5,12 @@ Python datetime.time instance.
 It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 """
+from __future__ import annotations
+
 import re
 from datetime import time
 from decimal import ROUND_FLOOR, Decimal
-from typing import Any, List
+from typing import Any
 
 from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
@@ -17,12 +19,12 @@ from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
 # from typeguard import typechecked
 
-TIME_REGEX_CACHE: List[re.Pattern[Any]] = []
+TIME_REGEX_CACHE: list[re.Pattern[Any]] = []
 # used to cache regular expressions to parse ISO time strings.
 
 
 # @typechecked
-def build_time_regexps() -> List[re.Pattern[Any]]:
+def build_time_regexps() -> list[re.Pattern[Any]]:
     """
     Build regular expressions to parse ISO time string.
 

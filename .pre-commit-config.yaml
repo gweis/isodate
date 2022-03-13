@@ -40,8 +40,3 @@ repos:
     hooks:
       - id: mypy
         exclude: ^src/isodate/tests/
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.0
-    hooks:
-      - id: pyupgrade

@@ -4,15 +4,17 @@ This module defines a Duration class.
 The class Duration allows to define durations in years and months and can be
 used as limited replacement for timedelta objects.
 """
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 from decimal import ROUND_FLOOR, Decimal
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any
 
 # from typeguard import typechecked
 
 
 # @typechecked
-def fquotmod(val: Decimal, low: int, high: int) -> Tuple[int, Union[Decimal, float]]:
+def fquotmod(val: Decimal, low: int, high: int) -> tuple[int, Decimal | float]:
     """
     A divmod function with boundaries.
 
@@ -30,7 +32,7 @@ def fquotmod(val: Decimal, low: int, high: int) -> Tuple[int, Union[Decimal, flo
 
 
 # @typechecked
-def max_days_in_month(year: Union[int, Decimal], month: Union[int, Decimal]) -> int:
+def max_days_in_month(year: int | Decimal, month: int | Decimal) -> int:
     """
     Determines the number of days of a specific month in a specific year.
     """
@@ -76,8 +78,8 @@ class Duration:
         minutes: float = 0,
         hours: float = 0,
         weeks: float = 0,
-        months: Union[Decimal, Any] = 0,
-        years: Union[Decimal, Any] = 0,
+        months: Decimal | Any = 0,
+        years: Decimal | Any = 0,
     ) -> None:
         """
         Initialise this Duration instance with the given parameters.
@@ -92,7 +94,7 @@ class Duration:
             days, seconds, microseconds, milliseconds, minutes, hours, weeks
         )
 
-    def __getstate__(self) -> Dict[str, Any]:
+    def __getstate__(self) -> dict[str, Any]:
         return self.__dict__
 
     def __setstate__(self, state: Any) -> None:
@@ -140,7 +142,7 @@ class Duration:
         """
         return hash((self.tdelta, self.months, self.years))
 
-    def __neg__(self) -> "Duration":
+    def __neg__(self) -> Duration:
         """
         A simple unary minus.
 
@@ -150,7 +152,7 @@ class Duration:
         negduration.tdelta = -self.tdelta
         return negduration
 
-    def __add__(self, other: Union["Duration", Any]) -> Union["Duration", Any]:
+    def __add__(self, other: Duration | Any) -> Duration | Any:
         """
         Durations can be added with Duration, timedelta, date and datetime
         objects.
@@ -199,7 +201,7 @@ class Duration:
 
     __radd__ = __add__
 
-    def __mul__(self, other: Union[int, Any]) -> Union["Duration", Any]:
+    def __mul__(self, other: int | Any) -> Duration | Any:
         if isinstance(other, int):
             newduration = Duration(years=self.years * other, months=self.months * other)
             newduration.tdelta = self.tdelta * other
@@ -208,7 +210,7 @@ class Duration:
 
     __rmul__ = __mul__
 
-    def __sub__(self, other: Union["Duration", Any]) -> Union["Duration", Any]:
+    def __sub__(self, other: Duration | Any) -> Duration | Any:
         """
         It is possible to subtract Duration and timedelta objects from Duration
         objects.
@@ -229,7 +231,7 @@ class Duration:
             pass
         return NotImplemented
 
-    def __rsub__(self, other: Union[timedelta, Any]) -> Union[timedelta, Any]:
+    def __rsub__(self, other: timedelta | Any) -> timedelta | Any:
         """
         It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
@@ -271,7 +273,7 @@ class Duration:
             pass
         return NotImplemented
 
-    def __eq__(self, other: Union[timedelta, Any]) -> bool:
+    def __eq__(self, other: timedelta | Any) -> bool:
         """
         If the years, month part and the timedelta part are both equal, then
         the two Durations are considered equal.
@@ -288,7 +290,7 @@ class Duration:
             return self.tdelta == other
         return False
 
-    def __ne__(self, other: Union["Duration", Any]) -> bool:
+    def __ne__(self, other: Duration | Any) -> bool:
         """
         If the years, month part or the timedelta part is not equal, then
         the two Durations are considered not equal.
@@ -307,9 +309,9 @@ class Duration:
 
     def totimedelta(
         self,
-        start: Optional[Union["Duration", timedelta, datetime]] = None,
-        end: Optional[Union["Duration", timedelta, datetime]] = None,
-    ) -> Union["Duration", timedelta, datetime]:
+        start: Duration | timedelta | datetime | None = None,
+        end: Duration | timedelta | datetime | None = None,
+    ) -> Duration | timedelta | datetime:
         """
         Convert this duration into a timedelta object.
 
