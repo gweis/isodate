@@ -4,8 +4,8 @@ import os
 from setuptools import setup
 
 
-def read(*rnames):
-    with open(os.path.join(os.path.dirname(__file__), *rnames)) as read_file:
+def read(rname: str) -> str:
+    with open(os.path.join(os.path.dirname(__file__), rname)) as read_file:
         return read_file.read()
 
 
