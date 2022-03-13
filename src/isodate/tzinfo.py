@@ -37,7 +37,7 @@ class Utc(tzinfo):
         """
         return ZERO
 
-    def __reduce__(self) -> Tuple[Callable, Tuple[()]]:
+    def __reduce__(self) -> Tuple[Callable[[], "Utc"], Tuple[()]]:
         """
         When unpickling a Utc object, return the default instance below, UTC.
         """
@@ -80,21 +80,21 @@ class FixedOffset(tzinfo):
         """
         return self.__offset
 
-    def tzname(self, dt: Optional[datetime]):
+    def tzname(self, dt: Optional[datetime]) -> str:
         """
         Return the time zone name corresponding to the datetime object dt, as a
         string.
         """
         return self.__name
 
-    def dst(self, dt: Optional[datetime]):
+    def dst(self, dt: Optional[datetime]) -> timedelta:
         """
         Return the daylight saving time (DST) adjustment, in minutes east of
         UTC.
         """
         return ZERO
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return nicely formatted repr string.
         """
@@ -119,7 +119,7 @@ class LocalTimezone(tzinfo):
     A class capturing the platform's idea of local time.
     """
 
-    def utcoffset(self, dt: Optional[datetime]):
+    def utcoffset(self, dt: Optional[datetime]) -> timedelta:
         """
         Return offset from UTC in minutes of UTC.
         """
@@ -128,7 +128,7 @@ class LocalTimezone(tzinfo):
         else:
             return STDOFFSET
 
-    def dst(self, dt: Optional[datetime]):
+    def dst(self, dt: Optional[datetime]) -> timedelta:
         """
         Return daylight saving offset.
         """
@@ -137,17 +137,19 @@ class LocalTimezone(tzinfo):
         else:
             return ZERO
 
-    def tzname(self, dt: Optional[datetime]):
+    def tzname(self, dt: Optional[datetime]) -> str:
         """
         Return the time zone name corresponding to the datetime object dt, as a
         string.
         """
         return time.tzname[self._isdst(dt)]
 
-    def _isdst(self, dt):
+    def _isdst(self, dt: Optional[datetime]) -> bool:
         """
         Returns true if DST is active for given datetime object dt.
         """
+        if dt is None:
+            return False
         tt = (
             dt.year,
             dt.month,

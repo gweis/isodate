@@ -6,6 +6,7 @@ It offers a function to parse the time zone offset as specified by ISO 8601.
 import re
 from typing import Optional, Union
 
+from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.tzinfo import UTC, ZERO, FixedOffset, Utc
 
@@ -35,7 +36,7 @@ def build_tzinfo(
     return FixedOffset(tzsign_ * tzhour, tzsign_ * tzmin, tzname)
 
 
-def parse_tzinfo(tzstring):
+def parse_tzinfo(tzstring: str) -> Optional[Union[Utc, FixedOffset]]:
     """
     Parses ISO 8601 time zone designators to tzinfo objects.
 
@@ -58,7 +59,7 @@ def parse_tzinfo(tzstring):
     raise ISO8601Error("%s not a valid time zone info" % tzstring)
 
 
-def tz_isoformat(dt, format="%Z"):
+def tz_isoformat(dt: Duration, format: str = "%Z") -> str:
     """
     return time zone offset ISO 8601 formatted.
     The various ISO formats can be chosen with the format parameter.

@@ -115,11 +115,11 @@ def parse_duration(
         ret = Duration(
             years=groups["years"],
             months=groups["months"],
-            days=groups["days"],
-            hours=groups["hours"],
-            minutes=groups["minutes"],
-            seconds=groups["seconds"],
-            weeks=groups["weeks"],
+            days=float(groups["days"]),
+            hours=float(groups["hours"]),
+            minutes=float(groups["minutes"]),
+            seconds=float(groups["seconds"]),
+            weeks=float(groups["weeks"]),
         )
         if groups["sign"] == "-":
             ret = Duration(0) - ret

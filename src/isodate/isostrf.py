@@ -9,6 +9,7 @@ conforming strings.
 """
 import re
 from datetime import date, timedelta
+from typing import Any, Callable, Dict
 
 from isodate.duration import Duration
 from isodate.isotzinfo import tz_isoformat
@@ -55,7 +56,7 @@ D_ALT_BAS = "P" + DATE_BAS_COMPLETE + "T" + TIME_BAS_COMPLETE
 D_ALT_EXT_ORD = "P" + DATE_EXT_ORD_COMPLETE + "T" + TIME_EXT_COMPLETE
 D_ALT_BAS_ORD = "P" + DATE_BAS_ORD_COMPLETE + "T" + TIME_BAS_COMPLETE
 
-STRF_DT_MAP = {
+STRF_DT_MAP: Dict[str, Callable[[Duration, int], str]] = {
     "%d": lambda tdt, yds: "%02d" % tdt.day,
     "%f": lambda tdt, yds: "%06d" % tdt.microsecond,
     "%H": lambda tdt, yds: "%02d" % tdt.hour,
@@ -66,16 +67,19 @@ STRF_DT_MAP = {
     "%S": lambda tdt, yds: "%02d" % tdt.second,
     "%w": lambda tdt, yds: "%1d" % tdt.isoweekday(),
     "%W": lambda tdt, yds: "%02d" % tdt.isocalendar()[1],
-    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year),
-    "%C": lambda tdt, yds: (((yds != 4) and "+") or "")
-    + (("%%0%dd" % (yds - 2)) % (tdt.year / 100)),
+    "%Y": lambda tdt, yds: str(
+        (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year)
+    ),
+    "%C": lambda tdt, yds: str(
+        (((yds != 4) and "+") or "") + (("%%0%dd" % (yds - 2)) % (tdt.year / 100))
+    ),
     "%h": lambda tdt, yds: tz_isoformat(tdt, "%h"),
     "%Z": lambda tdt, yds: tz_isoformat(tdt, "%Z"),
     "%z": lambda tdt, yds: tz_isoformat(tdt, "%z"),
     "%%": lambda tdt, yds: "%",
 }
 
-STRF_D_MAP = {
+STRF_D_MAP: Dict[str, Callable[[Duration, int], str]] = {
     "%d": lambda tdt, yds: "%02d" % tdt.days,
     "%f": lambda tdt, yds: "%06d" % tdt.microseconds,
     "%H": lambda tdt, yds: "%02d" % (tdt.seconds / 60 / 60),
@@ -83,10 +87,12 @@ STRF_D_MAP = {
     "%M": lambda tdt, yds: "%02d" % ((tdt.seconds / 60) % 60),
     "%S": lambda tdt, yds: "%02d" % (tdt.seconds % 60),
     "%W": lambda tdt, yds: "%02d" % (abs(tdt.days / 7)),
-    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "")
-    + (("%%0%dd" % yds) % tdt.years),
-    "%C": lambda tdt, yds: (((yds != 4) and "+") or "")
-    + (("%%0%dd" % (yds - 2)) % (tdt.years / 100)),
+    "%Y": lambda tdt, yds: str(
+        (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.years)
+    ),
+    "%C": lambda tdt, yds: str(
+        (((yds != 4) and "+") or "") + (("%%0%dd" % (yds - 2)) % (tdt.years / 100))
+    ),
     "%%": lambda tdt, yds: "%",
 }
 
@@ -98,7 +104,7 @@ def _strfduration(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     see strftime for more details.
     """
 
-    def repl(match):
+    def repl(match: Any) -> Any:
         """
         lookup format command and return corresponding replacement.
         """
@@ -141,14 +147,14 @@ def _strfduration(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     return re.sub("%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p", repl, format)
 
 
-def _strfdt(tdt, format, yeardigits=4):
+def _strfdt(tdt: Duration, format: str, yeardigits: int = 4) -> str:
     """
     this is the work method for time and date instances.
 
     see strftime for more details.
     """
 
-    def repl(match):
+    def repl(match: Any) -> Any:
         """
         lookup format command and return corresponding replacement.
         """

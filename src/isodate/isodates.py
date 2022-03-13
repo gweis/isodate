@@ -8,8 +8,9 @@ implementation, which does not support dates before 0001-01-01.
 """
 import re
 from datetime import date, timedelta
-from typing import List
+from typing import Any, List
 
+from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import DATE_EXT_COMPLETE, strftime
 
@@ -20,7 +21,9 @@ DATE_REGEX_CACHE = {}
 # only for 4 digit years).
 
 
-def build_date_regexps(yeardigits: int = 4, expanded: bool = False) -> List[re.Pattern]:
+def build_date_regexps(
+    yeardigits: int = 4, expanded: bool = False
+) -> List[re.Pattern[Any]]:
     """
     Compile set of regular expressions to parse ISO dates. The expressions will
     be created only if they are not already in REGEX_CACHE.
@@ -43,7 +46,7 @@ def build_date_regexps(yeardigits: int = 4, expanded: bool = False) -> List[re.P
         else:
             sign = 0
 
-        def add_re(regex_text):
+        def add_re(regex_text: str) -> None:
             cache_entry.append(re.compile(r"\A" + regex_text + r"\Z"))
 
         # 1. complete dates:
@@ -199,7 +202,9 @@ def parse_date(
     raise ISO8601Error("Unrecognised ISO 8601 date format: %r" % datestring)
 
 
-def date_isoformat(tdate, format=DATE_EXT_COMPLETE, yeardigits=4):
+def date_isoformat(
+    tdate: Duration, format: str = DATE_EXT_COMPLETE, yeardigits: int = 4
+) -> str:
     """
     Format date strings.
 

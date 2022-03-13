@@ -8,17 +8,18 @@ as described in the ISO standard.
 import re
 from datetime import time
 from decimal import ROUND_FLOOR, Decimal
-from typing import List
+from typing import Any, List
 
+from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import TIME_EXT_COMPLETE, TZ_EXT, strftime
 from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
-TIME_REGEX_CACHE: List[re.Pattern] = []
+TIME_REGEX_CACHE: List[re.Pattern[Any]] = []
 # used to cache regular expressions to parse ISO time strings.
 
 
-def build_time_regexps() -> List[re.Pattern]:
+def build_time_regexps() -> List[re.Pattern[Any]]:
     """
     Build regular expressions to parse ISO time string.
 
@@ -145,7 +146,7 @@ def parse_time(timestring: str) -> time:
     raise ISO8601Error("Unrecognised ISO 8601 time format: %r" % timestring)
 
 
-def time_isoformat(ttime, format=TIME_EXT_COMPLETE + TZ_EXT):
+def time_isoformat(ttime: Duration, format: str = TIME_EXT_COMPLETE + TZ_EXT) -> str:
     """
     Format time strings.
 
