@@ -13,6 +13,9 @@ setup(
     name="isodate",
     version="0.7.0.dev0",
     packages=["isodate", "isodate.tests"],
+    package_data={
+        "isodate": ["py.typed"],
+    },
     package_dir={"": "src"},
     # PyPI metadata
     author="Gerhard Weis",
