@@ -3,21 +3,32 @@ Test cases for the isodate module.
 """
 import unittest
 from datetime import date
-from isodate import parse_date, ISO8601Error, date_isoformat
-from isodate import DATE_CENTURY, DATE_YEAR
-from isodate import DATE_BAS_MONTH, DATE_EXT_MONTH
-from isodate import DATE_EXT_COMPLETE, DATE_BAS_COMPLETE
-from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
-from isodate import DATE_BAS_WEEK, DATE_BAS_WEEK_COMPLETE
-from isodate import DATE_EXT_WEEK, DATE_EXT_WEEK_COMPLETE
-from typing import Optional
+from typing import Dict, List, Optional, Tuple
 from unittest.suite import TestSuite
+
+from isodate import (
+    DATE_BAS_COMPLETE,
+    DATE_BAS_MONTH,
+    DATE_BAS_ORD_COMPLETE,
+    DATE_BAS_WEEK,
+    DATE_BAS_WEEK_COMPLETE,
+    DATE_CENTURY,
+    DATE_EXT_COMPLETE,
+    DATE_EXT_MONTH,
+    DATE_EXT_ORD_COMPLETE,
+    DATE_EXT_WEEK,
+    DATE_EXT_WEEK_COMPLETE,
+    DATE_YEAR,
+    ISO8601Error,
+    date_isoformat,
+    parse_date,
+)
 
 # the following list contains tuples of ISO date strings and the expected
 # result from the parse_date method. A result of None means an ISO8601Error
 # is expected. The test cases are grouped into dates with 4 digit years
 # and 6 digit years.
-TEST_CASES = {
+TEST_CASES: Dict[int, List[Tuple[str, Optional[date], str]]] = {
     4: [
         ("19", date(1901, 1, 1), DATE_CENTURY),
         ("1985", date(1985, 1, 1), DATE_YEAR),
@@ -51,7 +62,9 @@ TEST_CASES = {
 }
 
 
-def create_testcase(yeardigits: int, datestring: str, expectation: Optional[date], format: str) -> TestSuite:
+def create_testcase(
+    yeardigits: int, datestring: str, expectation: Optional[date], format: str
+) -> TestSuite:
     """
     Create a TestCase class for a specific test.
 
