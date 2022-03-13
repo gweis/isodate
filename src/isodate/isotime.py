@@ -6,13 +6,13 @@ It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 """
 import re
-from decimal import Decimal, ROUND_FLOOR
 from datetime import time
-
-from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
-from isodate.isoerror import ISO8601Error
-from isodate.isotzinfo import TZ_REGEX, build_tzinfo
+from decimal import ROUND_FLOOR, Decimal
 from typing import List
+
+from isodate.isoerror import ISO8601Error
+from isodate.isostrf import TIME_EXT_COMPLETE, TZ_EXT, strftime
+from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
 TIME_REGEX_CACHE: List[re.Pattern] = []
 # used to cache regular expressions to parse ISO time strings.
@@ -130,7 +130,7 @@ def parse_time(timestring: str) -> time:
                     tzinfo,
                 )
             else:
-                microsecond, second, minute = Decimal('0'), Decimal('0'), Decimal('0')
+                microsecond, second, minute = Decimal("0"), Decimal("0"), Decimal("0")
             hour = Decimal(groups["hour"])
             minute = (hour - int(hour)) * 60
             second = (minute - int(minute)) * 60

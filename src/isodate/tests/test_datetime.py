@@ -3,16 +3,29 @@ Test cases for the isodatetime module.
 """
 import unittest
 from datetime import datetime
-
-from isodate import parse_datetime, UTC, FixedOffset, datetime_isoformat
-from isodate import ISO8601Error
-from isodate import DATE_BAS_COMPLETE, TIME_BAS_MINUTE, TIME_BAS_COMPLETE
-from isodate import DATE_EXT_COMPLETE, TIME_EXT_MINUTE, TIME_EXT_COMPLETE
-from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
-from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
-from isodate import DATE_BAS_WEEK_COMPLETE, DATE_EXT_WEEK_COMPLETE
 from typing import Optional
 from unittest.suite import TestSuite
+
+from isodate import (
+    DATE_BAS_COMPLETE,
+    DATE_BAS_ORD_COMPLETE,
+    DATE_BAS_WEEK_COMPLETE,
+    DATE_EXT_COMPLETE,
+    DATE_EXT_ORD_COMPLETE,
+    DATE_EXT_WEEK_COMPLETE,
+    TIME_BAS_COMPLETE,
+    TIME_BAS_MINUTE,
+    TIME_EXT_COMPLETE,
+    TIME_EXT_MINUTE,
+    TZ_BAS,
+    TZ_EXT,
+    TZ_HOUR,
+    UTC,
+    FixedOffset,
+    ISO8601Error,
+    datetime_isoformat,
+    parse_datetime,
+)
 
 # the following list contains tuples of ISO datetime strings and the expected
 # result from the parse_datetime method. A result of None means an ISO8601Error
@@ -126,7 +139,9 @@ TEST_CASES = [
 ]
 
 
-def create_testcase(datetimestring: str, expectation: Optional[datetime], format: str, output: str) -> TestSuite:
+def create_testcase(
+    datetimestring: str, expectation: Optional[datetime], format: str, output: str
+) -> TestSuite:
     """
     Create a TestCase class for a specific test.
 

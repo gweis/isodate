@@ -3,14 +3,24 @@ Test cases for the isotime module.
 """
 import unittest
 from datetime import time
-
-from isodate import parse_time, UTC, FixedOffset, ISO8601Error, time_isoformat
-from isodate import TIME_BAS_COMPLETE, TIME_BAS_MINUTE
-from isodate import TIME_EXT_COMPLETE, TIME_EXT_MINUTE
-from isodate import TIME_HOUR
-from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
 from typing import Optional
 from unittest.suite import TestSuite
+
+from isodate import (
+    TIME_BAS_COMPLETE,
+    TIME_BAS_MINUTE,
+    TIME_EXT_COMPLETE,
+    TIME_EXT_MINUTE,
+    TIME_HOUR,
+    TZ_BAS,
+    TZ_EXT,
+    TZ_HOUR,
+    UTC,
+    FixedOffset,
+    ISO8601Error,
+    parse_time,
+    time_isoformat,
+)
 
 # the following list contains tuples of ISO time strings and the expected
 # result from the parse_time method. A result of None means an ISO8601Error
@@ -94,7 +104,9 @@ TEST_CASES = [
 ]
 
 
-def create_testcase(timestring: str, expectation: Optional[time], format: Optional[str]) -> TestSuite:
+def create_testcase(
+    timestring: str, expectation: Optional[time], format: Optional[str]
+) -> TestSuite:
     """
     Create a TestCase class for a specific test.
 

@@ -1,9 +1,8 @@
-import unittest
-
 import pickle
+import unittest
+from unittest.suite import TestSuite
 
 import isodate
-from unittest.suite import TestSuite
 
 
 class TestPickle(unittest.TestCase):

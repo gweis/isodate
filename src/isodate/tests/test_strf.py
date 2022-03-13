@@ -1,15 +1,12 @@
 """
 Test cases for the isodate module.
 """
-import unittest
 import time
+import unittest
 from datetime import datetime, timedelta
-from isodate import strftime
-from isodate import LOCAL
-from isodate import DT_EXT_COMPLETE
-from isodate import tzinfo
 from unittest.suite import TestSuite
 
+from isodate import DT_EXT_COMPLETE, LOCAL, strftime, tzinfo
 
 TEST_CASES = (
     (

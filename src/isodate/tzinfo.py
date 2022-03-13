@@ -3,9 +3,9 @@ This module provides some datetime.tzinfo implementations.
 
 All those classes are taken from the Python documentation.
 """
-from datetime import datetime, timedelta, tzinfo
 import time
-from typing import Callable, Tuple, Optional
+from datetime import datetime, timedelta, tzinfo
+from typing import Callable, Optional, Tuple
 
 ZERO = timedelta(0)
 # constant for zero time offset.
@@ -63,7 +63,9 @@ class FixedOffset(tzinfo):
     build a UTC tzinfo object.
     """
 
-    def __init__(self, offset_hours: int=0, offset_minutes: int=0, name: str="UTC") -> None:
+    def __init__(
+        self, offset_hours: int = 0, offset_minutes: int = 0, name: str = "UTC"
+    ) -> None:
         """
         Initialise an instance with time offset and name.
         The time offset should be positive for time zones east of UTC

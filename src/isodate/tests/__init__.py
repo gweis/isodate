@@ -4,13 +4,14 @@ Collect all test suites into one TestSuite instance.
 
 import unittest
 import warnings
+
 from isodate.tests import (
     test_date,
-    test_time,
     test_datetime,
     test_duration,
-    test_strf,
     test_pickle,
+    test_strf,
+    test_time,
 )
 
 
