@@ -1,9 +1,10 @@
 """
 Test cases for the isodate module.
 """
+from __future__ import annotations
+
 import unittest
 from datetime import date
-from typing import Dict, List, Optional, Tuple
 from unittest.suite import TestSuite
 
 from isodate import (
@@ -28,7 +29,7 @@ from isodate import (
 # result from the parse_date method. A result of None means an ISO8601Error
 # is expected. The test cases are grouped into dates with 4 digit years
 # and 6 digit years.
-TEST_CASES: Dict[int, List[Tuple[str, Optional[date], str]]] = {
+TEST_CASES: dict[int, list[tuple[str, date | None, str]]] = {
     4: [
         ("19", date(1901, 1, 1), DATE_CENTURY),
         ("1985", date(1985, 1, 1), DATE_YEAR),
@@ -63,7 +64,7 @@ TEST_CASES: Dict[int, List[Tuple[str, Optional[date], str]]] = {
 
 
 def create_testcase(
-    yeardigits: int, datestring: str, expectation: Optional[date], format: str
+    yeardigits: int, datestring: str, expectation: date | None, format: str
 ) -> TestSuite:
     """
     Create a TestCase class for a specific test.

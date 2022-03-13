@@ -1,9 +1,10 @@
 """
 Test cases for the isodatetime module.
 """
+from __future__ import annotations
+
 import unittest
 from datetime import datetime
-from typing import Optional
 from unittest.suite import TestSuite
 
 from isodate import (
@@ -140,7 +141,7 @@ TEST_CASES = [
 
 
 def create_testcase(
-    datetimestring: str, expectation: Optional[datetime], format: str, output: str
+    datetimestring: str, expectation: datetime | None, format: str, output: str
 ) -> TestSuite:
     """
     Create a TestCase class for a specific test.
