@@ -34,7 +34,7 @@ def build_tzinfo(tzname, tzsign="+", tzhour=0, tzmin=0):
 
 def parse_tzinfo(tzstring):
     """
-    Parses ISO 8601 time zone designators to tzinfo objecs.
+    Parses ISO 8601 time zone designators to tzinfo objects.
 
     A time zone designator can be in the following format:
               no designator indicates local time zone

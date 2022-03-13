@@ -76,7 +76,7 @@ def parse_time(timestring):
     Following ISO 8601 formats are supported:
       (as decimal separator a ',' or a '.' is allowed)
       hhmmss.ssTZD    basic complete time
-      hh:mm:ss.ssTZD  extended compelte time
+      hh:mm:ss.ssTZD  extended complete time
       hhmm.mmTZD      basic reduced accuracy time
       hh:mm.mmTZD     extended reduced accuracy time
       hh.hhTZD        basic reduced accuracy time

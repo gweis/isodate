@@ -56,7 +56,7 @@ def create_testcase(dt, format, expectation):
             tm_idst=1
             """
             tt = self.ORIG["localtime"](secs)
-            # befor 2000 everything is dst, after 2000 no dst.
+            # before 2000 everything is dst, after 2000 no dst.
             if tt.tm_year < 2000:
                 dst = 1
             else:
@@ -80,7 +80,7 @@ def create_testcase(dt, format, expectation):
             self.ORIG["DSTOFFSET"] = tzinfo.DSTOFFSET
             self.ORIG["DSTDIFF"] = tzinfo.DSTDIFF
             self.ORIG["localtime"] = time.localtime
-            # ovveride all saved values with fixtures.
+            # override all saved values with fixtures.
             # calculate LOCAL TZ offset, so that this test runs in
             # every time zone
             tzinfo.STDOFFSET = timedelta(seconds=36000)  # assume LOC = +10:00

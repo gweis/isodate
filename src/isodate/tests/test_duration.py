@@ -133,7 +133,7 @@ DATE_TEST_CASES = (
     ),
 )
 
-# A list of test cases of additon of date/datetime and Duration. The results
+# A list of test cases of addition of date/datetime and Duration. The results
 # are compared against a given expected result.
 DATE_CALC_TEST_CASES = (
     (date(2000, 2, 1), Duration(years=1, months=1), date(2001, 3, 1)),
@@ -267,7 +267,7 @@ class DurationTest(unittest.TestCase):
 
     def test_parseerror(self):
         """
-        Test for unparseable duration string.
+        Test for unparsable duration string.
         """
         self.assertRaises(ISO8601Error, parse_duration, "T10:10:10")
 
