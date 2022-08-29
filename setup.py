@@ -11,7 +11,7 @@ def read(*rnames):
 setup(
     name="isodate",
     version="0.7.0.dev0",
-    packages=["isodate", "isodate.tests"],
+    packages=["isodate"],
     package_dir={"": "src"},
     # PyPI metadata
     author="Gerhard Weis",
