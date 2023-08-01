@@ -4,7 +4,7 @@ This module provides an ISO 8601:2004 duration parser.
 It also provides a wrapper to strftime. This wrapper makes it easier to
 format timedelta or Duration instances as ISO conforming strings.
 """
-from datetime import timedelta
+from datetime import date, time, timedelta
 from decimal import Decimal
 import re
 
@@ -27,7 +27,7 @@ ISO8601_PERIOD_REGEX = re.compile(
 # regular expression to parse ISO duration strings.
 
 
-def parse_duration(datestring, as_timedelta_if_possible=True):
+def parse_duration(datestring: str, as_timedelta_if_possible: bool=True) -> timedelta | Duration:
     """
     Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
@@ -122,7 +122,7 @@ def parse_duration(datestring, as_timedelta_if_possible=True):
     return ret
 
 
-def duration_isoformat(tduration, format=D_DEFAULT):
+def duration_isoformat(tduration: timedelta | Duration | time | date, format: str=D_DEFAULT) -> str:
     """
     Format duration strings.
 

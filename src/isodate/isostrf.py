@@ -8,7 +8,8 @@ pr-defined format strings in this module to make ease producing of ISO 8601
 conforming strings.
 """
 import re
-from datetime import date, timedelta
+from datetime import date, time, timedelta
+from typing import Callable
 
 from isodate.duration import Duration
 from isodate.isotzinfo import tz_isoformat
@@ -55,7 +56,7 @@ D_ALT_BAS = "P" + DATE_BAS_COMPLETE + "T" + TIME_BAS_COMPLETE
 D_ALT_EXT_ORD = "P" + DATE_EXT_ORD_COMPLETE + "T" + TIME_EXT_COMPLETE
 D_ALT_BAS_ORD = "P" + DATE_BAS_ORD_COMPLETE + "T" + TIME_BAS_COMPLETE
 
-STRF_DT_MAP = {
+STRF_DT_MAP: dict[str, Callable[[time | date, int], str]] = {
     "%d": lambda tdt, yds: "%02d" % tdt.day,
     "%f": lambda tdt, yds: "%06d" % tdt.microsecond,
     "%H": lambda tdt, yds: "%02d" % tdt.hour,
@@ -75,7 +76,7 @@ STRF_DT_MAP = {
     "%%": lambda tdt, yds: "%",
 }
 
-STRF_D_MAP = {
+STRF_D_MAP: dict[str, Callable[[timedelta | Duration, int], str]] = {
     "%d": lambda tdt, yds: "%02d" % tdt.days,
     "%f": lambda tdt, yds: "%06d" % tdt.microseconds,
     "%H": lambda tdt, yds: "%02d" % (tdt.seconds / 60 / 60),
@@ -91,21 +92,21 @@ STRF_D_MAP = {
 }
 
 
-def _strfduration(tdt, format, yeardigits=4):
+def _strfduration(tdt: timedelta | Duration, format: str, yeardigits: int=4) -> str:
     """
     this is the work method for timedelta and Duration instances.
 
     see strftime for more details.
     """
 
-    def repl(match):
+    def repl(match: re.Match[str]) -> str:
         """
         lookup format command and return corresponding replacement.
         """
         if match.group(0) in STRF_D_MAP:
             return STRF_D_MAP[match.group(0)](tdt, yeardigits)
         elif match.group(0) == "%P":
-            ret = []
+            ret = list[str]()
             if isinstance(tdt, Duration):
                 if tdt.years:
                     ret.append("%sY" % abs(tdt.years))
@@ -133,7 +134,7 @@ def _strfduration(tdt, format, yeardigits=4):
                         ret.append("%d" % seconds)
                     ret.append("S")
             # at least one component has to be there.
-            return ret and "".join(ret) or "0D"
+            return "".join(ret) if ret else "0D"
         elif match.group(0) == "%p":
             return str(abs(tdt.days // 7)) + "W"
         return match.group(0)
@@ -141,14 +142,14 @@ def _strfduration(tdt, format, yeardigits=4):
     return re.sub("%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p", repl, format)
 
 
-def _strfdt(tdt, format, yeardigits=4):
+def _strfdt(tdt: time | date, format: str, yeardigits: int=4) -> str:
     """
     this is the work method for time and date instances.
 
     see strftime for more details.
     """
 
-    def repl(match):
+    def repl(match: re.Match[str]) -> str:
         """
         lookup format command and return corresponding replacement.
         """
@@ -159,7 +160,7 @@ def _strfdt(tdt, format, yeardigits=4):
     return re.sub("%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%C|%z|%Z|%h|%%", repl, format)
 
 
-def strftime(tdt, format, yeardigits=4):
+def strftime(tdt: timedelta | Duration | time | date, format: str, yeardigits: int=4) -> str:
     """Directive    Meaning    Notes
     %d    Day of the month as a decimal number [01,31].
     %f    Microsecond as a decimal number [0,999999], zero-padded

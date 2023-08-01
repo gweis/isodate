@@ -7,19 +7,20 @@ standard. The only limitations it has, are given by the Python datetime.date
 implementation, which does not support dates before 0001-01-01.
 """
 import re
-from datetime import date, timedelta
+from datetime import date, time, timedelta
 
+from isodate.duration import Duration
 from isodate.isostrf import strftime, DATE_EXT_COMPLETE
 from isodate.isoerror import ISO8601Error
 
-DATE_REGEX_CACHE = {}
+DATE_REGEX_CACHE: dict[tuple[int, bool], list[re.Pattern[str]]] = {}
 # A dictionary to cache pre-compiled regular expressions.
 # A set of regular expressions is identified, by number of year digits allowed
 # and whether a plus/minus sign is required or not. (This option is changeable
 # only for 4 digit years).
 
 
-def build_date_regexps(yeardigits=4, expanded=False):
+def build_date_regexps(yeardigits: int=4, expanded: bool=False) -> list[re.Pattern[str]]:
     """
     Compile set of regular expressions to parse ISO dates. The expressions will
     be created only if they are not already in REGEX_CACHE.
@@ -34,7 +35,7 @@ def build_date_regexps(yeardigits=4, expanded=False):
     if yeardigits != 4:
         expanded = True
     if (yeardigits, expanded) not in DATE_REGEX_CACHE:
-        cache_entry = []
+        cache_entry = list[re.Pattern[str]]()
         # ISO 8601 expanded DATE formats allow an arbitrary number of year
         # digits with a leading +/- sign.
         if expanded:
@@ -42,7 +43,7 @@ def build_date_regexps(yeardigits=4, expanded=False):
         else:
             sign = 0
 
-        def add_re(regex_text):
+        def add_re(regex_text: str) -> None:
             cache_entry.append(re.compile(r"\A" + regex_text + r"\Z"))
 
         # 1. complete dates:
@@ -115,7 +116,7 @@ def build_date_regexps(yeardigits=4, expanded=False):
     return DATE_REGEX_CACHE[(yeardigits, expanded)]
 
 
-def parse_date(datestring, yeardigits=4, expanded=False, defaultmonth=1, defaultday=1):
+def parse_date(datestring: str, yeardigits: int=4, expanded: bool=False, defaultmonth: int=1, defaultday: int=1) -> date:
     """
     Parse an ISO 8601 date string into a datetime.date object.
 
@@ -192,7 +193,7 @@ def parse_date(datestring, yeardigits=4, expanded=False, defaultmonth=1, default
     raise ISO8601Error("Unrecognised ISO 8601 date format: %r" % datestring)
 
 
-def date_isoformat(tdate, format=DATE_EXT_COMPLETE, yeardigits=4):
+def date_isoformat(tdate: timedelta | Duration | time | date, format: str=DATE_EXT_COMPLETE, yeardigits: int=4) -> str:
     """
     Format date strings.
 
