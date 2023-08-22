@@ -4,6 +4,8 @@ This module defines a Duration class.
 The class Duration allows to define durations in years and months and can be
 used as limited replacement for timedelta objects.
 """
+from __future__ import annotations
+
 from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_FLOOR
 
@@ -144,7 +146,7 @@ class Duration:
         negduration.tdelta = -self.tdelta
         return negduration
 
-    def __add__(self, other: "Duration | timedelta | date | datetime") -> "Duration | date | datetime":
+    def __add__(self, other: Duration | timedelta | date | datetime) -> Duration | date | datetime:
         """
         Durations can be added with Duration, timedelta, date and datetime
         objects.
@@ -193,7 +195,7 @@ class Duration:
 
     __radd__ = __add__
 
-    def __mul__(self, other: int) -> "Duration":
+    def __mul__(self, other: int) -> Duration:
         if isinstance(other, int):
             newduration = Duration(years=self.years * other, months=self.months * other)
             newduration.tdelta = self.tdelta * other
@@ -202,7 +204,7 @@ class Duration:
 
     __rmul__ = __mul__
 
-    def __sub__(self, other: "Duration | timedelta") -> "Duration":
+    def __sub__(self, other: Duration | timedelta) -> Duration:
         """
         It is possible to subtract Duration and timedelta objects from Duration
         objects.
@@ -223,7 +225,7 @@ class Duration:
             pass
         return NotImplemented
 
-    def __rsub__(self, other: "Duration | date | datetime | timedelta"):
+    def __rsub__(self, other: Duration | date | datetime | timedelta):
         """
         It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
@@ -265,7 +267,7 @@ class Duration:
             pass
         return NotImplemented
 
-    def __eq__(self, other: "Duration | timedelta"):
+    def __eq__(self, other: object):
         """
         If the years, month part and the timedelta part are both equal, then
         the two Durations are considered equal.
@@ -282,7 +284,7 @@ class Duration:
             return self.tdelta == other
         return False
 
-    def __ne__(self, other: "Duration | timedelta"):
+    def __ne__(self, other: object):
         """
         If the years, month part or the timedelta part is not equal, then
         the two Durations are considered not equal.

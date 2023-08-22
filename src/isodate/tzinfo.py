@@ -3,9 +3,14 @@ This module provides some datetime.tzinfo implementations.
 
 All those classes are taken from the Python documentation.
 """
-from datetime import datetime, timedelta, tzinfo
+from __future__ import annotations
+
 import time
-from typing import Literal
+from typing import Callable, TYPE_CHECKING
+from datetime import datetime, timedelta, tzinfo
+
+if TYPE_CHECKING:
+    from typing_extensions import Literal
 
 ZERO = timedelta(0)
 # constant for zero time offset.

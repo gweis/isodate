@@ -7,6 +7,8 @@ possible with standard Python date/time objects. Furthermore there are several
 pr-defined format strings in this module to make ease producing of ISO 8601
 conforming strings.
 """
+from __future__ import annotations
+
 import re
 from datetime import date, time, timedelta
 from typing import Callable
@@ -106,7 +108,7 @@ def _strfduration(tdt: timedelta | Duration, format: str, yeardigits: int=4) -> 
         if match.group(0) in STRF_D_MAP:
             return STRF_D_MAP[match.group(0)](tdt, yeardigits)
         elif match.group(0) == "%P":
-            ret = list[str]()
+            ret: list[str] = []
             if isinstance(tdt, Duration):
                 if tdt.years:
                     ret.append("%sY" % abs(tdt.years))
