@@ -6,6 +6,8 @@ It supports all basic, extended and expanded formats as described in the ISO
 standard. The only limitations it has, are given by the Python datetime.date
 implementation, which does not support dates before 0001-01-01.
 """
+from __future__ import annotations
+
 import re
 from datetime import date, time, timedelta
 
@@ -35,7 +37,7 @@ def build_date_regexps(yeardigits: int=4, expanded: bool=False) -> list[re.Patte
     if yeardigits != 4:
         expanded = True
     if (yeardigits, expanded) not in DATE_REGEX_CACHE:
-        cache_entry = list[re.Pattern[str]]()
+        cache_entry: list[re.Pattern[str]] = []
         # ISO 8601 expanded DATE formats allow an arbitrary number of year
         # digits with a leading +/- sign.
         if expanded:

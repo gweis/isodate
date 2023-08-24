@@ -4,6 +4,8 @@ This module defines a method to parse an ISO 8601:2004 date time string.
 For this job it uses the parse_date and parse_time methods defined in date
 and time module.
 """
+from __future__ import annotations
+
 from datetime import date, datetime, time, timedelta
 
 from isodate.duration import Duration

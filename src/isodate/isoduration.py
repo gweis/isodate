@@ -4,6 +4,8 @@ This module provides an ISO 8601:2004 duration parser.
 It also provides a wrapper to strftime. This wrapper makes it easier to
 format timedelta or Duration instances as ISO conforming strings.
 """
+from __future__ import annotations
+
 from datetime import date, time, timedelta
 from decimal import Decimal
 import re
