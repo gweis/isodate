@@ -39,5 +39,6 @@ setup(
         "Topic :: Internet",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
+    include_package_data=True,
     test_suite="isodate.tests.test_suite",
 )
