@@ -4,7 +4,7 @@ This module defines a method to parse an ISO 8601:2004 date time string.
 For this job it uses the parse_date and parse_time methods defined in date
 and time module.
 """
-from datetime import datetime
+from datetime import datetime, timedelta, time
 
 from isodate.isostrf import strftime
 from isodate.isostrf import DATE_EXT_COMPLETE, TIME_EXT_COMPLETE, TZ_EXT
@@ -29,7 +29,14 @@ def parse_datetime(datetimestring):
             " parse datetime string %r" % datetimestring
         )
     tmpdate = parse_date(datestring)
-    tmptime = parse_time(timestring)
+    try:
+        tmptime = parse_time(timestring)
+    except ValueError:
+        if timestring == "24:00:00":
+            tmpdate = tmpdate + timedelta(days=1)
+            tmptime = time()
+        else:
+            raise
     return datetime.combine(tmpdate, tmptime)
 
 
