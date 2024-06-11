@@ -14,6 +14,9 @@ ISO 8601 date/time parser
 .. image:: https://img.shields.io/pypi/l/isodate.svg
     :target: https://pypi.python.org/pypi/isodate/
     :alt: License
+.. image:: https://assets.piptrends.com/get-last-month-downloads-badge/isodate.svg
+    :alt: isodate Downloads Last Month by pip Trends
+    :target: https://piptrends.com/package/isodate
 
 
 This module implements ISO 8601 date, time and duration parsing.
