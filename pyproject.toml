@@ -1,13 +1,10 @@
 [project]
 name = "isodate"
 description = "An ISO 8601 date/time/duration parser and formatter"
-# TODO: long_description = "file: README.rst, CHANGES.txt, TODO.txt"
-#  TODO: url = "https://github.com/gweis/isodate/"
 authors = [{name="Gerhard Weis"}]
 # keywords =
 license = {file = "LICENSE"}
 # license = {text="BSD-3-Clause"}
-#TODO:  license_files = "LICENSE"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -26,7 +23,13 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 # requires-python = ">3.7"
-dynamic = ["version"]
+dynamic = ["version", "readme"]
+
+[project.urls]
+Homepage = "https://github.com/gweis/isodate/"
+
+[tool.setuptools.dynamic]
+readme = {file=["README.rst", "CHANGES.txt", "TODO.txt"], content-type="text/x-rst"}
 
 
 [build-system]
