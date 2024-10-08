@@ -2,13 +2,13 @@
 CHANGES
 =======
 
-0.7.1 (unreleased)
+0.7.3 (unreleased)
 ------------------
 
 - no changes yet
 
 
-0.7.0 (2024-10-08)
+0.7.2 (2024-10-08)
 ------------------
 
 - drop end of life python versions
@@ -20,6 +20,7 @@ Potentially breaking changes:
 
 - Fractional seconds are cut off to microseconds (always round down)
 - Allow control over return type of parse_duration #64 (Felix Claessen)
+- Python >= 3.7 required
 
 
 0.6.1 (2021-12-13)
