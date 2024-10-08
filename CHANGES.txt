@@ -2,12 +2,23 @@
 CHANGES
 =======
 
-0.7.0 (unreleased)
+0.7.1 (unreleased)
+------------------
+
+- no changes yet
+
+
+0.7.0 (2024-10-08)
 ------------------
 
 - drop end of life python versions
 - Don't match garbage characters at the end of parsed strings #16 (Gabriel de Perthuis)
-- Breaking: fractional seconds are cut off to microseconds (round down)
+
+
+Potentially breaking changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fractional seconds are cut off to microseconds (always round down)
 - Allow control over return type of parse_duration #64 (Felix Claessen)
 
 

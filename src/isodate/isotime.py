@@ -5,12 +5,13 @@ Python datetime.time instance.
 It supports all basic and extended formats including time zone specifications
 as described in the ISO standard.
 """
-import re
-from decimal import Decimal, ROUND_FLOOR
-from datetime import time
 
-from isodate.isostrf import strftime, TIME_EXT_COMPLETE, TZ_EXT
+import re
+from datetime import time
+from decimal import ROUND_FLOOR, Decimal
+
 from isodate.isoerror import ISO8601Error
+from isodate.isostrf import TIME_EXT_COMPLETE, TZ_EXT, strftime
 from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
 TIME_REGEX_CACHE = []

@@ -6,11 +6,12 @@ It supports all basic, extended and expanded formats as described in the ISO
 standard. The only limitations it has, are given by the Python datetime.date
 implementation, which does not support dates before 0001-01-01.
 """
+
 import re
 from datetime import date, timedelta
 
-from isodate.isostrf import strftime, DATE_EXT_COMPLETE
 from isodate.isoerror import ISO8601Error
+from isodate.isostrf import DATE_EXT_COMPLETE, strftime
 
 DATE_REGEX_CACHE = {}
 # A dictionary to cache pre-compiled regular expressions.

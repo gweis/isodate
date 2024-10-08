@@ -1,14 +1,26 @@
 """
 Test cases for the isotime module.
 """
-import unittest
+
 from datetime import time
 
-from isodate import parse_time, UTC, FixedOffset, ISO8601Error, time_isoformat
-from isodate import TIME_BAS_COMPLETE, TIME_BAS_MINUTE
-from isodate import TIME_EXT_COMPLETE, TIME_EXT_MINUTE
-from isodate import TIME_HOUR
-from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
+import pytest
+
+from isodate import (
+    TIME_BAS_COMPLETE,
+    TIME_BAS_MINUTE,
+    TIME_EXT_COMPLETE,
+    TIME_EXT_MINUTE,
+    TIME_HOUR,
+    TZ_BAS,
+    TZ_EXT,
+    TZ_HOUR,
+    UTC,
+    FixedOffset,
+    ISO8601Error,
+    parse_time,
+    time_isoformat,
+)
 
 # the following list contains tuples of ISO time strings and the expected
 # result from the parse_time method. A result of None means an ISO8601Error
@@ -92,57 +104,26 @@ TEST_CASES = [
 ]
 
 
-def create_testcase(timestring, expectation, format):
+@pytest.mark.parametrize("timestring, expectation, format", TEST_CASES)
+def test_parse(timestring, expectation, format):
     """
-    Create a TestCase class for a specific test.
-
-    This allows having a separate TestCase for each test tuple from the
-    TEST_CASES list, so that a failed test won't stop other tests.
+    Parse an ISO time string and compare it to the expected value.
     """
-
-    class TestTime(unittest.TestCase):
-        """
-        A test case template to parse an ISO time string into a time
-        object.
-        """
-
-        def test_parse(self):
-            """
-            Parse an ISO time string and compare it to the expected value.
-            """
-            if expectation is None:
-                self.assertRaises(ISO8601Error, parse_time, timestring)
-            else:
-                result = parse_time(timestring)
-                self.assertEqual(result, expectation)
-
-        def test_format(self):
-            """
-            Take time object and create ISO string from it.
-            This is the reverse test to test_parse.
-            """
-            if expectation is None:
-                self.assertRaises(AttributeError, time_isoformat, expectation, format)
-            elif format is not None:
-                self.assertEqual(time_isoformat(expectation, format), timestring)
-
-    return unittest.TestLoader().loadTestsFromTestCase(TestTime)
+    if expectation is None:
+        with pytest.raises(ISO8601Error):
+            parse_time(timestring)
+    else:
+        assert parse_time(timestring) == expectation
 
 
-def test_suite():
+@pytest.mark.parametrize("timestring, expectation, format", TEST_CASES)
+def test_format(timestring, expectation, format):
     """
-    Construct a TestSuite instance for all test cases.
+    Take time object and create ISO string from it.
+    This is the reverse test to test_parse.
     """
-    suite = unittest.TestSuite()
-    for timestring, expectation, format in TEST_CASES:
-        suite.addTest(create_testcase(timestring, expectation, format))
-    return suite
-
-
-# load_tests Protocol
-def load_tests(loader, tests, pattern):
-    return test_suite()
-
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")
+    if expectation is None:
+        with pytest.raises(AttributeError):
+            time_isoformat(expectation, format)
+    elif format is not None:
+        assert time_isoformat(expectation, format) == timestring

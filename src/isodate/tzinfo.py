@@ -3,8 +3,9 @@ This module provides some datetime.tzinfo implementations.
 
 All those classes are taken from the Python documentation.
 """
-from datetime import timedelta, tzinfo
+
 import time
+from datetime import timedelta, tzinfo
 
 ZERO = timedelta(0)
 # constant for zero time offset.

@@ -1,16 +1,31 @@
 """
 Test cases for the isodatetime module.
 """
-import unittest
+
 from datetime import datetime
 
-from isodate import parse_datetime, UTC, FixedOffset, datetime_isoformat
-from isodate import ISO8601Error
-from isodate import DATE_BAS_COMPLETE, TIME_BAS_MINUTE, TIME_BAS_COMPLETE
-from isodate import DATE_EXT_COMPLETE, TIME_EXT_MINUTE, TIME_EXT_COMPLETE
-from isodate import TZ_BAS, TZ_EXT, TZ_HOUR
-from isodate import DATE_BAS_ORD_COMPLETE, DATE_EXT_ORD_COMPLETE
-from isodate import DATE_BAS_WEEK_COMPLETE, DATE_EXT_WEEK_COMPLETE
+import pytest
+
+from isodate import (
+    DATE_BAS_COMPLETE,
+    DATE_BAS_ORD_COMPLETE,
+    DATE_BAS_WEEK_COMPLETE,
+    DATE_EXT_COMPLETE,
+    DATE_EXT_ORD_COMPLETE,
+    DATE_EXT_WEEK_COMPLETE,
+    TIME_BAS_COMPLETE,
+    TIME_BAS_MINUTE,
+    TIME_EXT_COMPLETE,
+    TIME_EXT_MINUTE,
+    TZ_BAS,
+    TZ_EXT,
+    TZ_HOUR,
+    UTC,
+    FixedOffset,
+    ISO8601Error,
+    datetime_isoformat,
+    parse_datetime,
+)
 
 # the following list contains tuples of ISO datetime strings and the expected
 # result from the parse_datetime method. A result of None means an ISO8601Error
@@ -124,58 +139,26 @@ TEST_CASES = [
 ]
 
 
-def create_testcase(datetimestring, expectation, format, output):
+@pytest.mark.parametrize("datetimestring, expected, format, output", TEST_CASES)
+def test_parse(datetimestring, expected, format, output):
     """
-    Create a TestCase class for a specific test.
-
-    This allows having a separate TestCase for each test tuple from the
-    TEST_CASES list, so that a failed test won't stop other tests.
+    Parse an ISO datetime string and compare it to the expected value.
     """
-
-    class TestDateTime(unittest.TestCase):
-        """
-        A test case template to parse an ISO datetime string into a
-        datetime object.
-        """
-
-        def test_parse(self):
-            """
-            Parse an ISO datetime string and compare it to the expected value.
-            """
-            if expectation is None:
-                self.assertRaises(ISO8601Error, parse_datetime, datetimestring)
-            else:
-                self.assertEqual(parse_datetime(datetimestring), expectation)
-
-        def test_format(self):
-            """
-            Take datetime object and create ISO string from it.
-            This is the reverse test to test_parse.
-            """
-            if expectation is None:
-                self.assertRaises(
-                    AttributeError, datetime_isoformat, expectation, format
-                )
-            else:
-                self.assertEqual(datetime_isoformat(expectation, format), output)
-
-    return unittest.TestLoader().loadTestsFromTestCase(TestDateTime)
+    if expected is None:
+        with pytest.raises(ISO8601Error):
+            parse_datetime(datetimestring)
+    else:
+        assert parse_datetime(datetimestring) == expected
 
 
-def test_suite():
+@pytest.mark.parametrize("datetimestring, expected, format, output", TEST_CASES)
+def test_format(datetimestring, expected, format, output):
     """
-    Construct a TestSuite instance for all test cases.
+    Take datetime object and create ISO string from it.
+    This is the reverse test to test_parse.
     """
-    suite = unittest.TestSuite()
-    for datetimestring, expectation, format, output in TEST_CASES:
-        suite.addTest(create_testcase(datetimestring, expectation, format, output))
-    return suite
-
-
-# load_tests Protocol
-def load_tests(loader, tests, pattern):
-    return test_suite()
-
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")
+    if expected is None:
+        with pytest.raises(AttributeError):
+            datetime_isoformat(expected, format)
+    else:
+        assert datetime_isoformat(expected, format) == output

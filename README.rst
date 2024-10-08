@@ -33,7 +33,7 @@ As this module maps ISO 8601 dates/times to standard Python data types, like
 all possible ISO 8601 dates/times. For instance, dates before 0001-01-01 are
 not allowed by the Python *date* and *datetime* classes. Additionally
 fractional seconds are limited to microseconds. That means if the parser finds
-for instance nanoseconds it will round it to microseconds.
+for instance nanoseconds it will round it down to microseconds.
 
 Documentation
 -------------
@@ -88,8 +88,7 @@ Installation
 
 This module can easily be installed with Python standard installation methods.
 
-Either use *python setup.py install* or in case you have *setuptools* or
-*distribute* available, you can also use *easy_install*.
+Use *pip install isodate*.
 
 Limitations
 -----------
@@ -113,4 +112,4 @@ the methods and their limitations.
 The source release provides a *setup.py* script,
 which can be used to run the unit tests included.
 
-Source code is available at `<http://github.com/gweis/isodate>`_.
+Source code is available at `<https://github.com/gweis/isodate>`_.

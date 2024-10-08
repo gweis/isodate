@@ -12,3 +12,6 @@ parts
 .coverage
 coverage.xml
 htmlcov
+src/isodate/version.py
+.eggs
+.vscode/

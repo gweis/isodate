@@ -1,0 +1,60 @@
+[project]
+name = "isodate"
+description = "An ISO 8601 date/time/duration parser and formatter"
+# TODO: long_description = "file: README.rst, CHANGES.txt, TODO.txt"
+#  TODO: url = "https://github.com/gweis/isodate/"
+authors = [{name="Gerhard Weis"}]
+# keywords =
+license = {file = "LICENSE"}
+# license = {text="BSD-3-Clause"}
+#TODO:  license_files = "LICENSE"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+# requires-python = ">3.7"
+dynamic = ["version"]
+
+
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/isodate/version.py"
+fallback_version = "0.0.0.dev0"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    # treat all warnings as errors
+    "error",
+    # ignore:<regexp>
+    # e.g.:
+    # ignore:jsonschema.RefResolver is deprecated as of v4.18.0
+]
+junit_family = "xunit2"
+
+[tool.coverage.run]
+source_pkgs = ["isodate"]
+omit = ["tests/"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
