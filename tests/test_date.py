@@ -1,8 +1,7 @@
-"""
-Test cases for the isodate module.
-"""
+"""Test cases for the isodate module."""
 
 from datetime import date
+from typing import Optional
 
 import pytest
 
@@ -26,9 +25,9 @@ from isodate import (
 
 # the following list contains tuples of ISO date strings and the expected
 # result from the parse_date method. A result of None means an ISO8601Error
-# is expected. The test cases are grouped into dates with 4 digit years
-# and 6 digit years.
-TEST_CASES = {
+# is expected. The test cases are grouped into dates with 4 digit years and
+# 6 digit years.
+TEST_CASES: list[tuple[int, str, Optional[date], str]] = [
     # yeardigits = 4
     (4, "19", date(1901, 1, 1), DATE_CENTURY),
     (4, "1985", date(1985, 1, 1), DATE_YEAR),
@@ -57,11 +56,12 @@ TEST_CASES = {
     (6, "+001985-W15-5", date(1985, 4, 12), DATE_EXT_WEEK_COMPLETE),
     (6, "+001985W15", date(1985, 4, 8), DATE_BAS_WEEK),
     (6, "+001985-W15", date(1985, 4, 8), DATE_EXT_WEEK),
-}
+]
 
 
-@pytest.mark.parametrize("yeardigits,datestring,expected,_", TEST_CASES)
-def test_parse(yeardigits, datestring, expected, _):
+@pytest.mark.parametrize("yeardigits, datestring, expected, _", TEST_CASES)
+def test_parse(yeardigits: int, datestring: str, expected: Optional[date], _):
+    """Parse dates and verify result."""
     if expected is None:
         with pytest.raises(ISO8601Error):
             parse_date(datestring, yeardigits)
@@ -71,13 +71,16 @@ def test_parse(yeardigits, datestring, expected, _):
 
 
 @pytest.mark.parametrize("yeardigits, datestring, expected, format", TEST_CASES)
-def test_format(yeardigits, datestring, expected, format):
-    """
-    Take date object and create ISO string from it.
+def test_format(yeardigits: int, datestring: str, expected: Optional[date], format: str):
+    """Format date objects to ISO strings.
+
     This is the reverse test to test_parse.
     """
     if expected is None:
+        # TODO: a bit of assymetry here, if parse raises an error,
+        #       then format raises an AttributeError
+        #       with typing this also raises a type error
         with pytest.raises(AttributeError):
-            date_isoformat(expected, format, yeardigits)
+            date_isoformat(expected, format, yeardigits)  # type: ignore [arg-type]
     else:
         assert date_isoformat(expected, format, yeardigits) == datestring

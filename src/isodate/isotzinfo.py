@@ -1,22 +1,23 @@
-"""
-This module provides an ISO 8601:2004 time zone info parser.
+"""This module provides an ISO 8601:2004 time zone info parser.
 
 It offers a function to parse the time zone offset as specified by ISO 8601.
 """
 
 import re
+from datetime import datetime, tzinfo
+from typing import Union
 
 from isodate.isoerror import ISO8601Error
-from isodate.tzinfo import UTC, ZERO, FixedOffset
+from isodate.tzinfo import UTC, ZERO, FixedOffset, Utc
 
-TZ_REGEX = (
-    r"(?P<tzname>(Z|(?P<tzsign>[+-])" r"(?P<tzhour>[0-9]{2})(:?(?P<tzmin>[0-9]{2}))?)?)"
-)
+TZ_REGEX = r"(?P<tzname>(Z|(?P<tzsign>[+-])" r"(?P<tzhour>[0-9]{2})(:?(?P<tzmin>[0-9]{2}))?)?)"
 
 TZ_RE = re.compile(TZ_REGEX)
 
 
-def build_tzinfo(tzname, tzsign="+", tzhour=0, tzmin=0):
+def build_tzinfo(
+    tzname: Union[str, None], tzsign: str = "+", tzhour: float = 0, tzmin: float = 0
+) -> Union[FixedOffset, Utc, None]:
     """
     create a tzinfo instance according to given parameters.
 
@@ -29,13 +30,12 @@ def build_tzinfo(tzname, tzsign="+", tzhour=0, tzmin=0):
         return None
     if tzname == "Z":
         return UTC
-    tzsign = ((tzsign == "-") and -1) or 1
-    return FixedOffset(tzsign * tzhour, tzsign * tzmin, tzname)
+    tzsignum = ((tzsign == "-") and -1) or 1
+    return FixedOffset(tzsignum * tzhour, tzsignum * tzmin, tzname)
 
 
-def parse_tzinfo(tzstring):
-    """
-    Parses ISO 8601 time zone designators to tzinfo objects.
+def parse_tzinfo(tzstring: str) -> Union[tzinfo, None]:
+    """Parses ISO 8601 time zone designators to tzinfo objects.
 
     A time zone designator can be in the following format:
               no designator indicates local time zone
@@ -56,9 +56,9 @@ def parse_tzinfo(tzstring):
     raise ISO8601Error("%s not a valid time zone info" % tzstring)
 
 
-def tz_isoformat(dt, format="%Z"):
-    """
-    return time zone offset ISO 8601 formatted.
+def tz_isoformat(dt: datetime, format: str = "%Z") -> str:
+    """Return time zone offset ISO 8601 formatted.
+
     The various ISO formats can be chosen with the format parameter.
 
     if tzinfo is None returns ''
@@ -75,6 +75,8 @@ def tz_isoformat(dt, format="%Z"):
     if tzinfo.utcoffset(dt) == ZERO and tzinfo.dst(dt) == ZERO:
         return "Z"
     tdelta = tzinfo.utcoffset(dt)
+    if tdelta is None:
+        return ""
     seconds = tdelta.days * 24 * 60 * 60 + tdelta.seconds
     sign = ((seconds < 0) and "-") or "+"
     seconds = abs(seconds)

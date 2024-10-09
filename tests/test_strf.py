@@ -7,7 +7,7 @@ import pytest
 
 from isodate import DT_EXT_COMPLETE, LOCAL, strftime, tzinfo
 
-TEST_CASES = (
+TEST_CASES: list[tuple[datetime, str, str]] = [
     (
         datetime(2012, 12, 25, 13, 30, 0, 0, LOCAL),
         DT_EXT_COMPLETE,
@@ -30,7 +30,7 @@ TEST_CASES = (
         "%Y-%m-%dT%H:%M:%S.%f",
         "2012-10-12T08:29:46.691780",
     ),
-)
+]
 
 
 @pytest.fixture
@@ -38,7 +38,7 @@ def tz_patch(monkeypatch):
     # local time zone mock function
     localtime_orig = time.localtime
 
-    def localtime_mock(secs):
+    def localtime_mock(secs: int):
         """Mock time to fixed date.
 
         Mock time.localtime so that it always returns a time_struct with tm_dst=1
@@ -49,7 +49,7 @@ def tz_patch(monkeypatch):
             dst = 1
         else:
             dst = 0
-        tt = (
+        new_tt = (
             tt.tm_year,
             tt.tm_mon,
             tt.tm_mday,
@@ -60,7 +60,7 @@ def tz_patch(monkeypatch):
             tt.tm_yday,
             dst,
         )
-        return time.struct_time(tt)
+        return time.struct_time(new_tt)
 
     monkeypatch.setattr(time, "localtime", localtime_mock)
     # assume LOC = +10:00
@@ -71,7 +71,7 @@ def tz_patch(monkeypatch):
 
 
 @pytest.mark.parametrize("dt, format, expectation", TEST_CASES)
-def test_format(tz_patch, dt, format, expectation):
+def test_format(tz_patch, dt: datetime, format: str, expectation: str):
     """Take date object and create ISO string from it.
 
     This is the reverse test to test_parse.

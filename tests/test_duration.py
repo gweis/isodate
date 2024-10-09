@@ -1,6 +1,7 @@
 """Test cases for the isoduration module."""
 
 from datetime import date, datetime, timedelta
+from typing import Optional, Union
 
 import pytest
 
@@ -17,7 +18,7 @@ from isodate import (
 # the following list contains tuples of ISO duration strings and the expected
 # result from the parse_duration method. A result of None means an ISO8601Error
 # is expected.
-PARSE_TEST_CASES = (
+PARSE_TEST_CASES: list[tuple[str, Union[Duration, timedelta], str, Optional[str]]] = [
     ("P18Y9M4DT11H9M8S", Duration(4, 8, 0, 0, 9, 11, 0, 9, 18), D_DEFAULT, None),
     ("P2W", timedelta(weeks=2), D_WEEK, None),
     ("P3Y6M4DT12H30M5S", Duration(4, 5, 0, 0, 30, 12, 0, 6, 3), D_DEFAULT, None),
@@ -51,7 +52,35 @@ PARSE_TEST_CASES = (
     # alternative format
     ("P0018-09-04T11:09:08", Duration(4, 8, 0, 0, 9, 11, 0, 9, 18), D_ALT_EXT, None),
     # 'PT000022.22', timedelta(seconds=22.22),
+]
+
+
+@pytest.mark.parametrize(
+    "durationstring, expectation, format, altstr",
+    PARSE_TEST_CASES,
 )
+def test_parse(durationstring, expectation, format, altstr):
+    """Parse an ISO duration string and compare it to the expected value."""
+    result = parse_duration(durationstring)
+    assert result == expectation
+
+
+@pytest.mark.parametrize(
+    "durationstring, expectation, format, altstr",
+    PARSE_TEST_CASES,
+)
+def test_format_parse(durationstring, expectation, format, altstr):
+    """Take duration/timedelta object and create ISO string from it.
+
+    This is the reverse test to test_parse.
+    """
+    if altstr:
+        assert duration_isoformat(expectation, format) == altstr
+    else:
+        # if durationstring == '-P2W':
+        #     import pdb; pdb.set_trace()
+        assert duration_isoformat(expectation, format) == durationstring
+
 
 #                       d1                    d2           '+', '-', '>'
 # A list of test cases to test addition and subtraction between datetime and
@@ -59,7 +88,7 @@ PARSE_TEST_CASES = (
 # each tuple contains 2 duration strings, and a result string for addition and
 # one for subtraction. The last value says, if the first duration is greater
 # than the second.
-MATH_TEST_CASES = (
+MATH_TEST_CASES: list[tuple[str, str, str, str, Optional[bool]]] = [
     (
         "P5Y7M1DT9H45M16.72S",
         "PT27M24.68S",
@@ -90,13 +119,58 @@ MATH_TEST_CASES = (
         "-P1331DT23H54M58.38S",
         False,
     ),
-)
+]
+
+
+@pytest.mark.parametrize("dur1, dur2, resadd, ressub, resge", MATH_TEST_CASES)
+def test_add(dur1: str, dur2: str, resadd: str, ressub: str, resge: Optional[bool]):
+    """Test operator - (__add__, __radd__)."""
+    duration1 = parse_duration(dur1)
+    duration2 = parse_duration(dur2)
+    result_add = parse_duration(resadd)
+    assert duration1 + duration2 == result_add
+
+
+@pytest.mark.parametrize("dur1, dur2, resadd, ressub, resge", MATH_TEST_CASES)
+def test_sub(dur1: str, dur2: str, resadd: str, ressub: str, resge: Optional[bool]):
+    """Test operator - (__sub__, __rsub__)."""
+    duration1 = parse_duration(dur1)
+    duration2 = parse_duration(dur2)
+    result_sub = parse_duration(ressub)
+    assert duration1 - duration2 == result_sub
+
+
+@pytest.mark.parametrize("dur1, dur2, resadd, ressub, resge", MATH_TEST_CASES)
+def test_ge(dur1: str, dur2: str, resadd: str, ressub: str, resge: Optional[bool]):
+    """Test operator > and <."""
+    duration1 = parse_duration(dur1)
+    duration2 = parse_duration(dur2)
+
+    def dogetest(d1: Union[timedelta, Duration], d2: Union[timedelta, Duration]):
+        """Test greater than."""
+        # ignore type assertion as we are testing the error
+        return d1 > d2  # type: ignore [operator]
+
+    def doletest(d1: Union[timedelta, Duration], d2: Union[timedelta, Duration]):
+        """Test less than."""
+        # ignore type assertion as we are testing the error
+        return d1 < d2  # type: ignore [operator]
+
+    if resge is None:
+        with pytest.raises(TypeError):
+            dogetest(duration1, duration2)
+        with pytest.raises(TypeError):
+            doletest(duration1, duration2)
+    else:
+        # resge says if greater so testing comparison result directly against config value.
+        assert dogetest(duration1, duration2) is resge
+        assert doletest(duration1, duration2) is not resge
 
 
 # A list of test cases to test addition and subtraction of date/datetime
 # and Duration objects. They are tested against the results of an
 # equal long timedelta duration.
-DATE_TEST_CASES = (
+DATE_TEST_CASES: list[tuple[Union[date, datetime], Union[timedelta, Duration], Duration]] = [
     (
         date(2008, 2, 29),
         timedelta(days=10, hours=12, minutes=20),
@@ -138,11 +212,32 @@ DATE_TEST_CASES = (
         Duration(years=1, months=1, days=10, hours=12, minutes=20),
         Duration(months=13, days=10, hours=12, minutes=20),
     ),
-)
+]
+
+
+@pytest.mark.parametrize("start, tdelta, duration", DATE_TEST_CASES)
+def test_add_date(
+    start: Union[date, datetime], tdelta: Union[timedelta, Duration], duration: Duration
+):
+    assert start + tdelta == start + duration
+
+
+@pytest.mark.parametrize("start, tdelta, duration", DATE_TEST_CASES)
+def test_sub_date(
+    start: Union[date, datetime], tdelta: Union[timedelta, Duration], duration: Duration
+):
+    assert start - tdelta == start - duration
+
 
 # A list of test cases of addition of date/datetime and Duration. The results
 # are compared against a given expected result.
-DATE_CALC_TEST_CASES = (
+DATE_CALC_TEST_CASES: list[
+    tuple[
+        Union[timedelta, date, datetime, Duration],
+        Union[Duration, date, datetime, timedelta],
+        Optional[Union[date, datetime, Duration]],
+    ]
+] = [
     (date(2000, 2, 1), Duration(years=1, months=1), date(2001, 3, 1)),
     (date(2000, 2, 29), Duration(years=1, months=1), date(2001, 3, 29)),
     (date(2000, 2, 29), Duration(years=1), date(2001, 2, 28)),
@@ -202,11 +297,26 @@ DATE_CALC_TEST_CASES = (
     # (date(2000, 1, 1),
     #  Duration(years=1, months=1.5),
     #  date(2001, 2, 14)),
-)
+]
+
+
+@pytest.mark.parametrize("start, duration, expectation", DATE_CALC_TEST_CASES)
+def test_calc_date(
+    start: Union[timedelta, date, datetime, Duration],
+    duration: Union[Duration, datetime, timedelta],
+    expectation: Optional[Union[date, datetime, Duration]],
+):
+    """Test operator +."""
+    if expectation is None:
+        with pytest.raises(ValueError):
+            start + duration  # type: ignore [operator]
+    else:
+        assert start + duration == expectation  # type: ignore [operator]
+
 
 # A list of test cases of multiplications of durations
 # are compared against a given expected result.
-DATE_MUL_TEST_CASES = (
+DATE_MUL_TEST_CASES: list[tuple[Union[Duration, int], Union[Duration, int], Duration]] = [
     (Duration(years=1, months=1), 3, Duration(years=3, months=3)),
     (Duration(years=1, months=1), -3, Duration(years=-3, months=-3)),
     (3, Duration(years=1, months=1), Duration(years=3, months=3)),
@@ -214,7 +324,15 @@ DATE_MUL_TEST_CASES = (
     (5, Duration(years=2, minutes=40), Duration(years=10, hours=3, minutes=20)),
     (-5, Duration(years=2, minutes=40), Duration(years=-10, hours=-3, minutes=-20)),
     (7, Duration(years=1, months=2, weeks=40), Duration(years=8, months=2, weeks=280)),
-)
+]
+
+
+@pytest.mark.parametrize("operand1, operand2, expectation", DATE_MUL_TEST_CASES)
+def test_mul_date(
+    operand1: Union[Duration, int], operand2: Union[Duration, int], expectation: Duration
+):
+    """Test operator *."""
+    assert operand1 * operand2 == expectation  # type: ignore [operator]
 
 
 def test_associative():
@@ -230,23 +348,23 @@ def test_associative():
 def test_typeerror():
     """Test if TypError is raised with certain parameters."""
     with pytest.raises(TypeError):
-        parse_duration(date(2000, 1, 1))
+        parse_duration(date(2000, 1, 1))  # type: ignore [arg-type]
     with pytest.raises(TypeError):
-        Duration(years=1) - date(2000, 1, 1)
+        Duration(years=1) - date(2000, 1, 1)  # type: ignore [operator]
     with pytest.raises(TypeError):
-        "raise exc" - Duration(years=1)
+        "raise exc" - Duration(years=1)  # type: ignore [operator]
     with pytest.raises(TypeError):
-        Duration(years=1, months=1, weeks=5) + "raise exception"
+        Duration(years=1, months=1, weeks=5) + "raise exception"  # type: ignore [operator]
     with pytest.raises(TypeError):
-        "raise exception" + Duration(years=1, months=1, weeks=5)
+        "raise exception" + Duration(years=1, months=1, weeks=5)  # type: ignore [operator]
     with pytest.raises(TypeError):
         Duration(years=1, months=1, weeks=5) * "raise exception"
     with pytest.raises(TypeError):
         "raise exception" * Duration(years=1, months=1, weeks=5)
     with pytest.raises(TypeError):
-        Duration(years=1, months=1, weeks=5) * 3.14
+        Duration(years=1, months=1, weeks=5) * 3.14  # type: ignore [operator]
     with pytest.raises(TypeError):
-        3.14 * Duration(years=1, months=1, weeks=5)
+        3.14 * Duration(years=1, months=1, weeks=5)  # type: ignore [operator]
 
 
 def test_parseerror():
@@ -338,99 +456,3 @@ def test_totimedelta():
     assert dur.totimedelta(datetime(2000, 2, 25)) == timedelta(60)
     assert dur.totimedelta(datetime(2001, 2, 25)) == timedelta(59)
     assert dur.totimedelta(datetime(2001, 3, 25)) == timedelta(61)
-
-
-@pytest.mark.parametrize(
-    "durationstring, expectation, format, altstr",
-    PARSE_TEST_CASES,
-)
-def test_parse(durationstring, expectation, format, altstr):
-    """Parse an ISO duration string and compare it to the expected value."""
-    result = parse_duration(durationstring)
-    assert result == expectation
-
-
-@pytest.mark.parametrize(
-    "durationstring, expectation, format, altstr",
-    PARSE_TEST_CASES,
-)
-def test_format_parse(durationstring, expectation, format, altstr):
-    """Take duration/timedelta object and create ISO string from it.
-
-    This is the reverse test to test_parse.
-    """
-    if altstr:
-        assert duration_isoformat(expectation, format) == altstr
-    else:
-        # if durationstring == '-P2W':
-        #     import pdb; pdb.set_trace()
-        assert duration_isoformat(expectation, format) == durationstring
-
-
-@pytest.mark.parametrize("dur1, dur2, resadd, ressub, resge", MATH_TEST_CASES)
-def test_add(dur1, dur2, resadd, ressub, resge):
-    dur1 = parse_duration(dur1)
-    dur2 = parse_duration(dur2)
-    resadd = parse_duration(resadd)
-    assert dur1 + dur2 == resadd
-
-
-@pytest.mark.parametrize("dur1, dur2, resadd, ressub, resge", MATH_TEST_CASES)
-def test_sub(dur1, dur2, resadd, ressub, resge):
-    """
-    Test operator - (__sub__, __rsub__)
-    """
-    dur1 = parse_duration(dur1)
-    dur2 = parse_duration(dur2)
-    ressub = parse_duration(ressub)
-    assert dur1 - dur2 == ressub
-
-
-@pytest.mark.parametrize("dur1, dur2, resadd, ressub, resge", MATH_TEST_CASES)
-def test_ge(dur1, dur2, resadd, ressub, resge):
-    """Test operator > and <."""
-    dur1 = parse_duration(dur1)
-    dur2 = parse_duration(dur2)
-
-    def dogetest():
-        """Test greater than."""
-        return dur1 > dur2
-
-    def doletest():
-        """Test less than."""
-        return dur1 < dur2
-
-    if resge is None:
-        with pytest.raises(TypeError):
-            dogetest()
-        with pytest.raises(TypeError):
-            doletest()
-    else:
-        assert dogetest() is resge
-        assert doletest() is not resge
-
-
-@pytest.mark.parametrize("start, tdelta, duration", DATE_TEST_CASES)
-def test_add_date(start, tdelta, duration):
-    assert start + tdelta == start + duration
-
-
-@pytest.mark.parametrize("start, tdelta, duration", DATE_TEST_CASES)
-def test_sub_date(start, tdelta, duration):
-    assert start - tdelta == start - duration
-
-
-@pytest.mark.parametrize("start, duration, expectation", DATE_CALC_TEST_CASES)
-def test_calc_date(start, duration, expectation):
-    """Test operator +."""
-    if expectation is None:
-        with pytest.raises(ValueError):
-            start + duration
-    else:
-        assert start + duration == expectation
-
-
-@pytest.mark.parametrize("operand1, operand2, expectation", DATE_MUL_TEST_CASES)
-def test_mul_date(operand1, operand2, expectation):
-    """Test operator *."""
-    assert operand1 * operand2 == expectation

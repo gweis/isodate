@@ -1,5 +1,4 @@
-"""
-This modules provides a method to parse an ISO 8601:2004 time string to a
+"""This modules provides a method to parse an ISO 8601:2004 time string to a
 Python datetime.time instance.
 
 It supports all basic and extended formats including time zone specifications
@@ -7,20 +6,21 @@ as described in the ISO standard.
 """
 
 import re
-from datetime import time
+from datetime import date, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
+from typing import Union
 
+from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import TIME_EXT_COMPLETE, TZ_EXT, strftime
 from isodate.isotzinfo import TZ_REGEX, build_tzinfo
 
-TIME_REGEX_CACHE = []
+TIME_REGEX_CACHE: list[re.Pattern[str]] = []
 # used to cache regular expressions to parse ISO time strings.
 
 
-def build_time_regexps():
-    """
-    Build regular expressions to parse ISO time string.
+def build_time_regexps() -> list[re.Pattern[str]]:
+    """Build regular expressions to parse ISO time string.
 
     The regular expressions are compiled and stored in TIME_REGEX_CACHE
     for later reuse.
@@ -42,7 +42,7 @@ def build_time_regexps():
         #    +-hhmm
         #    +-hh =>
         #    isotzinfo.TZ_REGEX
-        def add_re(regex_text):
+        def add_re(regex_text: str) -> None:
             TIME_REGEX_CACHE.append(re.compile(r"\A" + regex_text + TZ_REGEX + r"\Z"))
 
         # 1. complete time:
@@ -55,10 +55,7 @@ def build_time_regexps():
         )
         #    hhmmss.ss ... basic format
         add_re(
-            r"T?(?P<hour>[0-9]{2})"
-            r"(?P<minute>[0-9]{2})"
-            r"(?P<second>[0-9]{2}"
-            r"([,.][0-9]+)?)"
+            r"T?(?P<hour>[0-9]{2})" r"(?P<minute>[0-9]{2})" r"(?P<second>[0-9]{2}" r"([,.][0-9]+)?)"
         )
         # 2. reduced accuracy:
         #    hh:mm.mm ... extended format
@@ -70,9 +67,8 @@ def build_time_regexps():
     return TIME_REGEX_CACHE
 
 
-def parse_time(timestring):
-    """
-    Parses ISO 8601 times into datetime.time objects.
+def parse_time(timestring: str) -> time:
+    """Parses ISO 8601 times into datetime.time objects.
 
     Following ISO 8601 formats are supported:
       (as decimal separator a ',' or a '.' is allowed)
@@ -130,10 +126,10 @@ def parse_time(timestring):
                     tzinfo,
                 )
             else:
-                microsecond, second, minute = 0, 0, 0
+                microsecond, second, minute = Decimal(0), Decimal(0), Decimal(0)
             hour = Decimal(groups["hour"])
             minute = (hour - int(hour)) * 60
-            second = (minute - int(minute)) * 60
+            second = Decimal((minute - int(minute)) * 60)
             microsecond = (second - int(second)) * int(1e6)
             return time(
                 int(hour),
@@ -145,9 +141,10 @@ def parse_time(timestring):
     raise ISO8601Error("Unrecognised ISO 8601 time format: %r" % timestring)
 
 
-def time_isoformat(ttime, format=TIME_EXT_COMPLETE + TZ_EXT):
-    """
-    Format time strings.
+def time_isoformat(
+    ttime: Union[timedelta, Duration, time, date], format: str = TIME_EXT_COMPLETE + TZ_EXT
+) -> str:
+    """Format time strings.
 
     This method is just a wrapper around isodate.isostrf.strftime and uses
     Time-Extended-Complete with extended time zone as default format.

@@ -1,5 +1,4 @@
-"""
-This module provides an alternative strftime method.
+"""This module provides an alternative strftime method.
 
 The strftime method in this module allows only a subset of Python's strftime
 format codes, plus a few additional. It supports the full range of date values
@@ -9,7 +8,8 @@ conforming strings.
 """
 
 import re
-from datetime import date, timedelta
+from datetime import date, time, timedelta
+from typing import Callable, Union
 
 from isodate.duration import Duration
 from isodate.isotzinfo import tz_isoformat
@@ -56,65 +56,58 @@ D_ALT_BAS = "P" + DATE_BAS_COMPLETE + "T" + TIME_BAS_COMPLETE
 D_ALT_EXT_ORD = "P" + DATE_EXT_ORD_COMPLETE + "T" + TIME_EXT_COMPLETE
 D_ALT_BAS_ORD = "P" + DATE_BAS_ORD_COMPLETE + "T" + TIME_BAS_COMPLETE
 
-STRF_DT_MAP = {
-    "%d": lambda tdt, yds: "%02d" % tdt.day,
-    "%f": lambda tdt, yds: "%06d" % tdt.microsecond,
-    "%H": lambda tdt, yds: "%02d" % tdt.hour,
-    "%j": lambda tdt, yds: "%03d"
-    % (tdt.toordinal() - date(tdt.year, 1, 1).toordinal() + 1),
-    "%m": lambda tdt, yds: "%02d" % tdt.month,
-    "%M": lambda tdt, yds: "%02d" % tdt.minute,
-    "%S": lambda tdt, yds: "%02d" % tdt.second,
-    "%w": lambda tdt, yds: "%1d" % tdt.isoweekday(),
-    "%W": lambda tdt, yds: "%02d" % tdt.isocalendar()[1],
-    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year),
-    "%C": lambda tdt, yds: (((yds != 4) and "+") or "")
-    + (("%%0%dd" % (yds - 2)) % (tdt.year / 100)),
-    "%h": lambda tdt, yds: tz_isoformat(tdt, "%h"),
-    "%Z": lambda tdt, yds: tz_isoformat(tdt, "%Z"),
-    "%z": lambda tdt, yds: tz_isoformat(tdt, "%z"),
+STRF_DT_MAP: dict[str, Callable[[Union[time, date], int], str]] = {
+    "%d": lambda tdt, yds: "%02d" % tdt.day,  # type: ignore [union-attr]
+    "%f": lambda tdt, yds: "%06d" % tdt.microsecond,  # type: ignore [union-attr]
+    "%H": lambda tdt, yds: "%02d" % tdt.hour,  # type: ignore [union-attr]
+    "%j": lambda tdt, yds: "%03d" % (tdt.toordinal() - date(tdt.year, 1, 1).toordinal() + 1),  # type: ignore [union-attr, operator]
+    "%m": lambda tdt, yds: "%02d" % tdt.month,  # type: ignore [union-attr]
+    "%M": lambda tdt, yds: "%02d" % tdt.minute,  # type: ignore [union-attr]
+    "%S": lambda tdt, yds: "%02d" % tdt.second,  # type: ignore [union-attr]
+    "%w": lambda tdt, yds: "%1d" % tdt.isoweekday(),  # type: ignore [union-attr]
+    "%W": lambda tdt, yds: "%02d" % tdt.isocalendar()[1],  # type: ignore [union-attr]
+    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year),  # type: ignore [union-attr]
+    "%C": lambda tdt, yds: (((yds != 4) and "+") or "")  # type: ignore [union-attr]
+    + (("%%0%dd" % (yds - 2)) % (tdt.year / 100)),  # type: ignore [union-attr]
+    "%h": lambda tdt, yds: tz_isoformat(tdt, "%h"),  # type: ignore [arg-type]
+    "%Z": lambda tdt, yds: tz_isoformat(tdt, "%Z"),  # type: ignore [arg-type]
+    "%z": lambda tdt, yds: tz_isoformat(tdt, "%z"),  # type: ignore [arg-type]
     "%%": lambda tdt, yds: "%",
 }
 
-STRF_D_MAP = {
+STRF_D_MAP: dict[str, Callable[[Union[timedelta, Duration], int], str]] = {
     "%d": lambda tdt, yds: "%02d" % tdt.days,
     "%f": lambda tdt, yds: "%06d" % tdt.microseconds,
     "%H": lambda tdt, yds: "%02d" % (tdt.seconds / 60 / 60),
-    "%m": lambda tdt, yds: "%02d" % tdt.months,
+    "%m": lambda tdt, yds: "%02d" % tdt.months,  # type: ignore [union-attr]
     "%M": lambda tdt, yds: "%02d" % ((tdt.seconds / 60) % 60),
     "%S": lambda tdt, yds: "%02d" % (tdt.seconds % 60),
     "%W": lambda tdt, yds: "%02d" % (abs(tdt.days / 7)),
-    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "")
-    + (("%%0%dd" % yds) % tdt.years),
+    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.years),  # type: ignore [union-attr]
     "%C": lambda tdt, yds: (((yds != 4) and "+") or "")
-    + (("%%0%dd" % (yds - 2)) % (tdt.years / 100)),
+    + (("%%0%dd" % (yds - 2)) % (tdt.years / 100)),  # type: ignore [union-attr]
     "%%": lambda tdt, yds: "%",
 }
 
 
-def _strfduration(tdt, format, yeardigits=4):
-    """
-    this is the work method for timedelta and Duration instances.
+def _strfduration(tdt: Union[timedelta, Duration], format: str, yeardigits: int = 4) -> str:
+    """This is the work method for timedelta and Duration instances.
 
-    see strftime for more details.
+    See strftime for more details.
     """
 
-    def repl(match):
-        """
-        lookup format command and return corresponding replacement.
-        """
+    def repl(match: re.Match[str]) -> str:
+        """Lookup format command and return corresponding replacement."""
         if match.group(0) in STRF_D_MAP:
             return STRF_D_MAP[match.group(0)](tdt, yeardigits)
         elif match.group(0) == "%P":
-            ret = []
+            ret: list[str] = []
             if isinstance(tdt, Duration):
                 if tdt.years:
                     ret.append("%sY" % abs(tdt.years))
                 if tdt.months:
                     ret.append("%sM" % abs(tdt.months))
-            usecs = abs(
-                (tdt.days * 24 * 60 * 60 + tdt.seconds) * 1000000 + tdt.microseconds
-            )
+            usecs = abs((tdt.days * 24 * 60 * 60 + tdt.seconds) * 1000000 + tdt.microseconds)
             seconds, usecs = divmod(usecs, 1000000)
             minutes, seconds = divmod(seconds, 60)
             hours, minutes = divmod(minutes, 60)
@@ -134,7 +127,7 @@ def _strfduration(tdt, format, yeardigits=4):
                         ret.append("%d" % seconds)
                     ret.append("S")
             # at least one component has to be there.
-            return ret and "".join(ret) or "0D"
+            return "".join(ret) if ret else "0D"
         elif match.group(0) == "%p":
             return str(abs(tdt.days // 7)) + "W"
         return match.group(0)
@@ -142,17 +135,14 @@ def _strfduration(tdt, format, yeardigits=4):
     return re.sub("%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p", repl, format)
 
 
-def _strfdt(tdt, format, yeardigits=4):
-    """
-    this is the work method for time and date instances.
+def _strfdt(tdt: Union[time, date], format: str, yeardigits: int = 4) -> str:
+    """This is the work method for time and date instances.
 
-    see strftime for more details.
+    See strftime for more details.
     """
 
-    def repl(match):
-        """
-        lookup format command and return corresponding replacement.
-        """
+    def repl(match: re.Match[str]) -> str:
+        """Lookup format command and return corresponding replacement."""
         if match.group(0) in STRF_DT_MAP:
             return STRF_DT_MAP[match.group(0)](tdt, yeardigits)
         return match.group(0)
@@ -160,8 +150,9 @@ def _strfdt(tdt, format, yeardigits=4):
     return re.sub("%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%C|%z|%Z|%h|%%", repl, format)
 
 
-def strftime(tdt, format, yeardigits=4):
-    """Directive    Meaning    Notes
+def strftime(tdt: Union[timedelta, Duration, time, date], format: str, yeardigits: int = 4) -> str:
+    """Directive Meaning Notes.
+
     %d    Day of the month as a decimal number [01,31].
     %f    Microsecond as a decimal number [0,999999], zero-padded
           on the left (1)

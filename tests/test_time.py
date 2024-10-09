@@ -1,8 +1,7 @@
-"""
-Test cases for the isotime module.
-"""
+"""Test cases for the isotime module."""
 
 from datetime import time
+from typing import Optional
 
 import pytest
 
@@ -25,7 +24,7 @@ from isodate import (
 # the following list contains tuples of ISO time strings and the expected
 # result from the parse_time method. A result of None means an ISO8601Error
 # is expected.
-TEST_CASES = [
+TEST_CASES: list[tuple[str, Optional[time], Optional[str]]] = [
     ("232050", time(23, 20, 50), TIME_BAS_COMPLETE + TZ_BAS),
     ("23:20:50", time(23, 20, 50), TIME_EXT_COMPLETE + TZ_EXT),
     ("2320", time(23, 20), TIME_BAS_MINUTE),
@@ -105,10 +104,8 @@ TEST_CASES = [
 
 
 @pytest.mark.parametrize("timestring, expectation, format", TEST_CASES)
-def test_parse(timestring, expectation, format):
-    """
-    Parse an ISO time string and compare it to the expected value.
-    """
+def test_parse(timestring: str, expectation: Optional[time], format: Optional[str]):
+    """Parse an ISO time string and compare it to the expected value."""
     if expectation is None:
         with pytest.raises(ISO8601Error):
             parse_time(timestring)
@@ -117,13 +114,13 @@ def test_parse(timestring, expectation, format):
 
 
 @pytest.mark.parametrize("timestring, expectation, format", TEST_CASES)
-def test_format(timestring, expectation, format):
-    """
-    Take time object and create ISO string from it.
+def test_format(timestring: str, expectation: Optional[time], format: Optional[str]):
+    """Take time object and create ISO string from it.
+
     This is the reverse test to test_parse.
     """
     if expectation is None:
         with pytest.raises(AttributeError):
-            time_isoformat(expectation, format)
+            time_isoformat(expectation, format)  # type: ignore [arg-type]
     elif format is not None:
         assert time_isoformat(expectation, format) == timestring

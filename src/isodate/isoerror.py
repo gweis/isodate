@@ -1,6 +1,4 @@
-"""
-This module defines all exception classes in the whole package.
-"""
+"""This module defines all exception classes in the whole package."""
 
 
 class ISO8601Error(ValueError):

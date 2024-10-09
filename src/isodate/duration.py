@@ -1,19 +1,17 @@
-"""
-This module defines a Duration class.
+"""This module defines a Duration class.
 
 The class Duration allows to define durations in years and months and can be
 used as limited replacement for timedelta objects.
 """
 
-from datetime import timedelta
+from __future__ import annotations
+
+from datetime import date, datetime, timedelta
 from decimal import ROUND_FLOOR, Decimal
 
 
-def fquotmod(val, low, high):
-    """
-    A divmod function with boundaries.
-
-    """
+def fquotmod(val: Decimal, low: int, high: int) -> tuple[int, Decimal]:
+    """A divmod function with boundaries."""
     # assumes that all the maths is done with Decimals.
     # divmod for Decimal uses truncate instead of floor as builtin
     # divmod, so we have to do it manually here.
@@ -26,10 +24,8 @@ def fquotmod(val, low, high):
     return int(div), mod
 
 
-def max_days_in_month(year, month):
-    """
-    Determines the number of days of a specific month in a specific year.
-    """
+def max_days_in_month(year: int, month: int) -> int:
+    """Determines the number of days of a specific month in a specific year."""
     if month in (1, 3, 5, 7, 8, 10, 12):
         return 31
     if month in (4, 6, 9, 11):
@@ -40,8 +36,7 @@ def max_days_in_month(year, month):
 
 
 class Duration:
-    """
-    A class which represents a duration.
+    """A class which represents a duration.
 
     The difference to datetime.timedelta is, that this class handles also
     differences given in years and months.
@@ -64,28 +59,24 @@ class Duration:
 
     def __init__(
         self,
-        days=0,
-        seconds=0,
-        microseconds=0,
-        milliseconds=0,
-        minutes=0,
-        hours=0,
-        weeks=0,
-        months=0,
-        years=0,
+        days: float = 0,
+        seconds: float = 0,
+        microseconds: float = 0,
+        milliseconds: float = 0,
+        minutes: float = 0,
+        hours: float = 0,
+        weeks: float = 0,
+        months: float | Decimal = 0,
+        years: float | Decimal = 0,
     ):
-        """
-        Initialise this Duration instance with the given parameters.
-        """
+        """Initialise this Duration instance with the given parameters."""
         if not isinstance(months, Decimal):
             months = Decimal(str(months))
         if not isinstance(years, Decimal):
             years = Decimal(str(years))
         self.months = months
         self.years = years
-        self.tdelta = timedelta(
-            days, seconds, microseconds, milliseconds, minutes, hours, weeks
-        )
+        self.tdelta = timedelta(days, seconds, microseconds, milliseconds, minutes, hours, weeks)
 
     def __getstate__(self):
         return self.__dict__
@@ -93,17 +84,13 @@ class Duration:
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-    def __getattr__(self, name):
-        """
-        Provide direct access to attributes of included timedelta instance.
-        """
+    def __getattr__(self, name: str):
+        """Provide direct access to attributes of included timedelta instance."""
         return getattr(self.tdelta, name)
 
     def __str__(self):
-        """
-        Return a string representation of this duration similar to timedelta.
-        """
-        params = []
+        """Return a string representation of this duration similar to timedelta."""
+        params: list[str] = []
         if self.years:
             params.append("%d years" % self.years)
         if self.months:
@@ -115,9 +102,7 @@ class Duration:
         return ", ".join(params)
 
     def __repr__(self):
-        """
-        Return a string suitable for repr(x) calls.
-        """
+        """Return a string suitable for repr(x) calls."""
         return "%s.%s(%d, %d, %d, years=%d, months=%d)" % (
             self.__class__.__module__,
             self.__class__.__name__,
@@ -129,15 +114,14 @@ class Duration:
         )
 
     def __hash__(self):
-        """
-        Return a hash of this instance so that it can be used in, for
-        example, dicts and sets.
+        """Return a hash of this instance.
+
+        So that it can be used in, for example, dicts and sets.
         """
         return hash((self.tdelta, self.months, self.years))
 
     def __neg__(self):
-        """
-        A simple unary minus.
+        """A simple unary minus.
 
         Returns a new Duration instance with all it's negated.
         """
@@ -145,10 +129,10 @@ class Duration:
         negduration.tdelta = -self.tdelta
         return negduration
 
-    def __add__(self, other):
-        """
-        Durations can be added with Duration, timedelta, date and datetime
-        objects.
+    def __add__(self, other: Duration | timedelta | date | datetime) -> Duration | date | datetime:
+        """+ operator for Durations.
+
+        Durations can be added with Duration, timedelta, date and datetime objects.
         """
         if isinstance(other, Duration):
             newduration = Duration(
@@ -156,7 +140,7 @@ class Duration:
             )
             newduration.tdelta = self.tdelta + other.tdelta
             return newduration
-        try:
+        elif isinstance(other, (date, datetime)):
             # try anything that looks like a date or datetime
             # 'other' has attributes year, month, day
             # and relies on 'timedelta + other' being implemented
@@ -167,34 +151,26 @@ class Duration:
             newmonth = other.month + self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year + self.years + carry
-            maxdays = max_days_in_month(newyear, newmonth)
+            maxdays = max_days_in_month(int(newyear), int(newmonth))
             if other.day > maxdays:
                 newday = maxdays
             else:
                 newday = other.day
-            newdt = other.replace(
-                year=int(newyear), month=int(newmonth), day=int(newday)
-            )
+            newdt = other.replace(year=int(newyear), month=int(newmonth), day=int(newday))
             # does a timedelta + date/datetime
             return self.tdelta + newdt
-        except AttributeError:
-            # other probably was not a date/datetime compatible object
-            pass
-        try:
+        elif isinstance(other, timedelta):
             # try if other is a timedelta
             # relies on timedelta + timedelta supported
             newduration = Duration(years=self.years, months=self.months)
             newduration.tdelta = self.tdelta + other
             return newduration
-        except AttributeError:
-            # ignore ... other probably was not a timedelta compatible object
-            pass
         # we have tried everything .... return a NotImplemented
         return NotImplemented
 
     __radd__ = __add__
 
-    def __mul__(self, other):
+    def __mul__(self, other: int) -> Duration:
         if isinstance(other, int):
             newduration = Duration(years=self.years * other, months=self.months * other)
             newduration.tdelta = self.tdelta * other
@@ -203,8 +179,9 @@ class Duration:
 
     __rmul__ = __mul__
 
-    def __sub__(self, other):
-        """
+    def __sub__(self, other: Duration | timedelta) -> Duration:
+        """- operator for Durations.
+
         It is possible to subtract Duration and timedelta objects from Duration
         objects.
         """
@@ -224,8 +201,9 @@ class Duration:
             pass
         return NotImplemented
 
-    def __rsub__(self, other):
-        """
+    def __rsub__(self, other: Duration | date | datetime | timedelta):
+        """- operator for Durations.
+
         It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
 
@@ -252,22 +230,21 @@ class Duration:
             newmonth = other.month - self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear = other.year - self.years + carry
-            maxdays = max_days_in_month(newyear, newmonth)
+            maxdays = max_days_in_month(int(newyear), int(newmonth))
             if other.day > maxdays:
                 newday = maxdays
             else:
                 newday = other.day
-            newdt = other.replace(
-                year=int(newyear), month=int(newmonth), day=int(newday)
-            )
+            newdt = other.replace(year=int(newyear), month=int(newmonth), day=int(newday))
             return newdt - self.tdelta
         except AttributeError:
             # other probably was not compatible with data/datetime
             pass
         return NotImplemented
 
-    def __eq__(self, other):
-        """
+    def __eq__(self, other: object) -> bool:
+        """== operator.
+
         If the years, month part and the timedelta part are both equal, then
         the two Durations are considered equal.
         """
@@ -283,8 +260,9 @@ class Duration:
             return self.tdelta == other
         return False
 
-    def __ne__(self, other):
-        """
+    def __ne__(self, other: object) -> bool:
+        """!= operator.
+
         If the years, month part or the timedelta part is not equal, then
         the two Durations are considered not equal.
         """
@@ -300,9 +278,10 @@ class Duration:
             return self.tdelta != other
         return True
 
-    def totimedelta(self, start=None, end=None):
-        """
-        Convert this duration into a timedelta object.
+    def totimedelta(
+        self, start: date | datetime | None = None, end: date | datetime | None = None
+    ) -> timedelta:
+        """Convert this duration into a timedelta object.
 
         This method requires a start datetime or end datetimem, but raises
         an exception if both are given.
@@ -312,5 +291,8 @@ class Duration:
         if start is not None and end is not None:
             raise ValueError("only start or end allowed")
         if start is not None:
-            return (start + self) - start
-        return end - (end - self)
+            # TODO: ignore type error ... false positive in mypy or wrong type annotation in
+            # __rsub__ ?
+            return (start + self) - start  # type: ignore [operator, return-value]
+        # ignore typ error ... false positive in mypy
+        return end - (end - self)  # type: ignore [operator]

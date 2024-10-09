@@ -1,5 +1,4 @@
-"""
-This modules provides a method to parse an ISO 8601:2004 date string to a
+"""This modules provides a method to parse an ISO 8601:2004 date string to a
 python datetime.date instance.
 
 It supports all basic, extended and expanded formats as described in the ISO
@@ -8,22 +7,24 @@ implementation, which does not support dates before 0001-01-01.
 """
 
 import re
-from datetime import date, timedelta
+from datetime import date, time, timedelta
+from typing import Union
 
+from isodate.duration import Duration
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import DATE_EXT_COMPLETE, strftime
 
-DATE_REGEX_CACHE = {}
+DATE_REGEX_CACHE: dict[tuple[int, bool], list[re.Pattern[str]]] = {}
 # A dictionary to cache pre-compiled regular expressions.
 # A set of regular expressions is identified, by number of year digits allowed
 # and whether a plus/minus sign is required or not. (This option is changeable
 # only for 4 digit years).
 
 
-def build_date_regexps(yeardigits=4, expanded=False):
-    """
-    Compile set of regular expressions to parse ISO dates. The expressions will
-    be created only if they are not already in REGEX_CACHE.
+def build_date_regexps(yeardigits: int = 4, expanded: bool = False) -> list[re.Pattern[str]]:
+    """Compile set of regular expressions to parse ISO dates.
+
+    The expressions will be created only if they are not already in REGEX_CACHE.
 
     It is necessary to fix the number of year digits, else it is not possible
     to automatically distinguish between various ISO date formats.
@@ -35,7 +36,7 @@ def build_date_regexps(yeardigits=4, expanded=False):
     if yeardigits != 4:
         expanded = True
     if (yeardigits, expanded) not in DATE_REGEX_CACHE:
-        cache_entry = []
+        cache_entry: list[re.Pattern[str]] = []
         # ISO 8601 expanded DATE formats allow an arbitrary number of year
         # digits with a leading +/- sign.
         if expanded:
@@ -43,7 +44,7 @@ def build_date_regexps(yeardigits=4, expanded=False):
         else:
             sign = 0
 
-        def add_re(regex_text):
+        def add_re(regex_text: str) -> None:
             cache_entry.append(re.compile(r"\A" + regex_text + r"\Z"))
 
         # 1. complete dates:
@@ -70,41 +71,27 @@ def build_date_regexps(yeardigits=4, expanded=False):
         )
         # 3. ordinal dates:
         #    YYYY-DDD or +-YYYYYY-DDD ... extended format
-        add_re(
-            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-            r"-(?P<day>[0-9]{3})" % (sign, yeardigits)
-        )
+        add_re(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" r"-(?P<day>[0-9]{3})" % (sign, yeardigits))
         #    YYYYDDD or +-YYYYYYDDD ... basic format
-        add_re(
-            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-            r"(?P<day>[0-9]{3})" % (sign, yeardigits)
-        )
+        add_re(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" r"(?P<day>[0-9]{3})" % (sign, yeardigits))
         # 4. week dates:
         #    YYYY-Www or +-YYYYYY-Www ... extended reduced accuracy week date
         # 4. week dates:
         #    YYYY-Www or +-YYYYYY-Www ... extended reduced accuracy week date
         add_re(
-            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-            r"-W(?P<week>[0-9]{2})" % (sign, yeardigits)
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" r"-W(?P<week>[0-9]{2})" % (sign, yeardigits)
         )
         #    YYYYWww or +-YYYYYYWww ... basic reduced accuracy week date
-        add_re(
-            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W"
-            r"(?P<week>[0-9]{2})" % (sign, yeardigits)
-        )
+        add_re(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})W" r"(?P<week>[0-9]{2})" % (sign, yeardigits))
         # 5. month dates:
         #    YYY-MM or +-YYYYYY-MM ... reduced accuracy specific month
         # 5. month dates:
         #    YYY-MM or +-YYYYYY-MM ... reduced accuracy specific month
         add_re(
-            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-            r"-(?P<month>[0-9]{2})" % (sign, yeardigits)
+            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" r"-(?P<month>[0-9]{2})" % (sign, yeardigits)
         )
         #    YYYMM or +-YYYYYYMM ... basic incomplete month date format
-        add_re(
-            r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})"
-            r"(?P<month>[0-9]{2})" % (sign, yeardigits)
-        )
+        add_re(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" r"(?P<month>[0-9]{2})" % (sign, yeardigits))
         # 6. year dates:
         #    YYYY or +-YYYYYY ... reduced accuracy specific year
         add_re(r"(?P<sign>[+-]){%d}(?P<year>[0-9]{%d})" % (sign, yeardigits))
@@ -116,9 +103,14 @@ def build_date_regexps(yeardigits=4, expanded=False):
     return DATE_REGEX_CACHE[(yeardigits, expanded)]
 
 
-def parse_date(datestring, yeardigits=4, expanded=False, defaultmonth=1, defaultday=1):
-    """
-    Parse an ISO 8601 date string into a datetime.date object.
+def parse_date(
+    datestring: str,
+    yeardigits: int = 4,
+    expanded: bool = False,
+    defaultmonth: int = 1,
+    defaultday: int = 1,
+) -> date:
+    """Parse an ISO 8601 date string into a datetime.date object.
 
     As the datetime.date implementation is limited to dates starting from
     0001-01-01, negative dates (BC) and year 0 can not be parsed by this
@@ -162,9 +154,7 @@ def parse_date(datestring, yeardigits=4, expanded=False, defaultmonth=1, default
             # FIXME: negative dates not possible with python standard types
             sign = (groups["sign"] == "-" and -1) or 1
             if "century" in groups:
-                return date(
-                    sign * (int(groups["century"]) * 100 + 1), defaultmonth, defaultday
-                )
+                return date(sign * (int(groups["century"]) * 100 + 1), defaultmonth, defaultday)
             if "month" not in groups:  # weekdate or ordinal date
                 ret = date(sign * int(groups["year"]), 1, 1)
                 if "week" in groups:
@@ -187,15 +177,16 @@ def parse_date(datestring, yeardigits=4, expanded=False, defaultmonth=1, default
                 day = defaultday
             else:
                 day = int(groups["day"])
-            return date(
-                sign * int(groups["year"]), int(groups["month"]) or defaultmonth, day
-            )
+            return date(sign * int(groups["year"]), int(groups["month"]) or defaultmonth, day)
     raise ISO8601Error("Unrecognised ISO 8601 date format: %r" % datestring)
 
 
-def date_isoformat(tdate, format=DATE_EXT_COMPLETE, yeardigits=4):
-    """
-    Format date strings.
+def date_isoformat(
+    tdate: Union[timedelta, Duration, time, date],
+    format: str = DATE_EXT_COMPLETE,
+    yeardigits: int = 4,
+) -> str:
+    """Format date strings.
 
     This method is just a wrapper around isodate.isostrf.strftime and uses
     Date-Extended-Complete as default format.
