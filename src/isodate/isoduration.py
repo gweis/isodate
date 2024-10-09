@@ -102,23 +102,25 @@ def parse_duration(
                 groups[key] = float(groups[key][:-1].replace(",", "."))
     if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(
-            days=int(groups["days"]),
-            hours=int(groups["hours"]),
-            minutes=int(groups["minutes"]),
-            seconds=int(groups["seconds"]),
-            weeks=int(groups["weeks"]),
+            # values have been converted to float or Decimal
+            days=groups["days"],  # type: ignore [arg-type]
+            hours=groups["hours"],  # type: ignore [arg-type]
+            minutes=groups["minutes"],  # type: ignore [arg-type]
+            seconds=groups["seconds"],  # type: ignore [arg-type]
+            weeks=groups["weeks"],  # type: ignore [arg-type]
         )
         if groups["sign"] == "-":
             ret = timedelta(0) - ret
     else:
         ret = Duration(
-            years=int(groups["years"]),
-            months=int(groups["months"]),
-            days=int(groups["days"]),
-            hours=int(groups["hours"]),
-            minutes=int(groups["minutes"]),
-            seconds=int(groups["seconds"]),
-            weeks=int(groups["weeks"]),
+            # values have been converted to float or Decimal
+            years=groups["years"],  # type: ignore [arg-type]
+            months=groups["months"],  # type: ignore [arg-type]
+            days=groups["days"],  # type: ignore [arg-type]
+            hours=groups["hours"],  # type: ignore [arg-type]
+            minutes=groups["minutes"],  # type: ignore [arg-type]
+            seconds=groups["seconds"],  # type: ignore [arg-type]
+            weeks=groups["weeks"],  # type: ignore [arg-type]
         )
         if groups["sign"] == "-":
             ret = Duration(0) - ret

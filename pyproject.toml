@@ -57,7 +57,7 @@ source_pkgs = ["isodate"]
 omit = ["tests/"]
 
 [tool.black]
-line-length = 88
+line-length = 100
 
 [tool.isort]
 profile = "black"

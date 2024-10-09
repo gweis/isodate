@@ -7,7 +7,6 @@ and time module.
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
-from typing import Union
 
 import isodate
 from isodate.isodates import parse_date
@@ -36,7 +35,7 @@ def parse_datetime(datetimestring: str) -> datetime:
 
 
 def datetime_isoformat(
-    tdt: Union[timedelta, isodate.isoduration.Duration, time, date],
+    tdt: timedelta | isodate.isoduration.Duration | time | date,
     format: str = DATE_EXT_COMPLETE + "T" + TIME_EXT_COMPLETE + TZ_EXT,
 ) -> str:
     """Format datetime strings.

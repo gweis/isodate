@@ -10,7 +10,7 @@ repos:
     hooks:
       - id: flake8
         args:
-          - "--max-line-length=88"
+          - "--max-line-length=100"
 
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0

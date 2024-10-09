@@ -60,13 +60,13 @@ STRF_DT_MAP: dict[str, Callable[[Union[time, date], int], str]] = {
     "%d": lambda tdt, yds: "%02d" % tdt.day,  # type: ignore [union-attr]
     "%f": lambda tdt, yds: "%06d" % tdt.microsecond,  # type: ignore [union-attr]
     "%H": lambda tdt, yds: "%02d" % tdt.hour,  # type: ignore [union-attr]
-    "%j": lambda tdt, yds: "%03d" % (tdt.toordinal() - date(tdt.year, 1, 1).toordinal() + 1),  # type: ignore [union-attr, operator]
+    "%j": lambda tdt, yds: "%03d" % (tdt.toordinal() - date(tdt.year, 1, 1).toordinal() + 1),  # type: ignore [union-attr, operator] # noqa: E501
     "%m": lambda tdt, yds: "%02d" % tdt.month,  # type: ignore [union-attr]
     "%M": lambda tdt, yds: "%02d" % tdt.minute,  # type: ignore [union-attr]
     "%S": lambda tdt, yds: "%02d" % tdt.second,  # type: ignore [union-attr]
     "%w": lambda tdt, yds: "%1d" % tdt.isoweekday(),  # type: ignore [union-attr]
     "%W": lambda tdt, yds: "%02d" % tdt.isocalendar()[1],  # type: ignore [union-attr]
-    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year),  # type: ignore [union-attr]
+    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year),  # type: ignore [union-attr] # noqa: E501
     "%C": lambda tdt, yds: (((yds != 4) and "+") or "")  # type: ignore [union-attr]
     + (("%%0%dd" % (yds - 2)) % (tdt.year / 100)),  # type: ignore [union-attr]
     "%h": lambda tdt, yds: tz_isoformat(tdt, "%h"),  # type: ignore [arg-type]
@@ -83,7 +83,7 @@ STRF_D_MAP: dict[str, Callable[[Union[timedelta, Duration], int], str]] = {
     "%M": lambda tdt, yds: "%02d" % ((tdt.seconds / 60) % 60),
     "%S": lambda tdt, yds: "%02d" % (tdt.seconds % 60),
     "%W": lambda tdt, yds: "%02d" % (abs(tdt.days / 7)),
-    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.years),  # type: ignore [union-attr]
+    "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.years),  # type: ignore [union-attr] # noqa: E501
     "%C": lambda tdt, yds: (((yds != 4) and "+") or "")
     + (("%%0%dd" % (yds - 2)) % (tdt.years / 100)),  # type: ignore [union-attr]
     "%%": lambda tdt, yds: "%",
