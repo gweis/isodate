@@ -2,12 +2,12 @@
 ISO 8601 date/time parser
 =========================
 
-.. image:: https://travis-ci.org/gweis/isodate.svg?branch=master
-    :target: https://travis-ci.org/gweis/isodate
-    :alt: Travis-CI
-.. image:: https://coveralls.io/repos/gweis/isodate/badge.svg?branch=master
-    :target: https://coveralls.io/r/gweis/isodate?branch=master
-    :alt: Coveralls
+.. image:: https://github.com/gweis/isodate/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/gweis/isodate/actions/workflows/test.yml
+    :alt: GitHub Actions
+.. image:: https://img.shields.io/codecov/c/gh/gweis/isodate
+    :target: https://app.codecov.io/gh/gweis/isodate
+    :alt: Codecov
 .. image:: https://img.shields.io/pypi/v/isodate.svg
     :target: https://pypi.python.org/pypi/isodate/
     :alt: Latest Version
