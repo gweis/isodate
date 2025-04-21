@@ -36,6 +36,9 @@ def parse_duration(
     If the ISO date string does not contain years or months, a timedelta
     instance is returned, else a Duration instance is returned.
 
+    This behaviour can be disabled by setting `as_timedelta_if_possible` to False,
+    then function will always return Duration instances only.
+
     The following duration formats are supported:
       -PnnW                  duration in weeks
       -PnnYnnMnnDTnnHnnMnnS  complete duration specification
