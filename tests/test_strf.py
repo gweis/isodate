@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timedelta
 
 import pytest
+from pytest import MonkeyPatch
 
 from isodate import DT_EXT_COMPLETE, LOCAL, strftime, tzinfo
 
@@ -34,11 +35,11 @@ TEST_CASES: list[tuple[datetime, str, str]] = [
 
 
 @pytest.fixture
-def tz_patch(monkeypatch):
+def tz_patch(monkeypatch: MonkeyPatch) -> None:
     # local time zone mock function
     localtime_orig = time.localtime
 
-    def localtime_mock(secs: int):
+    def localtime_mock(secs: float) -> time.struct_time:
         """Mock time to fixed date.
 
         Mock time.localtime so that it always returns a time_struct with tm_dst=1
@@ -71,7 +72,9 @@ def tz_patch(monkeypatch):
 
 
 @pytest.mark.parametrize("dt, format, expectation", TEST_CASES)
-def test_format(tz_patch, dt: datetime, format: str, expectation: str):
+def test_format(
+    tz_patch: None, dt: datetime, format: str, expectation: str | None
+) -> None:
     """Take date object and create ISO string from it.
 
     This is the reverse test to test_parse.

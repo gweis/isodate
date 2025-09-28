@@ -5,7 +5,7 @@ All those classes are taken from the Python documentation.
 
 import time
 from datetime import datetime, timedelta, tzinfo
-from typing import Literal, Optional
+from typing import Callable, Literal, Optional
 
 ZERO = timedelta(0)
 # constant for zero time offset.
@@ -33,7 +33,7 @@ class Utc(tzinfo):
         """
         return ZERO
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[Callable[[], "Utc"], tuple[()]]:
         """When unpickling a Utc object, return the default instance below, UTC."""
         return _Utc, ()
 

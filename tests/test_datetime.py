@@ -1,7 +1,7 @@
 """Test cases for the isodatetime module."""
 
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional, cast
 
 import pytest
 
@@ -139,7 +139,9 @@ TEST_CASES: list[tuple[str, Optional[datetime], str, str]] = [
 
 
 @pytest.mark.parametrize("datetimestring, expected, format, output", TEST_CASES)
-def test_parse(datetimestring: str, expected: Optional[datetime], format: str, output: str):
+def test_parse(
+    datetimestring: str, expected: Optional[datetime], format: str, output: str
+) -> None:
     """Parse an ISO datetime string and compare it to the expected value."""
     if expected is None:
         with pytest.raises(ISO8601Error):
@@ -149,13 +151,15 @@ def test_parse(datetimestring: str, expected: Optional[datetime], format: str, o
 
 
 @pytest.mark.parametrize("datetimestring, expected, format, output", TEST_CASES)
-def test_format(datetimestring: str, expected: Optional[datetime], format: str, output: str):
+def test_format(
+    datetimestring: str, expected: Optional[datetime], format: str, output: str
+) -> None:
     """Take datetime object and create ISO string from it.
 
     This is the reverse test to test_parse.
     """
     if expected is None:
         with pytest.raises(AttributeError):
-            datetime_isoformat(expected, format)  # type: ignore [arg-type]
+            datetime_isoformat(cast(Any, expected), format)
     else:
         assert datetime_isoformat(expected, format) == output

@@ -7,7 +7,7 @@ format timedelta or Duration instances as ISO conforming strings.
 import re
 from datetime import date, time, timedelta
 from decimal import Decimal
-from typing import Union, Optional
+from typing import Optional, Union
 
 from isodate.duration import Duration
 from isodate.isodatetime import parse_datetime
@@ -58,8 +58,7 @@ def parse_duration(
       days set to 0.
     """
     ret: Optional[Union[timedelta, Duration]] = None
-    if not isinstance(datestring, str):
-        raise TypeError("Expecting a string %r" % datestring)
+
     match = ISO8601_PERIOD_REGEX.match(datestring)
     if not match:
         # try alternative format:
@@ -139,7 +138,11 @@ def duration_isoformat(
     #       should be done in Duration class in consistent way with timedelta.
     if (
         isinstance(tduration, Duration)
-        and (tduration.years < 0 or tduration.months < 0 or tduration.tdelta < timedelta(0))
+        and (
+            tduration.years < 0
+            or tduration.months < 0
+            or tduration.tdelta < timedelta(0)
+        )
     ) or (isinstance(tduration, timedelta) and (tduration < timedelta(0))):
         ret = "-"
     else:

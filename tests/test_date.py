@@ -1,7 +1,7 @@
-"""Test cases for the isodate module."""
+"""Test cases for the isodate.isodates module."""
 
 from datetime import date
-from typing import Optional
+from typing import Any, Optional, cast
 
 import pytest
 
@@ -60,7 +60,9 @@ TEST_CASES: list[tuple[int, str, Optional[date], str]] = [
 
 
 @pytest.mark.parametrize("yeardigits, datestring, expected, _", TEST_CASES)
-def test_parse(yeardigits: int, datestring: str, expected: Optional[date], _):
+def test_parse(
+    yeardigits: int, datestring: str, expected: Optional[date], _: str
+) -> None:
     """Parse dates and verify result."""
     if expected is None:
         with pytest.raises(ISO8601Error):
@@ -71,7 +73,9 @@ def test_parse(yeardigits: int, datestring: str, expected: Optional[date], _):
 
 
 @pytest.mark.parametrize("yeardigits, datestring, expected, format", TEST_CASES)
-def test_format(yeardigits: int, datestring: str, expected: Optional[date], format: str):
+def test_format(
+    yeardigits: int, datestring: str, expected: Optional[date], format: str
+) -> None:
     """Format date objects to ISO strings.
 
     This is the reverse test to test_parse.
@@ -81,6 +85,6 @@ def test_format(yeardigits: int, datestring: str, expected: Optional[date], form
         #       then format raises an AttributeError
         #       with typing this also raises a type error
         with pytest.raises(AttributeError):
-            date_isoformat(expected, format, yeardigits)  # type: ignore [arg-type]
+            date_isoformat(cast(Any, expected), format, yeardigits)
     else:
         assert date_isoformat(expected, format, yeardigits) == datestring

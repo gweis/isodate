@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
 
-import isodate
+from isodate.duration import Duration
 from isodate.isodates import parse_date
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import DATE_EXT_COMPLETE, TIME_EXT_COMPLETE, TZ_EXT, strftime
@@ -35,7 +35,7 @@ def parse_datetime(datetimestring: str) -> datetime:
 
 
 def datetime_isoformat(
-    tdt: timedelta | isodate.isoduration.Duration | time | date,
+    tdt: timedelta | Duration | time | date,
     format: str = DATE_EXT_COMPLETE + "T" + TIME_EXT_COMPLETE + TZ_EXT,
 ) -> str:
     """Format datetime strings.
