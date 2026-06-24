@@ -51,6 +51,9 @@ PARSE_TEST_CASES: list[tuple[str, Union[Duration, timedelta], str, Optional[str]
     ),
     # alternative format
     ("P0018-09-04T11:09:08", Duration(4, 8, 0, 0, 9, 11, 0, 9, 18), D_ALT_EXT, None),
+    # alternative format with month=00 (issue #96): must produce months=0, not 1
+    ("P0001-00-01T00:00:00", Duration(1, 0, 0, years=1, months=0), D_ALT_EXT, None),
+    ("P0001-00T00:00:00", Duration(1, 0, 0, years=1, months=0), D_ALT_EXT, "P0001-00-01T00:00:00"),
     # 'PT000022.22', timedelta(seconds=22.22),
 ]
 
