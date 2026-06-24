@@ -27,6 +27,10 @@ ISO8601_PERIOD_REGEX = re.compile(
 )
 # regular expression to parse ISO duration strings.
 
+# Regex to extract the month value from the alternative extended duration format
+# (PYYYY-MM-DDThh:mm:ss or PYYYY-MMThh:mm:ss) before datetime parsing normalises it.
+_ALT_EXT_MONTH_RE = re.compile(r"^P\d{4}-(?P<month>\d{2})(?:-\d{2})?T")
+
 
 def parse_duration(
     datestring: str, as_timedelta_if_possible: bool = True
@@ -64,8 +68,16 @@ def parse_duration(
     if not match:
         # try alternative format:
         if datestring.startswith("P"):
+            # Extract the raw month value before parse_datetime normalises month=0
+            # to 1 (since datetime.month is always in 1-12).  A month component
+            # of "00" in the duration string means 0 months, not 1.
+            alt_month_match = _ALT_EXT_MONTH_RE.match(datestring)
+            raw_month: Optional[int] = (
+                int(alt_month_match.group("month")) if alt_month_match else None
+            )
             durdt = parse_datetime(datestring[1:])
-            if as_timedelta_if_possible and durdt.year == 0 and durdt.month == 0:
+            months = raw_month if raw_month is not None else durdt.month
+            if as_timedelta_if_possible and durdt.year == 0 and months == 0:
                 # FIXME: currently not possible in alternative format
                 # create timedelta
                 ret = timedelta(
@@ -83,7 +95,7 @@ def parse_duration(
                     microseconds=durdt.microsecond,
                     minutes=durdt.minute,
                     hours=durdt.hour,
-                    months=durdt.month,
+                    months=months,
                     years=durdt.year,
                 )
             return ret
