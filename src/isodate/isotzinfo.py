@@ -72,7 +72,7 @@ def tz_isoformat(dt: datetime, format: str = "%Z") -> str:
     tzinfo = dt.tzinfo
     if (tzinfo is None) or (tzinfo.utcoffset(dt) is None):
         return ""
-    if tzinfo.utcoffset(dt) == ZERO and tzinfo.dst(dt) == ZERO:
+    if tzinfo.utcoffset(dt) == ZERO and (tzinfo.dst(dt) == ZERO or tzinfo.dst(dt) is None):
         return "Z"
     tdelta = tzinfo.utcoffset(dt)
     if tdelta is None:
