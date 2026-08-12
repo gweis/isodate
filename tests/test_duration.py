@@ -373,6 +373,24 @@ def test_parseerror():
         parse_duration("T10:10:10")
 
 
+@pytest.mark.parametrize(
+    "durationstring",
+    [
+        "PT999999999999999999999999S",
+        "PT99999999999999999999H",
+        "P9999999999999999999999999999D",
+        "-P9999999999999999999999999999D",
+    ],
+)
+def test_out_of_range_duration_raises(durationstring):
+    """A syntactically valid but absurdly large duration overflows timedelta.
+
+    It must raise ISO8601Error rather than leaking OverflowError.
+    """
+    with pytest.raises(ISO8601Error):
+        parse_duration(durationstring)
+
+
 def test_repr():
     """Test __repr__ and __str__ for Duration objects."""
     dur = Duration(10, 10, years=10, months=10)
