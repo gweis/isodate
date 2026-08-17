@@ -444,6 +444,22 @@ def test_equal():
     # assert timedelta(days=1) != Duration(days=1)
 
 
+def test_total_seconds():
+    """Test Duration.total_seconds() including months/years (issue #44)."""
+    # a pure days/seconds duration must still match timedelta exactly.
+    dur = Duration(days=1, hours=2, minutes=3, seconds=4)
+    assert dur.total_seconds() == timedelta(days=1, hours=2, minutes=3, seconds=4).total_seconds()
+
+    # months/years must no longer be silently dropped (were returning 0.0).
+    months_secs = parse_duration("P3M").total_seconds()
+    assert months_secs != 0.0
+    assert months_secs == pytest.approx(3 * (365.2425 / 12) * 86400)
+
+    years_secs = parse_duration("P1Y").total_seconds()
+    assert years_secs != 0.0
+    assert years_secs == pytest.approx(365.2425 * 86400)
+
+
 def test_totimedelta():
     """Test conversion form Duration to timedelta."""
     dur = Duration(years=1, months=2, days=10)

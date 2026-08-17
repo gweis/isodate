@@ -24,6 +24,15 @@ def fquotmod(val: Decimal, low: int, high: int) -> tuple[int, Decimal]:
     return int(div), mod
 
 
+# Average length (in days) of a Gregorian calendar year, and the average
+# length of a month derived from it. These are used only to give an
+# approximate answer for durations that mix months/years with the
+# fixed-length duration API (e.g. Duration.total_seconds()), since months
+# and years have no fixed length without a reference date.
+AVERAGE_DAYS_PER_YEAR = 365.2425
+AVERAGE_DAYS_PER_MONTH = AVERAGE_DAYS_PER_YEAR / 12
+
+
 def max_days_in_month(year: int, month: int) -> int:
     """Determines the number of days of a specific month in a specific year."""
     if month in (1, 3, 5, 7, 8, 10, 12):
@@ -87,6 +96,25 @@ class Duration:
     def __getattr__(self, name: str):
         """Provide direct access to attributes of included timedelta instance."""
         return getattr(self.tdelta, name)
+
+    def total_seconds(self) -> float:
+        """Return the total number of seconds in this duration, as a float.
+
+        Unlike timedelta.total_seconds(), this also accounts for the
+        years/months components of this Duration. Because years and months
+        do not have a fixed length without a reference date, they are
+        converted using the average Gregorian year/month length
+        (365.2425 days per year, that value divided by 12 per month) --
+        the same convention commonly used by other ISO 8601 duration
+        implementations (e.g. python-dateutil). The result is therefore an
+        approximation whenever years or months are non-zero, not an exact
+        value.
+        """
+        return (
+            self.tdelta.total_seconds()
+            + float(self.months) * AVERAGE_DAYS_PER_MONTH * 86400
+            + float(self.years) * AVERAGE_DAYS_PER_YEAR * 86400
+        )
 
     def __str__(self):
         """Return a string representation of this duration similar to timedelta."""
