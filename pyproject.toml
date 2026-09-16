@@ -3,12 +3,11 @@ name = "isodate"
 description = "An ISO 8601 date/time/duration parser and formatter"
 authors = [{name="Gerhard Weis"}]
 # keywords =
-license = {file = "LICENSE"}
-# license = {text="BSD-3-Clause"}
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -33,7 +32,7 @@ readme = {file=["README.rst", "CHANGES.txt", "TODO.txt"], content-type="text/x-r
 
 
 [build-system]
-requires = ["setuptools", "setuptools_scm[toml]"]
+requires = ["setuptools>=77.0.3", "setuptools_scm[toml]"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
