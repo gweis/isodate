@@ -134,7 +134,11 @@ def duration_isoformat(
 
     This method is just a wrapper around isodate.isostrf.strftime and uses
     P%P (D_DEFAULT) as default format.
+
+    Raise TypeError if tduration is not a timedelta, Duration, time or date.
     """
+    if not isinstance(tduration, (timedelta, Duration, time, date)):
+        raise TypeError("Expecting a timedelta, Duration, time or date")
     # TODO: implement better decision for negative Durations.
     #       should be done in Duration class in consistent way with timedelta.
     if (

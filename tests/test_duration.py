@@ -1,6 +1,6 @@
 """Test cases for the isoduration module."""
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from typing import Optional, Union
 
 import pytest
@@ -14,6 +14,28 @@ from isodate import (
     duration_isoformat,
     parse_duration,
 )
+
+
+@pytest.mark.parametrize("value", ["ajaksdf", 1000, 1.5, None, True, b"P1D", [], {}, object()])
+@pytest.mark.parametrize("format", [D_DEFAULT, "literal", ""])
+def test_format_invalid_type(value, format):
+    with pytest.raises(TypeError):
+        duration_isoformat(value, format)
+
+
+@pytest.mark.parametrize(
+    "value, format, expected",
+    [
+        (date(2024, 2, 3), "%Y-%m-%d", "2024-02-03"),
+        (time(4, 5, 6), "%H:%M:%S", "04:05:06"),
+        (datetime(2024, 2, 3, 4, 5, 6), "%Y-%m-%dT%H:%M:%S", "2024-02-03T04:05:06"),
+        (timedelta(days=2), "literal", "literal"),
+        (Duration(months=2), "", ""),
+    ],
+)
+def test_format_supported_types(value, format, expected):
+    assert duration_isoformat(value, format) == expected
+
 
 # the following list contains tuples of ISO duration strings and the expected
 # result from the parse_duration method. A result of None means an ISO8601Error
