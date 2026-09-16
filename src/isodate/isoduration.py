@@ -65,11 +65,17 @@ def parse_duration(
         # try alternative format:
         if datestring.startswith("P"):
             durdt = parse_datetime(datestring[1:])
-            if as_timedelta_if_possible and durdt.year == 0 and durdt.month == 0:
+            years, months, days = durdt.year, durdt.month, durdt.day
+            ordinal = re.match(r"\AP([0-9]{4})-?([0-9]{3})T", datestring)
+            if ordinal:
+                # Keep duration components rather than their calendar-date conversion.
+                years, days = map(int, ordinal.groups())
+                months = 0
+            if as_timedelta_if_possible and years == 0 and months == 0:
                 # FIXME: currently not possible in alternative format
                 # create timedelta
                 ret = timedelta(
-                    days=durdt.day,
+                    days=days,
                     seconds=durdt.second,
                     microseconds=durdt.microsecond,
                     minutes=durdt.minute,
@@ -78,13 +84,13 @@ def parse_duration(
             else:
                 # create Duration
                 ret = Duration(
-                    days=durdt.day,
+                    days=days,
                     seconds=durdt.second,
                     microseconds=durdt.microsecond,
                     minutes=durdt.minute,
                     hours=durdt.hour,
-                    months=durdt.month,
-                    years=durdt.year,
+                    months=months,
+                    years=years,
                 )
             return ret
         raise ISO8601Error("Unable to parse duration string %r" % datestring)

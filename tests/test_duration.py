@@ -15,6 +15,49 @@ from isodate import (
     parse_duration,
 )
 
+
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize("separator, clock", [("", "123456.123456"), ("-", "12:34:56.123456")])
+@pytest.mark.parametrize("years, days", [(1, 1), (1, 100), (1, 365), (1, 366), (4, 366)])
+def test_parse_alternative_ordinal_duration(years, days, separator, clock, as_timedelta):
+    value = "P{:04d}{}{:03d}T{}".format(years, separator, days, clock)
+    result = parse_duration(value, as_timedelta)
+    assert isinstance(result, Duration)
+    assert result.years == years
+    assert result.months == 0
+    assert result.tdelta == timedelta(
+        days=days, hours=12, minutes=34, seconds=56, microseconds=123456
+    )
+
+
+def test_parse_alternative_ordinal_duration_midnight():
+    result = parse_duration("P0001-100T00:00:00", False)
+    assert result == Duration(years=1, days=100)
+    assert result.totimedelta(date(2025, 1, 1)) == timedelta(days=465)
+
+
+@pytest.mark.parametrize(
+    "value, error",
+    [
+        ("P0000-100T00:00:00", ValueError),
+        ("P0001-000T00:00:00", OverflowError),
+        ("P9999-366T00:00:00", OverflowError),
+        ("P0001-100T25:00:00", ValueError),
+        ("P0001-100T00:00:00junk", ISO8601Error),
+    ],
+)
+def test_parse_alternative_ordinal_validation(value, error):
+    with pytest.raises(error):
+        parse_duration(value)
+
+
+@pytest.mark.parametrize("value", ["P00010410T123456", "P0001-04-10T12:34:56"])
+def test_parse_alternative_calendar_duration(value):
+    assert parse_duration(value) == Duration(
+        years=1, months=4, days=10, hours=12, minutes=34, seconds=56
+    )
+
+
 # the following list contains tuples of ISO duration strings and the expected
 # result from the parse_duration method. A result of None means an ISO8601Error
 # is expected.
