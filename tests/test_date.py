@@ -59,6 +59,22 @@ TEST_CASES: list[tuple[int, str, Optional[date], str]] = [
 ]
 
 
+@pytest.mark.parametrize("datestring", ["2024-W99-1", "2024W991", "2024-W54"])
+def test_week_above_53(datestring: str):
+    """A week above 53 is not a week of that year."""
+    with pytest.raises(ISO8601Error):
+        parse_date(datestring)
+
+
+def test_week_boundaries():
+    """Weeks the year does contain still parse."""
+    assert parse_date("2024-W01-1") == date(2024, 1, 1)
+    assert parse_date("2021-W01-1") == date(2021, 1, 4)
+    assert parse_date("2009-W01-1") == date(2008, 12, 29)
+    assert parse_date("2020-W53-1") == date(2020, 12, 28)
+    assert parse_date("1985-W15-5") == date(1985, 4, 12)
+
+
 @pytest.mark.parametrize("yeardigits, datestring, expected, _", TEST_CASES)
 def test_parse(yeardigits: int, datestring: str, expected: Optional[date], _):
     """Parse dates and verify result."""

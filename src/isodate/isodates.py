@@ -158,6 +158,9 @@ def parse_date(
             if "month" not in groups:  # weekdate or ordinal date
                 ret = date(sign * int(groups["year"]), 1, 1)
                 if "week" in groups:
+                    week = int(groups["week"])
+                    if week > 53:
+                        raise ISO8601Error("ISO 8601 week %d is outside 01 through 53" % week)
                     isotuple = ret.isocalendar()
                     if "day" in groups:
                         days = int(groups["day"] or 1)
@@ -165,7 +168,7 @@ def parse_date(
                         days = 1
                     # if first week in year, do weeks-1
                     return ret + timedelta(
-                        weeks=int(groups["week"]) - (((isotuple[1] == 1) and 1) or 0),
+                        weeks=week - (((isotuple[1] == 1) and 1) or 0),
                         days=-isotuple[2] + days,
                     )
                 elif "day" in groups:  # ordinal date
