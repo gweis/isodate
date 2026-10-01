@@ -373,6 +373,47 @@ def test_parseerror():
         parse_duration("T10:10:10")
 
 
+@pytest.mark.parametrize("sign", ["", "+", "-"])
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize("duration", ["PT", "P1DT", "P1YT", "P1MT", "P1WT"])
+def test_reject_empty_time_part(sign, as_timedelta, duration):
+    with pytest.raises(ISO8601Error):
+        parse_duration(sign + duration, as_timedelta)
+
+
+@pytest.mark.parametrize("sign", ["", "+", "-"])
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize("duration", ["P1D", "PT1S", "P1Y"])
+def test_reject_trailing_newline(sign, as_timedelta, duration):
+    with pytest.raises(ISO8601Error):
+        parse_duration(sign + duration + "\n", as_timedelta)
+
+
+@pytest.mark.parametrize("sign", ["", "+", "-"])
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize(
+    "duration, expectation",
+    [
+        ("PT0H", timedelta(0)),
+        ("PT0M", timedelta(0)),
+        ("PT0S", timedelta(0)),
+        ("P1DT0S", timedelta(days=1)),
+        ("PT0.5H", timedelta(minutes=30)),
+        ("PT0,5M", timedelta(seconds=30)),
+    ],
+)
+def test_parse_time_part(sign, as_timedelta, duration, expectation):
+    if sign == "-":
+        expectation = -expectation
+    result = parse_duration(sign + duration, as_timedelta)
+    if as_timedelta:
+        assert isinstance(result, timedelta)
+        assert result == expectation
+    else:
+        assert isinstance(result, Duration)
+        assert result.tdelta == expectation
+
+
 def test_repr():
     """Test __repr__ and __str__ for Duration objects."""
     dur = Duration(10, 10, years=10, months=10)
