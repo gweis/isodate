@@ -7,6 +7,7 @@ CHANGES
 
 - Drop support for Python < 3.9
 - add type hints
+- Truncate fractional hours to microseconds consistently with fractional minutes and seconds.
 
 
 0.7.2 (2024-10-08)

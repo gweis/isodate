@@ -124,3 +124,22 @@ def test_format(timestring: str, expectation: Optional[time], format: Optional[s
             time_isoformat(expectation, format)  # type: ignore [arg-type]
     elif format is not None:
         assert time_isoformat(expectation, format) == timestring
+
+
+@pytest.mark.parametrize(
+    "timestring, expectation",
+    [
+        ("10.1234567899", time(10, 7, 24, 444443)),
+        ("10.9999999999", time(10, 59, 59, 999999)),
+        ("T23,9999999999Z", time(23, 59, 59, 999999, tzinfo=UTC)),
+        (
+            "23.9999999999+05:30",
+            time(23, 59, 59, 999999, tzinfo=FixedOffset(5, 30, "+05:30")),
+        ),
+        ("00.0000000002", time(0)),
+        ("10.123456789", time(10, 7, 24, 444440)),
+    ],
+)
+def test_parse_fractional_hours_truncates_microseconds(timestring: str, expectation: time):
+    """Discard sub-microsecond precision without rounding into the next second."""
+    assert parse_time(timestring) == expectation

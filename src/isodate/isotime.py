@@ -129,7 +129,9 @@ def parse_time(timestring: str) -> time:
                 microsecond, second, minute = Decimal(0), Decimal(0), Decimal(0)
             hour = Decimal(groups["hour"])
             minute = (hour - int(hour)) * 60
-            second = Decimal((minute - int(minute)) * 60)
+            second = Decimal((minute - int(minute)) * 60).quantize(
+                Decimal(".000001"), rounding=ROUND_FLOOR
+            )
             microsecond = (second - int(second)) * int(1e6)
             return time(
                 int(hour),
