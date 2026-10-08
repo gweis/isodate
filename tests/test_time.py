@@ -1,6 +1,8 @@
 """Test cases for the isotime module."""
 
 from datetime import time
+from threading import Event, Thread, current_thread
+from types import SimpleNamespace
 from typing import Optional
 
 import pytest
@@ -17,6 +19,8 @@ from isodate import (
     UTC,
     FixedOffset,
     ISO8601Error,
+    isotime,
+    parse_datetime,
     parse_time,
     time_isoformat,
 )
@@ -124,3 +128,54 @@ def test_format(timestring: str, expectation: Optional[time], format: Optional[s
             time_isoformat(expectation, format)  # type: ignore [arg-type]
     elif format is not None:
         assert time_isoformat(expectation, format) == timestring
+
+
+@pytest.mark.parametrize("parser, prefix", [(parse_time, ""), (parse_datetime, "2024-10-09T")])
+def test_concurrent_first_parse(parser, prefix, monkeypatch):
+    monkeypatch.setattr(isotime, "TIME_REGEX_CACHE", [])
+    compiling = Event()
+    resume = Event()
+    compile_pattern = isotime.re.compile
+    compilation_calls = 0
+    first_results = []
+
+    def paused_compile(pattern):
+        nonlocal compilation_calls
+        if current_thread() is worker:
+            compilation_calls += 1
+            if compilation_calls == 2:
+                compiling.set()
+                assert resume.wait(5)
+        return compile_pattern(pattern)
+
+    def first_parse():
+        try:
+            first_results.append(parser(prefix + "12:34:56+02:00").isoformat())
+        except Exception as error:
+            first_results.append(error)
+
+    worker = Thread(target=first_parse)
+    monkeypatch.setattr(isotime, "re", SimpleNamespace(compile=paused_compile))
+    worker.start()
+    try:
+        assert compiling.wait(5)
+        # This reduced format needs a pattern not yet compiled by the first thread.
+        result = parser(prefix + "12:34+02:00")
+    finally:
+        resume.set()
+        worker.join(5)
+        assert not worker.is_alive()
+    assert result.isoformat() == prefix + "12:34:00+02:00"
+    assert first_results == [prefix + "12:34:56+02:00"]
+
+
+def test_warm_cache_does_not_compile(monkeypatch):
+    monkeypatch.setattr(isotime, "TIME_REGEX_CACHE", [])
+    assert parse_time("12:34:56") == time(12, 34, 56)
+
+    def unexpected_compile(pattern):
+        pytest.fail("An initialized time parser should reuse its compiled patterns")
+
+    monkeypatch.setattr(isotime, "re", SimpleNamespace(compile=unexpected_compile))
+    assert parse_time("12:34") == time(12, 34)
+    assert parse_time("12") == time(12)
