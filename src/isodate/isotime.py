@@ -26,6 +26,7 @@ def build_time_regexps() -> list[re.Pattern[str]]:
     for later reuse.
     """
     if not TIME_REGEX_CACHE:
+        cache_entry: list[re.Pattern[str]] = []
         # ISO 8601 time representations allow decimal fractions on least
         #    significant time component. Command and Full Stop are both valid
         #    fraction separators.
@@ -42,8 +43,9 @@ def build_time_regexps() -> list[re.Pattern[str]]:
         #    +-hhmm
         #    +-hh =>
         #    isotzinfo.TZ_REGEX
+
         def add_re(regex_text: str) -> None:
-            TIME_REGEX_CACHE.append(re.compile(r"\A" + regex_text + TZ_REGEX + r"\Z"))
+            cache_entry.append(re.compile(r"\A" + regex_text + TZ_REGEX + r"\Z"))
 
         # 1. complete time:
         #    hh:mm:ss.ss ... extended format
@@ -64,6 +66,8 @@ def build_time_regexps() -> list[re.Pattern[str]]:
         add_re(r"T?(?P<hour>[0-9]{2})" r"(?P<minute>[0-9]{2}" r"([,.][0-9]+)?)")
         #    hh.hh ... basic format
         add_re(r"T?(?P<hour>[0-9]{2}" r"([,.][0-9]+)?)")
+        # Concurrent callers must only see a complete set of patterns.
+        TIME_REGEX_CACHE[:] = cache_entry
     return TIME_REGEX_CACHE
 
 
