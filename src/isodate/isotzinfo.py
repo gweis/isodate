@@ -44,7 +44,7 @@ def parse_tzinfo(tzstring: str) -> Union[tzinfo, None]:
       +-hh:mm extended hours and minutes
       +-hh    hours
     """
-    match = TZ_RE.match(tzstring)
+    match = TZ_RE.fullmatch(tzstring)
     if match:
         groups = match.groupdict()
         return build_tzinfo(

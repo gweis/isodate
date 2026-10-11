@@ -124,3 +124,24 @@ def test_format(timestring: str, expectation: Optional[time], format: Optional[s
             time_isoformat(expectation, format)  # type: ignore [arg-type]
     elif format is not None:
         assert time_isoformat(expectation, format) == timestring
+
+
+@pytest.mark.parametrize("tzstring", [
+    "garbage", "Zgarbage", "+04:00trailing", "+04:00\n", "+040099",
+])
+def test_timezone_designator_rejects_trailing_characters(tzstring):
+    from isodate import parse_tzinfo
+
+    with pytest.raises(ISO8601Error):
+        parse_tzinfo(tzstring)
+
+
+@pytest.mark.parametrize("tzstring", ["", "Z", "+04", "+0400", "+04:00", "-05:30"])
+def test_complete_timezone_designators(tzstring):
+    from isodate import parse_tzinfo
+
+    result = parse_tzinfo(tzstring)
+    if tzstring:
+        assert result is not None
+    else:
+        assert result is None

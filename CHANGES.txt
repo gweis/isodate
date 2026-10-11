@@ -7,6 +7,7 @@ CHANGES
 
 - Drop support for Python < 3.9
 - add type hints
+- Reject trailing garbage in parsed time zone designators
 
 
 0.7.2 (2024-10-08)
