@@ -116,9 +116,16 @@ class Duration:
     def __hash__(self):
         """Return a hash of this instance.
 
-        So that it can be used in, for example, dicts and sets.
+        So that it can be used in, for example, dicts and sets. The year/month
+        part is normalized to total months to match ``__eq__`` (which treats
+        e.g. one year and twelve months as equal), so that equal Durations
+        always hash equally. A Duration without a year/month part compares
+        equal to its timedelta, so it hashes like that timedelta too.
         """
-        return hash((self.tdelta, self.months, self.years))
+        months = self.years * 12 + self.months
+        if months == 0:
+            return hash(self.tdelta)
+        return hash((self.tdelta, months))
 
     def __neg__(self):
         """A simple unary minus.

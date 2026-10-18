@@ -400,6 +400,36 @@ def test_hash():
     assert len(durSet) == 2
 
 
+def test_hash_consistent_with_eq():
+    """Equal Durations must hash equally (gh-104).
+
+    ``__eq__`` normalizes years<->months (one year equals twelve months), so
+    ``__hash__`` must apply the same normalization.
+    """
+    for a, b in [
+        (Duration(years=1), Duration(months=12)),
+        (Duration(years=2, months=3), Duration(months=27)),
+        (Duration(5, 5, years=1), Duration(5, 5, months=12)),
+    ]:
+        assert a == b
+        assert hash(a) == hash(b)
+        assert len({a, b}) == 1
+        assert b in {a}
+
+
+def test_hash_consistent_with_timedelta_eq():
+    """A Duration equal to a timedelta must hash like it (gh-104 review)."""
+    for duration, tdelta in [
+        (Duration(days=1), timedelta(days=1)),
+        (Duration(0), timedelta(0)),
+        (Duration(1, 2, 3), timedelta(1, 2, 3)),
+    ]:
+        assert duration == tdelta
+        assert hash(duration) == hash(tdelta)
+        assert len({duration, tdelta}) == 1
+        assert tdelta in {duration}
+
+
 def test_neg():
     """Test __neg__ for Duration objects."""
     assert -Duration(0) == Duration(0)

@@ -7,6 +7,9 @@ CHANGES
 
 - Drop support for Python < 3.9
 - add type hints
+- fix ``Duration.__hash__`` to be consistent with ``__eq__`` so that equal
+  Durations (e.g. one year and twelve months) hash equally, and a Duration
+  without years or months hashes like the equal ``timedelta`` (#104)
 
 
 0.7.2 (2024-10-08)
