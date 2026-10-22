@@ -65,6 +65,29 @@ def test_parse(durationstring, expectation, format, altstr):
     assert result == expectation
 
 
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize("durationstring", ["PT", "+PT", "-PT", "P1DT", "P1YT", "P1MT"])
+def test_parse_rejects_empty_time_section(durationstring, as_timedelta):
+    with pytest.raises(ISO8601Error):
+        parse_duration(durationstring, as_timedelta_if_possible=as_timedelta)
+
+
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize("durationstring", ["P1D\n", "PT1H\n", "P1Y\n", "-PT0S\n"])
+def test_parse_rejects_trailing_newline(durationstring, as_timedelta):
+    with pytest.raises(ISO8601Error):
+        parse_duration(durationstring, as_timedelta_if_possible=as_timedelta)
+
+
+@pytest.mark.parametrize("as_timedelta", [True, False])
+@pytest.mark.parametrize("durationstring", ["PT0H", "PT0M", "PT0S", "P0DT0S"])
+def test_parse_zero_time_component(durationstring, as_timedelta):
+    result = parse_duration(durationstring, as_timedelta_if_possible=as_timedelta)
+    expected_type = timedelta if as_timedelta else Duration
+    assert isinstance(result, expected_type)
+    assert result == expected_type()
+
+
 @pytest.mark.parametrize(
     "durationstring, expectation, format, altstr",
     PARSE_TEST_CASES,
