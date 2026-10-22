@@ -21,9 +21,9 @@ ISO8601_PERIOD_REGEX = re.compile(
     r"(?P<months>[0-9]+([,.][0-9]+)?M)?"
     r"(?P<weeks>[0-9]+([,.][0-9]+)?W)?"
     r"(?P<days>[0-9]+([,.][0-9]+)?D)?"
-    r"((?P<separator>T)(?P<hours>[0-9]+([,.][0-9]+)?H)?"
+    r"((?P<separator>T)(?=[0-9])(?P<hours>[0-9]+([,.][0-9]+)?H)?"
     r"(?P<minutes>[0-9]+([,.][0-9]+)?M)?"
-    r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$"
+    r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?\Z"
 )
 # regular expression to parse ISO duration strings.
 
