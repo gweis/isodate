@@ -17,12 +17,12 @@ from isodate.isotzinfo import tz_isoformat
 # Date specific format strings
 DATE_BAS_COMPLETE = "%Y%m%d"
 DATE_EXT_COMPLETE = "%Y-%m-%d"
-DATE_BAS_WEEK_COMPLETE = "%YW%W%w"
-DATE_EXT_WEEK_COMPLETE = "%Y-W%W-%w"
+DATE_BAS_WEEK_COMPLETE = "%GW%W%w"
+DATE_EXT_WEEK_COMPLETE = "%G-W%W-%w"
 DATE_BAS_ORD_COMPLETE = "%Y%j"
 DATE_EXT_ORD_COMPLETE = "%Y-%j"
-DATE_BAS_WEEK = "%YW%W"
-DATE_EXT_WEEK = "%Y-W%W"
+DATE_BAS_WEEK = "%GW%W"
+DATE_EXT_WEEK = "%G-W%W"
 DATE_BAS_MONTH = "%Y%m"
 DATE_EXT_MONTH = "%Y-%m"
 DATE_YEAR = "%Y"
@@ -67,6 +67,8 @@ STRF_DT_MAP: dict[str, Callable[[Union[time, date], int], str]] = {
     "%w": lambda tdt, yds: "%1d" % tdt.isoweekday(),  # type: ignore [union-attr]
     "%W": lambda tdt, yds: "%02d" % tdt.isocalendar()[1],  # type: ignore [union-attr]
     "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.year),  # type: ignore [union-attr] # noqa: E501
+    "%G": lambda tdt, yds: (((yds != 4) and "+") or "")
+    + (("%%0%dd" % yds) % tdt.isocalendar()[0]),  # type: ignore [union-attr]
     "%C": lambda tdt, yds: (((yds != 4) and "+") or "")  # type: ignore [union-attr]
     + (("%%0%dd" % (yds - 2)) % (tdt.year / 100)),  # type: ignore [union-attr]
     "%h": lambda tdt, yds: tz_isoformat(tdt, "%h"),  # type: ignore [arg-type]
@@ -147,7 +149,7 @@ def _strfdt(tdt: Union[time, date], format: str, yeardigits: int = 4) -> str:
             return STRF_DT_MAP[match.group(0)](tdt, yeardigits)
         return match.group(0)
 
-    return re.sub("%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%C|%z|%Z|%h|%%", repl, format)
+    return re.sub("%d|%f|%H|%j|%m|%M|%S|%w|%W|%Y|%G|%C|%z|%Z|%h|%%", repl, format)
 
 
 def strftime(tdt: Union[timedelta, Duration, time, date], format: str, yeardigits: int = 4) -> str:
@@ -161,11 +163,10 @@ def strftime(tdt: Union[timedelta, Duration, time, date], format: str, yeardigit
     %m    Month as a decimal number [01,12].
     %M    Minute as a decimal number [00,59].
     %S    Second as a decimal number [00,61].    (3)
-    %w    Weekday as a decimal number [0(Monday),6].
-    %W    Week number of the year (Monday as the first day of the week)
-          as a decimal number [00,53]. All days in a new year preceding the
-          first Monday are considered to be in week 0.  (4)
-    %Y    Year with century as a decimal number. [0000,9999]
+    %w    ISO weekday as a decimal number [1(Monday),7].
+    %W    ISO week number as a decimal number [01,53], paired with %G.
+    %Y    Calendar year with century as a decimal number. [0000,9999]
+    %G    ISO week year with century as a decimal number. [0000,9999]
     %C    Century as a decimal number. [00,99]
     %z    UTC offset in the form +HHMM or -HHMM (empty string if the
           object is naive).    (5)

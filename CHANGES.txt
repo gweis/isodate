@@ -7,6 +7,7 @@ CHANGES
 
 - Drop support for Python < 3.9
 - add type hints
+- Use ISO week years when formatting week dates, including year boundaries
 
 
 0.7.2 (2024-10-08)
