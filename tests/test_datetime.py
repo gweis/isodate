@@ -135,6 +135,24 @@ TEST_CASES: list[tuple[str, Optional[datetime], str, str]] = [
         DATE_EXT_COMPLETE + "T" + TIME_EXT_COMPLETE + ".%f" + TZ_BAS,
         "2014-08-18T14:55:22.123456Z",
     ),
+    (  # out-of-range UTC offsets must be rejected, see parse_tzinfo
+        "2012-10-30T08:55:22+24:00",
+        None,
+        DATE_EXT_COMPLETE + "T" + TIME_EXT_COMPLETE + ".%f" + TZ_EXT,
+        "2012-10-30T08:55:22+24:00",
+    ),
+    (
+        "20121030T085522+2360",
+        None,
+        DATE_BAS_COMPLETE + "T" + TIME_BAS_COMPLETE + ".%f" + TZ_BAS,
+        "20121030T085522+2360",
+    ),
+    (
+        "2012-10-30T08:55:22-30",
+        None,
+        DATE_EXT_COMPLETE + "T" + TIME_EXT_COMPLETE + ".%f" + TZ_HOUR,
+        "2012-10-30T08:55:22-30",
+    ),
 ]
 
 

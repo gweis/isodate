@@ -100,6 +100,17 @@ TEST_CASES: list[tuple[str, Optional[time], Optional[str]]] = [
         TIME_EXT_COMPLETE + TZ_BAS,
     ),
     ("1:17:30", None, TIME_EXT_COMPLETE),
+    (
+        "152746+2359",
+        time(15, 27, 46, tzinfo=FixedOffset(23, 59, "+23:59")),
+        TIME_BAS_COMPLETE + TZ_BAS,
+    ),
+    # out-of-range UTC offsets must be rejected (offset < 24 hours, minutes < 60)
+    ("152746+2400", None, TIME_BAS_COMPLETE + TZ_BAS),
+    ("152746-2400", None, TIME_BAS_COMPLETE + TZ_BAS),
+    ("152746+99", None, TIME_BAS_COMPLETE + TZ_HOUR),
+    ("152746+2360", None, TIME_BAS_COMPLETE + TZ_BAS),
+    ("15:27:46-30", None, TIME_EXT_COMPLETE + TZ_HOUR),
 ]
 
 

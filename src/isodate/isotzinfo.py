@@ -30,6 +30,10 @@ def build_tzinfo(
         return None
     if tzname == "Z":
         return UTC
+    if tzhour > 23 or tzmin > 59:
+        raise ISO8601Error(
+            "time zone offset %s%02d%02d out of range" % (tzsign, tzhour, tzmin)
+        )
     tzsignum = ((tzsign == "-") and -1) or 1
     return FixedOffset(tzsignum * tzhour, tzsignum * tzmin, tzname)
 
