@@ -278,6 +278,22 @@ class Duration:
             return self.tdelta != other
         return True
 
+    def total_seconds(self) -> float:
+        """Return the duration as a total number of seconds.
+
+        Years and months do not have a fixed length, so a Duration that
+        includes either component cannot be expressed as a number of seconds.
+        Raise ValueError in that case instead of silently returning the
+        timedelta portion only (which is 0 for a month-only duration like
+        ``P1M``).
+        """
+        if self.years or self.months:
+            raise ValueError(
+                "cannot convert a Duration with years or months to seconds; "
+                "use totimedelta(start=...) or totimedelta(end=...) first"
+            )
+        return self.tdelta.total_seconds()
+
     def totimedelta(
         self, start: date | datetime | None = None, end: date | datetime | None = None
     ) -> timedelta:

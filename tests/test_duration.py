@@ -456,3 +456,19 @@ def test_totimedelta():
     assert dur.totimedelta(datetime(2000, 2, 25)) == timedelta(60)
     assert dur.totimedelta(datetime(2001, 2, 25)) == timedelta(59)
     assert dur.totimedelta(datetime(2001, 3, 25)) == timedelta(61)
+
+
+def test_total_seconds_fixed_duration():
+    """A Duration with only timedelta fields can report total_seconds()."""
+    assert Duration(days=1, hours=2, minutes=3, seconds=4).total_seconds() == 93784.0
+    assert parse_duration("PT36H").total_seconds() == 129600.0
+
+
+def test_total_seconds_rejects_calendar_units():
+    """Years/months are not a fixed number of seconds (issue #95)."""
+    with pytest.raises(ValueError, match="years or months"):
+        parse_duration("P1M").total_seconds()
+    with pytest.raises(ValueError, match="years or months"):
+        Duration(years=1).total_seconds()
+    with pytest.raises(ValueError, match="years or months"):
+        Duration(months=1, days=1).total_seconds()
