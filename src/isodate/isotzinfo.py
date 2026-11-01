@@ -4,7 +4,7 @@ It offers a function to parse the time zone offset as specified by ISO 8601.
 """
 
 import re
-from datetime import datetime, tzinfo
+from datetime import datetime, time, tzinfo
 from typing import Union
 
 from isodate.isoerror import ISO8601Error
@@ -56,7 +56,7 @@ def parse_tzinfo(tzstring: str) -> Union[tzinfo, None]:
     raise ISO8601Error("%s not a valid time zone info" % tzstring)
 
 
-def tz_isoformat(dt: datetime, format: str = "%Z") -> str:
+def tz_isoformat(dt: Union[datetime, time], format: str = "%Z") -> str:
     """Return time zone offset ISO 8601 formatted.
 
     The various ISO formats can be chosen with the format parameter.
@@ -69,14 +69,12 @@ def tz_isoformat(dt: datetime, format: str = "%Z") -> str:
         %z ... +-HHMM
         %Z ... +-HH:MM
     """
-    tzinfo = dt.tzinfo
-    if (tzinfo is None) or (tzinfo.utcoffset(dt) is None):
-        return ""
-    if tzinfo.utcoffset(dt) == ZERO and tzinfo.dst(dt) == ZERO:
-        return "Z"
-    tdelta = tzinfo.utcoffset(dt)
+    # time.utcoffset() passes None to tzinfo, since a time has no date.
+    tdelta = dt.utcoffset()
     if tdelta is None:
         return ""
+    if tdelta == ZERO and dt.dst() == ZERO:
+        return "Z"
     seconds = tdelta.days * 24 * 60 * 60 + tdelta.seconds
     sign = ((seconds < 0) and "-") or "+"
     seconds = abs(seconds)
