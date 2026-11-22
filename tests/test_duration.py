@@ -56,6 +56,16 @@ PARSE_TEST_CASES: list[tuple[str, Union[Duration, timedelta], str, Optional[str]
 
 
 @pytest.mark.parametrize(
+    "durationstring",
+    ["P0001-00-10T00:00:00", "P00010010T000000"],
+)
+def test_alternative_duration_rejects_zero_calendar_month(durationstring):
+    """Unsupported zero-month alternatives must not silently become January."""
+    with pytest.raises(ValueError, match="month must be in 1..12"):
+        parse_duration(durationstring)
+
+
+@pytest.mark.parametrize(
     "durationstring, expectation, format, altstr",
     PARSE_TEST_CASES,
 )
