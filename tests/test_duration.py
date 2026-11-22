@@ -56,6 +56,50 @@ PARSE_TEST_CASES: list[tuple[str, Union[Duration, timedelta], str, Optional[str]
 
 
 @pytest.mark.parametrize(
+    "durationstring",
+    ["P0001-00-10T00:00:00", "P00010010T000000"],
+)
+def test_alternative_duration_supports_zero_calendar_month(durationstring):
+    assert parse_duration(durationstring) == Duration(days=10, years=1, months=0)
+
+
+@pytest.mark.parametrize(
+    "datepart, days",
+    [
+        ("0000-00-05", 5),
+        ("00000005", 5),
+        ("0000-00", 1),
+        ("000000", 1),
+        ("0000-00-00", 0),
+    ],
+)
+@pytest.mark.parametrize("as_timedelta", [True, False])
+def test_alternative_duration_zero_year_and_month(datepart, days, as_timedelta):
+    result = parse_duration("P" + datepart + "T00:00:00", as_timedelta)
+    expected = timedelta(days=days) if as_timedelta else Duration(days=days)
+    assert type(result) is type(expected)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    "durationstring",
+    [
+        "P0001-13-01T00:00:00",
+        "P00011301T000000",
+        "P0001-13T00:00:00",
+        "P000113T000000",
+        "P0001-00-32T00:00:00",
+        "P00010032T000000",
+        "P0001-00-10T",
+        "P0001-00-10Tnot-a-time",
+    ],
+)
+def test_alternative_duration_rejects_invalid_components(durationstring):
+    with pytest.raises(ISO8601Error):
+        parse_duration(durationstring)
+
+
+@pytest.mark.parametrize(
     "durationstring, expectation, format, altstr",
     PARSE_TEST_CASES,
 )

@@ -13,6 +13,7 @@ from isodate.duration import Duration
 from isodate.isodatetime import parse_datetime
 from isodate.isoerror import ISO8601Error
 from isodate.isostrf import D_DEFAULT, strftime
+from isodate.isotime import parse_time
 
 ISO8601_PERIOD_REGEX = re.compile(
     r"^(?P<sign>[+-])?"
@@ -26,6 +27,11 @@ ISO8601_PERIOD_REGEX = re.compile(
     r"(?P<seconds>[0-9]+([,.][0-9]+)?S)?)?$"
 )
 # regular expression to parse ISO duration strings.
+
+_ALT_CALENDAR_REGEX = re.compile(
+    r"^P(?P<year>[0-9]{4})(?P<sep>-?)(?P<month>[0-9]{2})"
+    r"(?:(?P=sep)(?P<day>[0-9]{2}))?T(?P<time>.*)$"
+)
 
 
 def parse_duration(
@@ -54,8 +60,8 @@ def parse_duration(
         it does not check, whether only the last component has fractions.
         it allows weeks specified with all other combinations
 
-      The alternative format does not support durations with years, months or
-      days set to 0.
+      The alternative calendar format supports zero years, months and days;
+      ordinal alternatives retain the restrictions of calendar dates.
     """
     ret: Optional[Union[timedelta, Duration]] = None
     if not isinstance(datestring, str):
@@ -64,12 +70,21 @@ def parse_duration(
     if not match:
         # try alternative format:
         if datestring.startswith("P"):
-            durdt = parse_datetime(datestring[1:])
-            if as_timedelta_if_possible and durdt.year == 0 and durdt.month == 0:
-                # FIXME: currently not possible in alternative format
+            calendar_match = _ALT_CALENDAR_REGEX.match(datestring)
+            if calendar_match:
+                years = int(calendar_match.group("year"))
+                months = int(calendar_match.group("month"))
+                days = int(calendar_match.group("day") or "1")
+                if months > 12 or days > 31:
+                    raise ISO8601Error("Alternative duration month or day out of range")
+                durdt = parse_time(calendar_match.group("time"))
+            else:
+                durdt = parse_datetime(datestring[1:])
+                years, months, days = durdt.year, durdt.month, durdt.day
+            if as_timedelta_if_possible and years == 0 and months == 0:
                 # create timedelta
                 ret = timedelta(
-                    days=durdt.day,
+                    days=days,
                     seconds=durdt.second,
                     microseconds=durdt.microsecond,
                     minutes=durdt.minute,
@@ -78,13 +93,13 @@ def parse_duration(
             else:
                 # create Duration
                 ret = Duration(
-                    days=durdt.day,
+                    days=days,
                     seconds=durdt.second,
                     microseconds=durdt.microsecond,
                     minutes=durdt.minute,
                     hours=durdt.hour,
-                    months=durdt.month,
-                    years=durdt.year,
+                    months=months,
+                    years=years,
                 )
             return ret
         raise ISO8601Error("Unable to parse duration string %r" % datestring)

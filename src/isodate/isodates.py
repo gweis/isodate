@@ -177,7 +177,7 @@ def parse_date(
                 day = defaultday
             else:
                 day = int(groups["day"])
-            return date(sign * int(groups["year"]), int(groups["month"]) or defaultmonth, day)
+            return date(sign * int(groups["year"]), int(groups["month"]), day)
     raise ISO8601Error("Unrecognised ISO 8601 date format: %r" % datestring)
 
 
