@@ -84,3 +84,41 @@ def test_format(yeardigits: int, datestring: str, expected: Optional[date], form
             date_isoformat(expected, format, yeardigits)  # type: ignore [arg-type]
     else:
         assert date_isoformat(expected, format, yeardigits) == datestring
+
+
+@pytest.mark.parametrize("defaultmonth", [1, 6, 12])
+@pytest.mark.parametrize(
+    "yeardigits, datestring",
+    [
+        (4, "1985-00-10"),
+        (4, "19850010"),
+        (4, "1985-00"),
+        (4, "198500"),
+        (6, "+001985-00-10"),
+        (6, "+0019850010"),
+        (6, "+001985-00"),
+        (6, "+00198500"),
+    ],
+)
+def test_parse_rejects_zero_month(yeardigits: int, datestring: str, defaultmonth: int):
+    """An explicit zero month must not use the default for omitted months."""
+    with pytest.raises(ValueError, match="month"):
+        parse_date(datestring, yeardigits, defaultmonth=defaultmonth)
+
+
+@pytest.mark.parametrize(
+    "yeardigits, datestring, expected",
+    [
+        (4, "19", date(1901, 6, 15)),
+        (4, "1985", date(1985, 6, 15)),
+        (6, "+0019", date(1901, 6, 15)),
+        (6, "+001985", date(1985, 6, 15)),
+        (4, "1985-04", date(1985, 4, 15)),
+        (4, "198504", date(1985, 4, 15)),
+        (4, "1985-04-12", date(1985, 4, 12)),
+        (4, "19850412", date(1985, 4, 12)),
+    ],
+)
+def test_parse_incomplete_date_defaults(yeardigits: int, datestring: str, expected: date):
+    """Only absent month and day components should use caller defaults."""
+    assert parse_date(datestring, yeardigits, defaultmonth=6, defaultday=15) == expected
