@@ -159,3 +159,18 @@ def test_format(datetimestring: str, expected: Optional[datetime], format: str, 
             datetime_isoformat(expected, format)  # type: ignore [arg-type]
     else:
         assert datetime_isoformat(expected, format) == output
+
+
+@pytest.mark.parametrize(
+    "datetimestring",
+    [
+        "1985-00-10T12:30:00",
+        "19850010T123000",
+        "1985-00-10T12:30:00Z",
+        "19850010T123000+0100",
+    ],
+)
+def test_parse_rejects_zero_calendar_month(datetimestring: str):
+    """The datetime parser must not silently normalize a zero calendar month."""
+    with pytest.raises(ValueError, match="month"):
+        parse_datetime(datetimestring)
