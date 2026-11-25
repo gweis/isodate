@@ -82,12 +82,18 @@ STRF_D_MAP: dict[str, Callable[[Union[timedelta, Duration], int], str]] = {
     "%m": lambda tdt, yds: "%02d" % tdt.months,  # type: ignore [union-attr]
     "%M": lambda tdt, yds: "%02d" % ((tdt.seconds / 60) % 60),
     "%S": lambda tdt, yds: "%02d" % (tdt.seconds % 60),
-    "%W": lambda tdt, yds: "%02d" % (abs(tdt.days / 7)),
+    "%W": lambda tdt, yds: "%02d" % _duration_weeks(tdt),
     "%Y": lambda tdt, yds: (((yds != 4) and "+") or "") + (("%%0%dd" % yds) % tdt.years),  # type: ignore [union-attr] # noqa: E501
     "%C": lambda tdt, yds: (((yds != 4) and "+") or "")
     + (("%%0%dd" % (yds - 2)) % (tdt.years / 100)),  # type: ignore [union-attr]
     "%%": lambda tdt, yds: "%",
 }
+
+
+def _duration_weeks(tdt: Union[timedelta, Duration]) -> int:
+    """Count complete weeks in the magnitude of the fixed-length component."""
+    delta = tdt.tdelta if isinstance(tdt, Duration) else tdt
+    return abs(delta).days // 7
 
 
 def _strfduration(tdt: Union[timedelta, Duration], format: str, yeardigits: int = 4) -> str:
@@ -129,7 +135,7 @@ def _strfduration(tdt: Union[timedelta, Duration], format: str, yeardigits: int 
             # at least one component has to be there.
             return "".join(ret) if ret else "0D"
         elif match.group(0) == "%p":
-            return str(abs(tdt.days // 7)) + "W"
+            return str(_duration_weeks(tdt)) + "W"
         return match.group(0)
 
     return re.sub("%d|%f|%H|%m|%M|%S|%W|%Y|%C|%%|%P|%p", repl, format)

@@ -5,6 +5,8 @@ CHANGES
 0.7.3 (unreleased)
 ------------------
 
+- Count complete weeks from the absolute duration when formatting negative
+  durations, including fractional days near week boundaries.
 - Drop support for Python < 3.9
 - add type hints
 
